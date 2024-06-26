@@ -1,6 +1,6 @@
 require('dotenv').config()
 const express = require('express')
-const connectdb= require('../DataBase/connect')
+const connectdb= require('./DataBase/connect')
 const app = express()
 
 
@@ -15,8 +15,6 @@ const ConnectDB = async ()=>{
         await connectdb().then(()=>{
             app.listen(port,()=>{
                 console.log('Server is listinig on:',port);
-            }).catch((err)=>{
-                console.log('MONGODB Error Occured!!!',err)
             })
           }
           ) 
