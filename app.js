@@ -1,12 +1,19 @@
 require('dotenv').config()
 const express = require('express')
+const cookieParser = require('cookie-parser')
 const connectdb= require('./DataBase/connect')
+const UserRouter = require('./Routes/users.routers')
 const app = express()
 
+app.use(express.json())
+// app.use(express.urlencoded)
+app.use(express.static('./public'))
+app.use(cookieParser())
 
-app.get('/test',(req,res)=>{
-    res.send('This is a test route')
-})
+
+//Main Routes
+
+app.use('/api/v1/auth/user',UserRouter)
  
 const port = process.env.PORT
 

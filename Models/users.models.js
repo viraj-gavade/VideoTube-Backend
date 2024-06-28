@@ -53,7 +53,7 @@ UserSchema.pre('save',async function (next){
         return next()
     }
     const salt = bcryptjs.genSalt(10)
-    this.password = bcryptjs.hash(this.password,salt)
+    this.password = await bcryptjs.hash(this.password,salt)
     next()
 })
 UserSchema.methods.isPasswordCorrect = async function(password){
