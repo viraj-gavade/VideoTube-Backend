@@ -6,7 +6,7 @@ const UserRouter =express.Router()
 UserRouter.route('/register').post(
     upload.fields([
         {
-            name:'Avtar',
+            name:'avatar',
             maxCount:1
         },{
             name:'coverImage',

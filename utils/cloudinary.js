@@ -10,13 +10,15 @@ v2.config({
 const uploadFile = async(Filepath)=>{
     try {
         if(!Filepath){
-            console.log('File path mot found')
+            // console.log('File path not found')
             return null
         }
         const response = await v2.uploader.upload(Filepath,{
             resource_type:'auto'
         })
-        console.log(`File uploaded to cloudinary successfully!`,response.url)
+
+        fs.unlinkSync(Filepath)
+        // console.log(`File uploaded to cloudinary successfully!`,response.url)
         return response
     } catch (error) {
         fs.unlinkSync(Filepath) //remove the locally saved files

@@ -11,27 +11,32 @@ const registerUser = asyncHandler(async(req,res)=>{
     )){
         throw new apiErrors(400,'All fields must be filled!')
     }
-  const exstinguser = User.findOne({
+  const exstinguser = await User.findOne({
         $or:[{username},{email}]
     })
     if(exstinguser){
         throw new apiErrors(409,'User already exists')
     }
 
-    const avatarLocalpath = req.files?.avtar[0]?.path
-    const coverImageLocalpath = req.files?.coverImage[0]?.path
+    const avatarLocalpath = req.files?.avatar[0]?.path
+    // const coverImageLocalpath = req.files?.coverImage[0]?.path
     if (!avatarLocalpath) {
         throw new apiErrors(404,'Avtar must be uploaded!')
     }
 
-    const avtar = await uploadFile(avatarLocalpath)
+    let coverImageLocalpath;
+    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length>0){
+        coverImageLocalpath = req.files.coverImage[0].path
+    }
+
+    const avatar = await uploadFile(avatarLocalpath)
     const coverImage = await uploadFile(coverImageLocalpath)
-    if(!avtar){
+    if(!avatar){
         throw new apiErrors(400,'Avtar file is required')
     }
 
     const user = await User.create({
-        avtar:avtar.url,
+        avatar:avatar.url,
         coverImage:coverImage?.url || '',
         fullname,
         email,
