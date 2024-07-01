@@ -1,6 +1,7 @@
 const express = require('express')
-const registerUser = require('../Controllers/users.controllers')
+const {registerUser, loginUser, logoutUser} = require('../Controllers/users.controllers')
 const upload = require('../Middlerwares/multer.middleware')
+const VerifyJwt = require('../Middlerwares/auth')
 const UserRouter =express.Router()
 
 UserRouter.route('/register').post(
@@ -14,5 +15,10 @@ UserRouter.route('/register').post(
         }]),
     registerUser)
 
+UserRouter.route('/login').post(loginUser)
+
+//Secured Routes
+
+UserRouter.route('/logout').post(VerifyJwt,logoutUser)
 
 module.exports = UserRouter

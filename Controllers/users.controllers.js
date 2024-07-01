@@ -1,27 +1,46 @@
 const asyncHandler = require('../utils/asynchandler')
-const apiErrors = require('../utils/apiErrors')
+const CustomApiError = require('../utils/CustomApiError')
 const User = require('../Models/users.models')
 const uploadFile = require('../utils/cloudinary')
 const ApiResponse = require('../utils/apiResponse')
+const CustomApiError = require('../utils/apiErrors')
+const mongoose = require('mongoose')
+
+
+const generateAccessTokenAndRefreshToken = async(userId)=>{
+    try {
+        const user = await User.findById(userId)
+       const accessToken =  await user.createAccestoken()
+       const refreshToken = await user.createRefreshtoken()
+
+      user.refreshToken = refreshToken
+      await  user.save({validateBeforeSave:false})
+
+       return {accessToken,refreshToken}
+    } catch (error) {
+        throw new CustomApiError(500,'Something went wrong while generating the access and refresh token!')
+    }
+}
+
 const registerUser = asyncHandler(async(req,res)=>{
 
     const {username,email,fullname,password} = req.body
     if([username,email,fullname,password].some((field)=>
         field?.trim()===''
     )){
-        throw new apiErrors(400,'All fields must be filled!')
+        throw new CustomApiError(400,'All fields must be filled!')
     }
   const exstinguser = await User.findOne({
         $or:[{username},{email}]
     })
     if(exstinguser){
-        throw new apiErrors(409,'User already exists')
+        throw new CustomApiError(409,'User already exists')
     }
 
     const avatarLocalpath = req.files?.avatar[0]?.path
     // const coverImageLocalpath = req.files?.coverImage[0]?.path
     if (!avatarLocalpath) {
-        throw new apiErrors(404,'Avtar must be uploaded!')
+        throw new CustomApiError(404,'Avtar must be uploaded!')
     }
 
     let coverImageLocalpath;
@@ -32,7 +51,7 @@ const registerUser = asyncHandler(async(req,res)=>{
     const avatar = await uploadFile(avatarLocalpath)
     const coverImage = await uploadFile(coverImageLocalpath)
     if(!avatar){
-        throw new apiErrors(400,'Avtar file is required')
+        throw new CustomApiError(400,'Avtar file is required')
     }
 
     const user = await User.create({
@@ -48,14 +67,66 @@ const registerUser = asyncHandler(async(req,res)=>{
         '-password -refreshToken'
     )
     if(!createdUser){
-        throw new apiErrors(500,'Server was unable to create the user please try agin later!')
+        throw new CustomApiError(500,'Server was unable to create the user please try agin later!')
     }
 
     return res.status(201).json(
         new ApiResponse(200,'User Created Successfully!',createdUser)
     )
+
+   
   
 })
 
+const loginUser = asyncHandler(async (req,res)=>{
+  const {email,password,username} = req.body 
+  if(!email || !password || !username){
+    throw new CustomApiError(400,'Please provide all the required fields')
+  }
+  const user = await User.findOne({
+    $or:[{email},{username}]
+  })
+  if(!user){
+    throw new CustomApiError(404,'User not found!')
+  }
+    const ValidPassword = user.isPasswordCorrect(password)
+    if(!ValidPassword){
+        throw new CustomApiError(401,'Invalid user credentials!')
+    }
+    const {accessToken,refreshToken} = await generateAccessTokenAndRefreshToken(user._id)
 
-module.exports = registerUser
+    const loggedInUser = await User.findById(user._id).select('-password -refreshToken')
+
+
+    const options = {
+        httpOnly:true,
+        secure:true
+    }
+
+    return res.status(200).cookie('AccessToken',accessToken,options).cookie('RefreshToken',refreshToken.options).json(
+        new ApiResponse(200,
+            'User Logged In Successfully!',
+            {
+                user:loggedInUser,accessToken,refreshToken
+            }
+        )
+    )
+    
+})
+
+const logoutUser = asyncHandler(async (req,res)=>{
+
+await User.findByIdAndUpdate(req.user._id,{
+    $set:{
+        refreshToken:undefined
+    }
+},{
+    new:true
+})
+const options = {
+    httpOnly:true,
+    secure:true}
+    return res.status(200).clearCookie('AccessToken',options).clearCookie('RefreshToken',options)
+})
+
+module.exports = {registerUser,loginUser,logoutUser}
