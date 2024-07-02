@@ -169,4 +169,25 @@ throw new CustomApiError(401,error?.message || 'Inavlid refresh Token! ')
   }
 })
 
+const changeCurrentPassword = asyncHandler(async(req,res)=>{
+    try {
+        const {oldPassword,newPassword,confirmNewPassword} = req.body
+        if (newPassword !== confirmNewPassword ) {
+            throw new CustomApiError(401,'New password does not match with the confirmed password!')
+        }
+        const user = await User.findById(req?._id)
+        user.isPasswordCorrect(oldPassword)
+        if (!oldPassword) {
+            throw new CustomApiError(401,'The old password you have entered is not correct!')
+        }
+        user.password = newPassword
+       await user.save({validateBeforeSave:true})
+        return res.status(200).json(
+            new ApiResponse(200,'Password changed successfully!',{})
+        )
+    } catch (error) {
+        throw new CustomApiError(500,'Something went wrong while changing the password please try again later!')
+    }
+})
+
 module.exports = {registerUser,loginUser,logoutUser,refreshAccessToken}
