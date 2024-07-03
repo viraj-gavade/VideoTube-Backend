@@ -227,7 +227,7 @@ const updateUserAvtar = asyncHandler(async(req,res)=>{
         throw new CustomApiError(400,'Error while uploading on cloudinary!')
     }
 
-    const user = User.findByIdAndUpdate(req.user?._id,{
+    const user = await User.findByIdAndUpdate(req.user?._id,{
         $set:{
             avatar:avatar?.url
         }
