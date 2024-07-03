@@ -318,6 +318,12 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
              }       
     }
     ])
+    if(!channel?.length){
+        throw new CustomApiError(400,'Channel not found!')
+    }
+    return res.status(200).json(
+        new ApiResponse(200,'Channel fetched successfully!',channel[0])
+    )
 
 })
 
@@ -329,5 +335,6 @@ changeCurrentPassword,
 getCurrentUser,
 updateUserdetails,
 updateUserAvtar,
-updateUsercoverImage
+updateUsercoverImage,
+getUserChannelProfile
 }
