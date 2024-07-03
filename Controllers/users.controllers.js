@@ -273,7 +273,7 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
         }, 
         {
             $lookup:{
-                from:'Subscription',
+                from:'subscriptions',
                 localField:"_id",
                 foreignField:'channel',
                 as:'subscribers'
@@ -281,7 +281,7 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
         },
         {
             $lookup:{
-                from:'Subscription',
+                from:'subscriptions',
                 localField:'_id',
                 foreignField:'subscriber',
                 as:'subscribed'
@@ -327,6 +327,63 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
 
 })
 
+const getUserWatchHistory = asyncHandler(async(req,res)=>{
+    const user = User.aggregate([ 
+        {
+            $match:{
+                _id:m=new mongoose.Types.ObjectId(req.user?._id)
+            }
+        },
+        {
+            $lookup:{
+                from:"videos",
+                localField:'watchHistory',
+                foreignField:'_id',
+                as:"WatchHistory",
+                pipeline:[
+                    {
+                        $lookup:{
+                            from:"users",
+                            localField:'owner',
+                            foreignField:'_id',
+                            as:'owner',
+                            pipeline:[
+                                {
+                                    $project:{
+                                        fullname:1,
+                                        username:1,
+                                        avatar:1
+                                    }
+                                }
+                            ]
+                        }
+                    } ,
+                    {
+                        $addFields:{
+                            owner:{
+                                $first:"owner"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ])
+    if(!user){
+        throw new CustomApiError(
+            200,'User not found!'
+        )
+    }
+
+    return res.status(200).json(
+        new ApiResponse(
+            200,
+            'Watch history fetched',
+            owner[0].watchHistory
+        )
+    )
+})
+
 module.exports =
  {registerUser,
 logoutUser,
@@ -336,5 +393,6 @@ getCurrentUser,
 updateUserdetails,
 updateUserAvtar,
 updateUsercoverImage,
-getUserChannelProfile
+getUserChannelProfile,
+getUserWatchHistory
 }
