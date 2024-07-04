@@ -249,7 +249,7 @@ const updateUsercoverImage = asyncHandler(async(req,res)=>{
     if (!coverImageLocalpath) {
         throw new CustomApiError(400,'CoverImage file is missing ')
     }
-    await uploadFile(coverImageLocalpath)
+   const coverImage =  await uploadFile(coverImageLocalpath)
     if(!coverImage.url){
         throw new CustomApiError(400,'Error while uploading on cloudinary!')
     }
