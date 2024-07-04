@@ -102,7 +102,7 @@ const loginUser = asyncHandler(async (req,res)=>{
         secure:true
     }
 
-    return res.status(200).cookie('AccessToken',accessToken,options).cookie('RefreshToken',refreshToken.options).json(
+    return res.status(200).cookie('accessToken',accessToken,options).cookie('refreshToken',refreshToken,options).json(
         new ApiResponse(200,
             'User Logged In Successfully!',
             {
@@ -116,8 +116,8 @@ const loginUser = asyncHandler(async (req,res)=>{
 const logoutUser = asyncHandler(async (req,res)=>{
 
 await User.findByIdAndUpdate(req.user._id,{
-    $set:{
-        refreshToken:undefined
+    $unset:{
+        refreshToken:1
     }
 },{
     new:true
@@ -138,9 +138,9 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
     }
 
   try {
-     const decodedtoken =  await jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRETE)
+     const decodedtoken = jwt.verify(incomingRefreshToken,process.env.REFRESH_TOKEN_SECRETE)
   
-     const user = User.findById(decodedtoken?.id)
+     const user = await User.findById(decodedtoken?._id)
      if(!user){
       throw new CustomApiError(401,'Invalid refresh token')
      }
@@ -156,7 +156,7 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
   
     const {NewrefreshToken,accessToken} = await  generateAccessTokenAndRefreshToken(user?._id)
   
-     return res.status(200).cookie('AccessToken',accessToken).cookie('RefreshToken',NewrefreshToken).json(
+     return res.status(200).cookie('accessToken',accessToken).cookie('accessToken',NewrefreshToken).json(
       new ApiResponse(
           200,
           'Accces Token Refreshed!',
@@ -165,7 +165,7 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
      )
   
   } catch (error) {
-throw new CustomApiError(401,error?.message || 'Inavlid refresh Token! ')
+ throw new CustomApiError(401,error?.message || 'Inavlid refresh Token! ')
   }
 })
 
