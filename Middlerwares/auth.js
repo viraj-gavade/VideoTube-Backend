@@ -4,7 +4,7 @@ const User = require('../Models/users.models')
 const asyncHandler = require('../utils/asynchandler')
 const VerifyJwt = asyncHandler (async(req,res,next)=>{
     try {
-        const token = req.cookies?.AccessToken || req.header('Authorization')?.replace('Bearer ','')
+        const token = req.cookies?.accessToken || req.header('Authorization')?.replace('Bearer ','')
 
         if(!token){
             throw new CustomApiError(401,'Unauthorized Request')
@@ -21,7 +21,8 @@ const VerifyJwt = asyncHandler (async(req,res,next)=>{
         next()
         
     } catch (error) {
-        throw CustomApiError(401,error?.messsage || 'Invalid acces')
+        console.log(error)
+        throw new CustomApiError(401,error?.messsage || 'Invalid access')
     }
 })
 
