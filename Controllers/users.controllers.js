@@ -267,11 +267,12 @@ const updateUsercoverImage = asyncHandler(async(req,res)=>{
 
 const getUserChannelProfile = asyncHandler(async(req,res)=>{
     const {username} = req.params
+    console.log(req.params)
     if(!username?.trim()){
-        throw CustomApiError(400,'User not found !')
+        throw new CustomApiError(400,'User not found !')
     }
 
-    const channel = User.aggregate([
+    const channel = await User.aggregate([
        {
             $match:{
               username:username?.toLowerCase()  
@@ -302,8 +303,8 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
                     $size:'$subscribed'
                 },
                     isSubscribed:{
-                    cond:{
-                        if:{$in:[req.user?.url,'$subscriber.subscriber']},
+                    $cond:{
+                        if: {$in: [req.user?._id, "$subscribers.subscriber"]},
                         then:true,
                         else:false
                     }
@@ -388,7 +389,7 @@ const getUserWatchHistory = asyncHandler(async(req,res)=>{
             user[0].watchHistory
         )
     )
-})
+}) //Checked and bug fixed
 
 module.exports =
  {
