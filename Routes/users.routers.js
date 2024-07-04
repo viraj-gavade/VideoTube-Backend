@@ -9,7 +9,8 @@ const {
     updateUserAvtar, 
     getUserChannelProfile, 
     getUserWatchHistory,
-    updateUserdetails
+    updateUserdetails,
+    updateUsercoverImage
 } = require('../Controllers/users.controllers')
 
 
@@ -49,7 +50,7 @@ UserRouter.route('/update-account-details').patch(VerifyJwt,updateUserdetails)
 
 UserRouter.route('/update-avatar').patch(VerifyJwt,upload.single('avatar'),updateUserAvtar)
 
-UserRouter.route('/update-account-details').patch(VerifyJwt,upload.single('coverImage'),updateUserdetails)
+UserRouter.route('/update-coverImage').patch(VerifyJwt,upload.single('coverImage'),updateUsercoverImage)
 
 UserRouter.route('/channel/:username').get(VerifyJwt,getUserChannelProfile)
 UserRouter.route('/watchHistory').get(VerifyJwt,getUserWatchHistory)
