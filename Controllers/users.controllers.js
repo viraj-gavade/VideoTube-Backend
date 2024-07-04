@@ -193,13 +193,13 @@ const changeCurrentPassword = asyncHandler(async(req,res)=>{
         console.log(error)
         throw new CustomApiError(500,'Something went wrong while changing the password please try again later!')
     }
-})
+}) //Checked and bugs fixed
 
 const getCurrentUser = asyncHandler(async(req,res)=>{
     res.status(200).json(
         new ApiResponse(200,'Current Used feteched successfully!',{})
         )
-}) // //Checked and bugs fixed
+}) //Checked and bugs fixed
 
 
 const updateUserdetails = asyncHandler(async (req,res)=>{
@@ -221,14 +221,14 @@ const updateUserdetails = asyncHandler(async (req,res)=>{
     return res.status(200).json(
         new ApiResponse(200,'User details updated successfully!',{})
     )
-})
+}) //Checked and bugs fixed
 
 const updateUserAvtar = asyncHandler(async(req,res)=>{
     const avatarLocalpath = req.file?.path
     if (!avatarLocalpath) {
         throw new CustomApiError(400,'Avatar file is missing ')
     }
-    await uploadFile(avatarLocalpath)
+    const avatar = await uploadFile(avatarLocalpath)
     if(!avatar.url){
         throw new CustomApiError(400,'Error while uploading on cloudinary!')
     }
@@ -239,9 +239,9 @@ const updateUserAvtar = asyncHandler(async(req,res)=>{
         }
     },{new:true}).select('-password')
     return res.status(200).json(
-        new ApiResponse(200,'Cover image updated sucessfully!'))
+        new ApiResponse(200,'Avatar updated sucessfully!'))
 
-})
+}) //Checked and bugs fixed
 
 
 const updateUsercoverImage = asyncHandler(async(req,res)=>{
