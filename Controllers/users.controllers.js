@@ -19,7 +19,7 @@ const generateAccessTokenAndRefreshToken = async(userId)=>{
     } catch (error) {
         throw new CustomApiError(500,'Something went wrong while generating the access and refresh token!')
     }
-}
+}   //Checked and bugs fixed
 
 const registerUser = asyncHandler(async(req,res)=>{
 
@@ -75,7 +75,8 @@ const registerUser = asyncHandler(async(req,res)=>{
 
    
   
-})
+}) //Checked and bugs fixed
+
 
 const loginUser = asyncHandler(async (req,res)=>{
   const {email,password,username} = req.body 
@@ -111,7 +112,8 @@ const loginUser = asyncHandler(async (req,res)=>{
         )
     )
     
-})
+}) //Checked and bugs fixed
+
 
 const logoutUser = asyncHandler(async (req,res)=>{
 
@@ -129,7 +131,8 @@ const options = {
 res.status(200).clearCookie('AccessToken',options).clearCookie('RefreshToken',options).json(
     new ApiResponse(200,'User Logged Out Successfully!')
 )
-})
+}) //Checked and bugs fixed
+
 
 const refreshAccessToken = asyncHandler(async(req,res)=>{
     const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken
@@ -167,17 +170,18 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
   } catch (error) {
  throw new CustomApiError(401,error?.message || 'Inavlid refresh Token! ')
   }
-})
+})  //Checked and bugs fixed
+
 
 const changeCurrentPassword = asyncHandler(async(req,res)=>{
+
     try {
-        const {oldPassword,newPassword,confirmNewPassword} = req.body
-        if (newPassword !== confirmNewPassword ) {
-            throw new CustomApiError(401,'New password does not match with the confirmed password!')
-        }
-        const user = await User.findById(req?._id)
-        user.isPasswordCorrect(oldPassword)
-        if (!oldPassword) {
+        const {oldPassword,newPassword} = req.body
+        console.log(oldPassword,newPassword)
+       const user = await User.findById(req.user._id)
+       console.log(user)
+       const isPasswordCorrect = await user.isPasswordCorrect(oldPassword)
+        if (!isPasswordCorrect) {
             throw new CustomApiError(401,'The old password you have entered is not correct!')
         }
         user.password = newPassword
@@ -186,6 +190,7 @@ const changeCurrentPassword = asyncHandler(async(req,res)=>{
             new ApiResponse(200,'Password changed successfully!',{})
         )
     } catch (error) {
+        console.log(error)
         throw new CustomApiError(500,'Something went wrong while changing the password please try again later!')
     }
 })
@@ -194,7 +199,8 @@ const getCurrentUser = asyncHandler(async(req,res)=>{
     res.status(200).json(
         new ApiResponse(200,'Current Used feteched successfully!',{})
         )
-})
+}) // //Checked and bugs fixed
+
 
 const updateUserdetails = asyncHandler(async (req,res)=>{
     const {email,fullname} = req.body
