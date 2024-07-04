@@ -39,7 +39,7 @@ UserRouter.route('/login').post(loginUser)
 
 UserRouter.route('/logout').post(VerifyJwt,logoutUser)
 
-UserRouter.route('/refresh-token').post(refreshAccessToken)
+UserRouter.route('/refresh-token').post(VerifyJwt,refreshAccessToken)
 
 UserRouter.route('/change-password').post(VerifyJwt,changeCurrentPassword)
 
