@@ -263,7 +263,7 @@ const updateUsercoverImage = asyncHandler(async(req,res)=>{
         new ApiResponse(200,'Cover image updated sucessfully!')
     )
 
-})
+})//Checked and bugs fixed
 
 const getUserChannelProfile = asyncHandler(async(req,res)=>{
     const {username} = req.params
@@ -334,10 +334,10 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
 })
 
 const getUserWatchHistory = asyncHandler(async(req,res)=>{
-    const user = User.aggregate([ 
+    const user = await User.aggregate([ 
         {
             $match:{
-                _id:m=new mongoose.Types.ObjectId(req.user?._id)
+                _id: new mongoose.Types.ObjectId(req.user._id)
             }
         },
         {
@@ -367,7 +367,7 @@ const getUserWatchHistory = asyncHandler(async(req,res)=>{
                     {
                         $addFields:{
                             owner:{
-                                $first:"owner"
+                                $first:"$owner"
                             }
                         }
                     }
@@ -385,7 +385,7 @@ const getUserWatchHistory = asyncHandler(async(req,res)=>{
         new ApiResponse(
             200,
             'Watch history fetched',
-            owner[0].watchHistory
+            user[0].watchHistory
         )
     )
 })
