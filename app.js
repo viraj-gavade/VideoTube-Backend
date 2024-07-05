@@ -4,7 +4,7 @@ const cookieParser = require('cookie-parser')
 const connectdb= require('./DataBase/connect')
 const UserRouter = require('./Routes/users.routers')
 const app = express()
-
+const VideoRouter = require('./Routes/videos.routers')
 app.use(express.json())
 // app.use(express.urlencoded)
 app.use(express.static('./public'))
@@ -14,6 +14,7 @@ app.use(cookieParser())
 //Main Routes
 
 app.use('/api/v1/auth/user',UserRouter)
+app.use('/api/v1/auth/',VideoRouter)
  
 const port = process.env.PORT
 
