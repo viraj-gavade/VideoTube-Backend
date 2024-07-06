@@ -12,9 +12,10 @@ const creatTweet = asyncHandler(async(req,res)=>{
 try {
         const { content } = req.body
         const tweet = await Tweet.create({
-            owner:req.user.username,
+            owner:req.user,
             content:content
         })
+      
         if(!tweet){
             throw new  CustomApiError(
                 500,
@@ -41,6 +42,7 @@ const getUserTweets = asyncHandler(async(req,res)=>{
   try {
       
      const tweet =  await Tweet.find(req.user_id)
+     console.log(req.user)
       if(!tweet){
           throw new  CustomApiError(
               400,
