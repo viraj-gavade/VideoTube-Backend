@@ -6,6 +6,7 @@ const UserRouter = require('./Routes/users.routers')
 const app = express()
 const VideoRouter = require('./Routes/videos.routers')
 const TweetRouter = require('./Routes/tweets.routers')
+const CommentRouter = require('./Routes/comments.routers')
 app.use(express.json())
 // app.use(express.urlencoded)
 app.use(express.static('./public'))
@@ -17,6 +18,7 @@ app.use(cookieParser())
 app.use('/api/v1/auth/user',UserRouter)
 app.use('/api/v1/auth/',VideoRouter)
 app.use('/api/v1/auth/',TweetRouter)
+app.use('/api/v1/auth/',CommentRouter)
  
 const port = process.env.PORT
 

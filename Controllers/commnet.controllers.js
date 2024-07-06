@@ -7,7 +7,6 @@ const { default: mongoose } = require('mongoose')
 
 
 const getVideoComments = asyncHandler(async(req,res)=>{
-
     const {videoId} = req.params
     const comment = await Video.aggregate([
         {
@@ -36,14 +35,11 @@ const getVideoComments = asyncHandler(async(req,res)=>{
         )
     }
 
-    return res.status(200).json(
-        new ApiResponse(
-            200,
-            'All comments of this video fetched successfully!',
-            comment[0]
-        )
-    )
+    const comments = await comment[0].comments
+    return res.status(200).send(comment[0].comments)
 })
+
+
 
 const addComment =asyncHandler(async(req,res)=>{
    try {
