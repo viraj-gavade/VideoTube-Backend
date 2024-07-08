@@ -14,28 +14,65 @@ const togglesubscription = asyncHandler(async(req,res)=>{
 
 const getUserChannelSubscribers = asyncHandler(async(req,res)=>{
     const { channelId } = req.params
-
-    const channel = await User.aggregate([
-        {
-             $match:{
-               _id:new mongoose.Types.ObjectId(channelId) 
-             }
-         }, 
-         {
-             $lookup:{
-                 from:'subscriptions',
-                 localField:"_id",
-                 foreignField:'channel',
-                 as:'subscribers'
-             }
-         },
-         
-     ])
-
-     res.send(channel[0].subscribers)
+    if(!channelId){
+        throw new CustomApiError(
+            400,
+            `There is no such channel with Id:${channelId}`
+        )
+    }
+    try {
+        
+    } catch (error) {
+        throw new CustomApiError(
+            error.statusCode,
+            error.message
+        )
+    }
+  
 })
+
+const getSubscribedChannels = asyncHandler(async(req,res)=>{
+    const { channelId } = req.params
+    if ( !channelId ){
+        throw new CustomApiError(
+            400,
+                `There is no such channel Id:${channelId}`
+        )
+    }
+    try {
+        const channel = await User.aggregate([
+            {
+                $match:{
+                    _id:new mongoose.Types.ObjectId(channelId) 
+                  
+    
+                },
+                
+            },
+            {
+                $lookup:{
+                    from:'User',
+                    localField:'_id',
+                    foreignField:'subscriber',
+                    as:'Suscribedto'
+    
+                }
+            }
+        ])
+        return res.send(channel[0].Suscribedto)
+    } catch (error) {
+        console.log(error)
+        throw new CustomApiError(
+            error.statusCode,
+            error.message
+        
+        )
+    }
+})
+
 
 module.exports =
 { togglesubscription,
-    getUserChannelSubscribers
+    getUserChannelSubscribers,
+    getSubscribedChannels
 }
