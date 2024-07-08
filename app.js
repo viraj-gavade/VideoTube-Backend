@@ -9,6 +9,7 @@ const TweetRouter = require('./Routes/tweets.routers')
 const CommentRouter = require('./Routes/comments.routers')
 const healthCheck = require('./Controllers/healthcheck.controllers')
 const subscriptionRouter = require('./Routes/subscritption.routers')
+const LikeRouter = require('./Routes/like.routers')
 app.use(express.json())
 // app.use(express.urlencoded)
 app.use(express.static('./public'))
@@ -23,6 +24,7 @@ app.use('/api/v1/auth/',TweetRouter)
 app.use('/api/v1/auth/',CommentRouter)
 app.use('/api/v1/healthcheck',healthCheck)
 app.use('/api/v1/auth/',subscriptionRouter)
+app.use('/api/v1/auth/',LikeRouter)
  
 const port = process.env.PORT
 
