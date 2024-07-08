@@ -5,7 +5,7 @@ const subscriptionRouter = express.Router()
 
 
 
-subscriptionRouter.route('/subs/:channelId').get(VerifyJwt,getUserChannelSubscribers)
+subscriptionRouter.route('/subs/:channelId').get(getUserChannelSubscribers)
 
 
 module.exports = subscriptionRouter

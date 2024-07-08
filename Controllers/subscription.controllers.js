@@ -29,47 +29,10 @@ const getUserChannelSubscribers = asyncHandler(async(req,res)=>{
                  as:'subscribers'
              }
          },
-         {
-             $lookup:{
-                 from:'subscriptions',
-                 localField:'_id',
-                 foreignField:'subscriber',
-                 as:'subscribed'
-             }
-         },
-         {
-             $addFields:{
-                 subscriberCount:{
-                     $size:'$subscribers'
-                 },
-                 subscribedCount:{
-                     $size:'$subscribed'
-                 },
-                     isSubscribed:{
-                     $cond:{
-                         if: {$in: [req.user?._id, "$subscribers.subscriber"]},
-                         then:true,
-                         else:false
-                     }
- 
-                 }
-             }
-     },
-         {
-             $project:{
-                 fullname:1,
-                 username:1,
-                 subscriberCount:1,
-                 subscribedCount:1,
-                 isSubscribed:1 ,
-                 avatar:1,
-                 coverImage:1,
-                 email:1   
-              }       
-     }
+         
      ])
-     
-     res.send(channel)
+
+     res.send(channel[0].subscribers)
 })
 
 module.exports =
