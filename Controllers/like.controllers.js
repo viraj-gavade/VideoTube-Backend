@@ -8,6 +8,12 @@ const { default: mongoose } = require('mongoose')
 
 const togglecommentLike = asyncHandler(async(req,res)=>{
     const {commentId }= req.params
+    if(!commentId){
+        throw new CustomApiError(
+            400,
+            `There is no such comment with Id : ${commentId}`
+        )
+    }
 
    try {
      const getcomment = await Like.findOne({
@@ -48,7 +54,12 @@ const togglecommentLike = asyncHandler(async(req,res)=>{
 
 const toggleTweetLike = asyncHandler(async(req,res)=>{
     const {tweetId }= req.params
-
+    if(!tweetId){
+        throw new CustomApiError(
+            400,
+            `There is no such tweet with Id : ${tweetId}`
+        )
+    }
    try {
      const gettweet = await Like.findOne({
          tweet:tweetId,
@@ -88,6 +99,12 @@ const toggleTweetLike = asyncHandler(async(req,res)=>{
 
 const toggleVideoLike = asyncHandler(async(req,res)=>{
     const {videoId }= req.params
+    if(!videoId){
+        throw new CustomApiError(
+            400,
+            `There is no such video with Id : ${videoId}`
+        )
+    }
 
    try {
      const getVideo = await Like.findOne({
