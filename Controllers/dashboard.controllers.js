@@ -106,7 +106,7 @@ const Video = require('../Models/video.models')
  })
 
 
-const getAllvideos = asyncHandler(async(req,res)=>{
+const getChannelAllvideos = asyncHandler(async(req,res)=>{
     const userId = req.user?._id
 
     if(!userId){
@@ -139,6 +139,6 @@ const getAllvideos = asyncHandler(async(req,res)=>{
 })
 module.exports = 
 {
-    getAllvideos,
+    getChannelAllvideos,
     getChannelStats
 }

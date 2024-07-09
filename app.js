@@ -11,6 +11,7 @@ const healthCheck = require('./Controllers/healthcheck.controllers')
 const subscriptionRouter = require('./Routes/subscritption.routers')
 const LikeRouter = require('./Routes/like.routers')
 const PlaylistRouter = require('./Routes/playlist.routers')
+const DashboardRouter = require('./Routes/dashboard.router')
 app.use(express.json())
 // app.use(express.urlencoded)
 app.use(express.static('./public'))
@@ -18,7 +19,6 @@ app.use(cookieParser())
 
 
 //Main Routes
-
 app.use('/api/v1/auth/user',UserRouter)
 app.use('/api/v1/auth/',VideoRouter)
 app.use('/api/v1/auth/',TweetRouter)
@@ -27,6 +27,7 @@ app.use('/api/v1/healthcheck',healthCheck)
 app.use('/api/v1/auth/',subscriptionRouter)
 app.use('/api/v1/auth/',LikeRouter)
 app.use('/api/v1/auth/',PlaylistRouter)
+app.use('/api/v1/auth/dashboard',DashboardRouter)
  
 const port = process.env.PORT
 
