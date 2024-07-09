@@ -4,6 +4,8 @@ const cookieParser = require('cookie-parser')
 const connectdb= require('./DataBase/connect')
 const UserRouter = require('./Routes/users.routers')
 const app = express()
+
+//All router Imports
 const VideoRouter = require('./Routes/videos.routers')
 const TweetRouter = require('./Routes/tweets.routers')
 const CommentRouter = require('./Routes/comments.routers')
@@ -12,6 +14,9 @@ const subscriptionRouter = require('./Routes/subscritption.routers')
 const LikeRouter = require('./Routes/like.routers')
 const PlaylistRouter = require('./Routes/playlist.routers')
 const DashboardRouter = require('./Routes/dashboard.router')
+
+
+//All the important settings
 app.use(express.json())
 // app.use(express.urlencoded)
 app.use(express.static('./public'))
@@ -28,7 +33,10 @@ app.use('/api/v1/auth/',subscriptionRouter)
 app.use('/api/v1/auth/',LikeRouter)
 app.use('/api/v1/auth/',PlaylistRouter)
 app.use('/api/v1/auth/dashboard',DashboardRouter)
- 
+
+
+
+//Connection to the database
 const port = process.env.PORT
 
 const ConnectDB = async ()=>{
