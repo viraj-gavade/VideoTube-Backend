@@ -102,12 +102,52 @@ const addVideotoPlaylist =  asyncHandler(async (req,res)=>{
             return res.status(200).json(
                 new ApiResponse(
                     200,
-                    'Video added to the playlist successfully!'
+                    'Video added to the playlist successfully!',
+                    playlist
                 )
             )
     } catch (error) {
         console.log(error)
-        error.statusCode,
-        error.message
+        throw new CustomApiError(
+            error.statusCode,
+            error.message
+        )
     }
+})
+
+
+const removeVideofromPlaylist = asyncHandler(async(req,res)=>{
+    const { playlistId , videoId } = req.params
+    if(!isValidObjectId(playlistId || !isValidObjectId(videoId))){
+        throw new CustomApiError(
+            400,
+            `Invalid playlistId or VideoId is being provided!`
+        )
+    }
+   try {
+    const playlist = await  Playlist.findByIdAndUpdate(playlistId,{
+         $push:{videos:videoId}
+     },{
+         new:true
+     })
+     if(!playlist){
+         throw new CustomApiError(
+             500,
+             'Something went wrong ! Unable to find and update the playlist!'
+         )
+       }
+         return res.status(200).json(
+             new ApiResponse(
+                 200,
+                 'Video removed from the playlist successfully!',
+                 playlist
+             )
+         )
+   } catch (error) {
+    console.log(error)
+   throw new CustomApiError(
+    error.statusCode,
+    error.message
+   )
+   }
 })
