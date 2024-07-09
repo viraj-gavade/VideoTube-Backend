@@ -10,6 +10,7 @@ const CommentRouter = require('./Routes/comments.routers')
 const healthCheck = require('./Controllers/healthcheck.controllers')
 const subscriptionRouter = require('./Routes/subscritption.routers')
 const LikeRouter = require('./Routes/like.routers')
+const PlaylistRouter = require('./Routes/playlist.routers')
 app.use(express.json())
 // app.use(express.urlencoded)
 app.use(express.static('./public'))
@@ -25,6 +26,7 @@ app.use('/api/v1/auth/',CommentRouter)
 app.use('/api/v1/healthcheck',healthCheck)
 app.use('/api/v1/auth/',subscriptionRouter)
 app.use('/api/v1/auth/',LikeRouter)
+app.use('/api/v1/auth/',PlaylistRouter)
  
 const port = process.env.PORT
 
