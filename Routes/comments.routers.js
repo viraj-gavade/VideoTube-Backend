@@ -16,3 +16,6 @@ CommentRouter.route('/comment/:commentId')
 
 
 module.exports = CommentRouter
+
+
+//Comment Routes Working Confirmed!
