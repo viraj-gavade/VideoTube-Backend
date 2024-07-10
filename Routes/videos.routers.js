@@ -24,6 +24,6 @@ VideoRouter.route('/video/:videoId').get(getVideoById)
 .patch(VerifyJwt,upload.single('thumbnail'),updateVideo)
 .delete(VerifyJwt,deleteVideo)
 
-VideoRouter.route('/publishstatus/:videoId').get(toogglepublishStatus)
+VideoRouter.route('/video/publishstatus/:videoId').get(toogglepublishStatus)
 
 module.exports = VideoRouter

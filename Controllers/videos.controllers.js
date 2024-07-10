@@ -38,7 +38,7 @@ const publishAVideo = asyncHandler(async (req,res)=>{
             duration:videoFile.duration,
             views:views,
             isPublished:isPublished,
-            owner:req.user.username
+            owner:req.user
         })
         return res.status(200).json(
             new ApiResponse(
