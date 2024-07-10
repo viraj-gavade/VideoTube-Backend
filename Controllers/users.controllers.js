@@ -38,7 +38,7 @@ const registerUser = asyncHandler(async(req,res)=>{
 
     const avatarLocalpath = req.files?.avatar[0]?.path
     // const coverImageLocalpath = req.files?.coverImage[0]?.path
-    if (!avatarLocalpath) {
+    if (avatarLocalpath===undefined) {
         throw new CustomApiError(404,'Avtar must be uploaded!')
     }
 
@@ -197,7 +197,7 @@ const changeCurrentPassword = asyncHandler(async(req,res)=>{
 
 const getCurrentUser = asyncHandler(async(req,res)=>{
     res.status(200).json(
-        new ApiResponse(200,'Current Used feteched successfully!',{})
+        new ApiResponse(200,'Current Used feteched successfully!',req.user)
         )
 }) //Checked and bugs fixed
 
@@ -219,7 +219,9 @@ const updateUserdetails = asyncHandler(async (req,res)=>{
         }
     )
     return res.status(200).json(
-        new ApiResponse(200,'User details updated successfully!',{})
+        new ApiResponse(200,
+            'User details updated successfully!',
+        )
     )
 }) //Checked and bugs fixed
 
