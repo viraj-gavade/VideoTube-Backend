@@ -19,7 +19,7 @@ const togglesubscription = asyncHandler(async(req,res)=>{
           subscriber:req.user?._id,
           channel:channelId
       })
-      if(!channel){
+      if(channel){
           const deletesubscription = await Subscription.findByIdAndDelete(channel?._id)
           return res.status(200).json(
               new ApiResponse(
@@ -61,6 +61,40 @@ const getUserChannelSubscribers = asyncHandler(async(req,res)=>{
         )
     }
     try {
+        const channel = await User.aggregate([
+            {
+                $match:{
+                    _id:new mongoose.Types.ObjectId(channelId) 
+                  
+    
+                },
+                
+            },
+            {
+                $lookup:{
+                    from:'subscriptions',
+                    localField:'_id',
+                    foreignField:'channel',
+                    as:'Subscribers'
+    
+                },
+                
+            },{
+                $addFields:{
+                    subscribers:{
+                        $size:'$Subscribers'
+                    }
+                }
+            },{
+                $project:{
+                    subscribers:1 ,
+                    Subscribers:1
+
+                }
+            }
+            ])
+            
+            return res.send(channel)
         
     } catch (error) {
         throw new CustomApiError(
@@ -91,14 +125,28 @@ const getSubscribedChannels = asyncHandler(async(req,res)=>{
             },
             {
                 $lookup:{
-                    from:'User',
+                    from:'subscriptions',
                     localField:'_id',
                     foreignField:'subscriber',
-                    as:'Suscribedto'
+                    as:'Subscribed'
     
+                },
+                
+            },{
+                $addFields:{
+                    subscribed:{
+                        $size:'$Subscribed'
+                    }
+                }
+            },{
+                $project:{
+                    Subscribed:1 ,
+                    subscribed:1
+
                 }
             }
-        ])
+            ])
+            return res.send(channel)
         return res.send(channel[0].Suscribedto)
     } catch (error) {
         console.log(error)
@@ -117,3 +165,6 @@ module.exports =
     getUserChannelSubscribers,
     getSubscribedChannels
 }
+
+
+//Subscription Route Working Confirmed
