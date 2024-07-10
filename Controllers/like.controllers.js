@@ -25,7 +25,7 @@ const togglecommentLike = asyncHandler(async(req,res)=>{
          return res.status(200).json(
              new ApiResponse(
                  200,
-                 'Comment Like deleted successfully!'
+                 'Comment UnLike  successfully!'
              )
          ) 
      }
@@ -70,7 +70,7 @@ const toggleTweetLike = asyncHandler(async(req,res)=>{
          return res.status(200).json(
              new ApiResponse(
                  200,
-                 'Comment Like deleted successfully!'
+                 'Tweet UnLike  successfully!'
              )
          ) 
      }
@@ -83,7 +83,7 @@ const toggleTweetLike = asyncHandler(async(req,res)=>{
          return res.status(200).json(
              new ApiResponse(
                  200,
-                 'Comment liked successfully!'
+                 'Tweet liked successfully!'
              )
          )
      }
@@ -108,28 +108,28 @@ const toggleVideoLike = asyncHandler(async(req,res)=>{
 
    try {
      const getVideo = await Like.findOne({
-         tweet:videoId,
+         video:videoId,
          likedBy:req.user?._id
      })
-     if(gettweet){
+     if(getVideo){
          const deleteLike = await Like.findByIdAndDelete(getVideo._id)
          return res.status(200).json(
              new ApiResponse(
                  200,
-                 'Comment Like deleted successfully!'
+                 'Video UnLiked  successfully!'
              )
          ) 
      }
  
      const updateLike  =  await Like.create({
-        tweet:videoId,
+        video:videoId,
         likedBy:req.user?._id
      })
      if(updateLike){
          return res.status(200).json(
              new ApiResponse(
                  200,
-                 'Comment liked successfully!'
+                 'Video liked successfully!'
              )
          )
      }
@@ -143,52 +143,49 @@ const toggleVideoLike = asyncHandler(async(req,res)=>{
 
 })
 
-const getAllLikedVideos = asyncHandler(async(req,res)=>{
-    
-try {
+const getAllLikedVideos = asyncHandler(async (req, res) => {
+    try {
         const LikedVideos = await Like.aggregate([
             {
-                $match:{
-                    likedBy:new mongoose.Types.ObjectId(req.user?._id)
-                }
+                $match: {
+                    likedBy: new mongoose.Types.ObjectId(req.user?._id),
+                },
             },
             {
-                $lookup:{
-                    from:'Video',
-                    localField:'video',
-                    foreignField:'_id',
-                    as:"LikedVideos"
-                }
+                $lookup: {
+                    from: 'videos',
+                    localField: 'video',
+                    foreignField: '_id',
+                    as: 'LikedVideos',
+                },
             },
             {
-                $match:{
-                    '$video.isPublished':true
-                }
-            }
-        ])
-        if(!LikedVideos){
+                $match: {
+                    'LikedVideos.0': { $exists: true },
+                },
+            },
+            {
+                $project: {
+                    LikedVideos: 1,
+                },
+            },
+        ]);
+
+        if (LikedVideos.length > 0) {
             return res.status(200).json(
-                new ApiResponse(
-                    200,
-                    'Liked video feteched successfully!',
-                    LikedVideos
-                )
-            )
+                new ApiResponse(200, 'Liked videos fetched successfully!', LikedVideos)
+            );
         }
-        return res.status(400).json(
-            new ApiResponse(
-                200,
-                'No liked video found!'
-            )
-        )
-} catch (error) {
-    console.log(error)
-    throw new CustomApiError(
-        400,
-        error.message
-    )
-}
-})
+
+        return res.status(404).json(
+            new ApiResponse(404, 'No liked videos found!')
+        );
+    } catch (error) {
+        console.log(error);
+        throw new CustomApiError(500, error.message);
+    }
+});
+
 
 module.exports={
     togglecommentLike,
