@@ -22,3 +22,6 @@ const healthCheck = asyncHandler(async(req,res)=>{
 })
 
 module.exports = healthCheck
+
+
+//Healthcheck controller working confirmed
