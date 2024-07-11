@@ -48,7 +48,7 @@ const createPlaylist = asyncHandler(async(req,res)=>{
 
 const getUserPlaylist = asyncHandler(async(req,res)=>{
     const {userId} = req.params
-    console.log(userId)
+    
     if(!(userId)){
         throw new CustomApiError(
             400,

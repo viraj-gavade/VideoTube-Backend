@@ -42,7 +42,6 @@ const getUserTweets = asyncHandler(async(req,res)=>{
   try {
       
      const tweet =  await Tweet.find(req.user_id)
-     console.log(req.user)
       if(!tweet){
           throw new  CustomApiError(
               400,

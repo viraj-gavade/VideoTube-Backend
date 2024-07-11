@@ -18,7 +18,6 @@ const VerifyJwt = asyncHandler (async(req,res,next)=>{
             throw new CustomApiError(401,'Invalid Access Token!')
         }
         req.user = user
-        console.log(user)
         next()
         
     } catch (error) {

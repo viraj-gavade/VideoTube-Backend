@@ -19,7 +19,7 @@ const generateAccessTokenAndRefreshToken = async(userId)=>{
     } catch (error) {
         throw new CustomApiError(500,'Something went wrong while generating the access and refresh token!')
     }
-}   //Checked and bugs fixed
+}   
 
 const registerUser = asyncHandler(async(req,res)=>{
 
@@ -39,7 +39,7 @@ const registerUser = asyncHandler(async(req,res)=>{
     const avatarLocalpath = req.files?.avatar[0]?.path
     // const coverImageLocalpath = req.files?.coverImage[0]?.path
     if (avatarLocalpath===undefined) {
-        throw new CustomApiError(404,'Avtar must be uploaded!')
+        throw new CustomApiError(404,'Avatar must be uploaded!')
     }
 
     let coverImageLocalpath;
@@ -50,7 +50,7 @@ const registerUser = asyncHandler(async(req,res)=>{
     const avatar = await uploadFile(avatarLocalpath)
     const coverImage = await uploadFile(coverImageLocalpath)
     if(!avatar){
-        throw new CustomApiError(400,'Avtar file is required')
+        throw new CustomApiError(400,'Avatar file is required')
     }
 
     const user = await User.create({
@@ -75,8 +75,7 @@ const registerUser = asyncHandler(async(req,res)=>{
 
    
   
-}) //Checked and bugs fixed
-
+}) 
 
 const loginUser = asyncHandler(async (req,res)=>{
   const {email,password,username} = req.body 
@@ -112,7 +111,7 @@ const loginUser = asyncHandler(async (req,res)=>{
         )
     )
     
-}) //Checked and bugs fixed
+}) 
 
 
 const logoutUser = asyncHandler(async (req,res)=>{
@@ -131,7 +130,7 @@ const options = {
 res.status(200).clearCookie('accessToken',options).clearCookie('refreshToken',options).json(
     new ApiResponse(200,'User Logged Out Successfully!')
 )
-}) //Checked and bugs fixed
+}) 
 
 
 const refreshAccessToken = asyncHandler(async(req,res)=>{
@@ -170,16 +169,14 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
   } catch (error) {
  throw new CustomApiError(401,error?.message || 'Inavlid refresh Token! ')
   }
-})  //Checked and bugs fixed
+})  
 
 
 const changeCurrentPassword = asyncHandler(async(req,res)=>{
 
     try {
         const {oldPassword,newPassword} = req.body
-        console.log(oldPassword,newPassword)
        const user = await User.findById(req.user._id)
-       console.log(user)
        const isPasswordCorrect = await user.isPasswordCorrect(oldPassword)
         if (!isPasswordCorrect) {
             throw new CustomApiError(401,'The old password you have entered is not correct!')
@@ -193,7 +190,7 @@ const changeCurrentPassword = asyncHandler(async(req,res)=>{
         console.log(error)
         throw new CustomApiError(500,'Something went wrong while changing the password please try again later!')
     }
-}) //Checked and bugs fixed
+}) 
 
 const getCurrentUser = asyncHandler(async(req,res)=>{
     res.status(200).json(
@@ -269,7 +266,7 @@ const updateUsercoverImage = asyncHandler(async(req,res)=>{
 
 const getUserChannelProfile = asyncHandler(async(req,res)=>{
     const {username} = req.params
-    console.log(req.params)
+    
     if(!username?.trim()){
         throw new CustomApiError(400,'User not found !')
     }

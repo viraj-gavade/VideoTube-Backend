@@ -15,10 +15,10 @@ const publishAVideo = asyncHandler(async (req,res)=>{
             'All fields are required!'
         )
     }
-    console.log(req.files)
+   
     const videoLocalpath = req.files?.videoFile[0].path    
     const thumbnailLocalpath = req.files?.thumbnail[0].path
-    console.log(videoLocalpath,thumbnailLocalpath)
+
 
     if(!videoLocalpath || !thumbnailLocalpath){
         throw new CustomApiError(
@@ -27,9 +27,7 @@ const publishAVideo = asyncHandler(async (req,res)=>{
     }
        const thumbnail = await uploadFile(thumbnailLocalpath)
        const videoFile = await uploadFile(videoLocalpath)
-       console.log(thumbnail)
-       console.log(videoFile)
-
+ 
         const video = await Video.create({
             videoFile:videoFile.url|| '',
             thumbnail:thumbnail.url|| '',
@@ -48,8 +46,7 @@ const publishAVideo = asyncHandler(async (req,res)=>{
             )
         )
 } catch (error) {
-    console.log(error)
-    
+    console.log(error)    
 }
 })
 
@@ -62,7 +59,7 @@ const getVideoById = asyncHandler(async(req,res)=>{
             `There is no such video with Id:${videoId}`
         )
     }
-    console.log(video)
+    
    return res.status(200).json(
         new ApiResponse(
             200,
