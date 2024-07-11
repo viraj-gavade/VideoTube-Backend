@@ -119,7 +119,7 @@ const getChannelAllvideos = asyncHandler(async(req,res)=>{
     const videos = await Video.find(
         {
             owner:req.user?._id,
-            isPublished:true
+            // isPublished:true
             })
         if(!videos.lenght<1){
             return res.status(200).json(
@@ -129,7 +129,7 @@ const getChannelAllvideos = asyncHandler(async(req,res)=>{
                 )
             )
         }
-        return res.status.json(
+        return res.status(200).json(
             new ApiResponse(
                 200,
                 `Channel video fetched successfully!`,
