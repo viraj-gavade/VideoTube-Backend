@@ -7,7 +7,7 @@ const PlaylistRouter = express.Router()
 
 PlaylistRouter.route('/playlist/:userId').get(VerifyJwt,getUserPlaylist) //Get user playlist
 
-PlaylistRouter.route('/playlist/').post(VerifyJwt,createPlaylist) //Create the playlist
+PlaylistRouter.route('/playlist/create').post(VerifyJwt,createPlaylist) //Create the playlist
 
 PlaylistRouter.route('/playlist/add-video/:playlistId/:videoId').post(VerifyJwt,addVideotoPlaylist) 
 

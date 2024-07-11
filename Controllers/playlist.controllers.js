@@ -47,20 +47,23 @@ const createPlaylist = asyncHandler(async(req,res)=>{
 
 
 const getUserPlaylist = asyncHandler(async(req,res)=>{
-    const userId = req.params
-    if(!isValidObjectId(userId)){
+    const {userId} = req.params
+    console.log(userId)
+    if(!(userId)){
         throw new CustomApiError(
             400,
             'Invalid userId provided !'
         )
     }
  try {
-      const playlist = await Playlist.findOne({owner:userId})
+      const playlist = await Playlist.find({owner:userId})
       if(!playlist){
-       throw new CustomApiError(
-           200,
-           'No playlist found!'
-       )
+       return res.status(200).json(
+        new ApiResponse(
+            200,
+            'No playlist found!'
+        )
+       ) 
       }
       return res.status(200).json(
        new ApiResponse(
@@ -126,7 +129,7 @@ const removeVideofromPlaylist = asyncHandler(async(req,res)=>{
     }
    try {
     const playlist = await  Playlist.findByIdAndUpdate(playlistId,{
-         $push:{videos:videoId}
+         $pull:{videos:videoId}
      },{
          new:true
      })
@@ -154,7 +157,7 @@ const removeVideofromPlaylist = asyncHandler(async(req,res)=>{
 
 
 const deletePlaylist = asyncHandler(async(req,res)=>{
-    const playlistId = req.params
+    const {playlistId} = req.params
     if(!isValidObjectId(playlistId)){
         throw new  CustomApiError(
             400,
@@ -196,11 +199,11 @@ const updatePlaylist = asyncHandler(async(req,res)=>{
             `Invalid playlist id Id:${playlistId}`
         )
     }
-    const { name , description } = req.params
+    const { name , description } = req.body
     if(!name || !description){
         throw new CustomApiError(
             400,
-            `Name and description fields must be provided!`
+            `name and description fields must be provided!`
         )
     }
 
