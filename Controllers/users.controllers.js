@@ -390,6 +390,40 @@ const getUserWatchHistory = asyncHandler(async(req,res)=>{
     )
 }) //Checked and bug fixed
 
+const changeUserEmail = asyncHandler(async(req,res)=>{
+
+    const {email} = req.body
+    if(!email){
+        throw new CustomApiError(
+            402,
+            'Please provide the email inorder to change the email'
+        )
+    }
+    const existinguser = await User.findOne({email})
+    if(existinguser){
+        throw new CustomApiError(
+            401,
+            'User already exists with this email id'
+        )
+    }
+    const user = await User.findById(req.user?._id)
+    if(!user){
+        throw new (
+            401,
+            'Unable to get the user id maybe an unauthorized request!'
+        )
+    }
+    user.email=email
+    await user.save({validateBeforeSave:false})
+    return res.status(200).json(
+        new customApiResponse(
+            200,
+            'Email changed successfully!'
+        )
+    )
+
+})
+
 module.exports =
  {
 loginUser,
@@ -402,5 +436,6 @@ updateUserdetails,
 updateUserAvtar,
 updateUsercoverImage,
 getUserChannelProfile,
-getUserWatchHistory
+getUserWatchHistory,
+changeUserEmail
 }
