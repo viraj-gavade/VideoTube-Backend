@@ -10,7 +10,9 @@ const {
     getUserChannelProfile, 
     getUserWatchHistory,
     updateUserdetails,
-    updateUsercoverImage
+    updateUsercoverImage,
+    changeUserEmail,
+    changeUserUsername
 } = require('../Controllers/users.controllers')
 
 
@@ -43,6 +45,10 @@ UserRouter.route('/logout').post(VerifyJwt,logoutUser)
 UserRouter.route('/refresh-token').post(VerifyJwt,refreshAccessToken)
 
 UserRouter.route('/change-password').post(VerifyJwt,changeCurrentPassword)
+
+UserRouter.route('/change-email').post(VerifyJwt,changeUserEmail)
+
+UserRouter.route('/change-username').post(VerifyJwt,changeUserUsername)
 
 UserRouter.route('/current-user').get(VerifyJwt,getCurrentUser)
 

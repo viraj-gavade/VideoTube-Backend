@@ -485,5 +485,6 @@ updateUserAvtar,
 updateUsercoverImage,
 getUserChannelProfile,
 getUserWatchHistory,
-changeUserEmail
+changeUserEmail,
+changeUserUsername
 }
