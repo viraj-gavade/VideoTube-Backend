@@ -37,7 +37,7 @@ app.use('/api/v1/auth/dashboard',DashboardRouter)
 
 
 //Connection to the database
-const port = process.env.PORT
+const port = process.env.PORT || 5000
 
 const ConnectDB = async ()=>{
     try {
