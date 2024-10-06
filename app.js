@@ -29,7 +29,7 @@ res.status(200).json({
     Status:Ok,
     Message:"Healthcheck Router Working Sucessfully!"
 })
-)
+
 app.use('/api/v1/auth/user',UserRouter)
 app.use('/api/v1/auth/',VideoRouter)
 app.use('/api/v1/auth/',TweetRouter)
