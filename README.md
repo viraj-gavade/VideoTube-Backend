@@ -1,106 +1,130 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>VideoTube-Backend</title>
-    <style>
-        html {
-            scroll-behavior: smooth;
-        }
-    </style>
-</head>
-<body>
+# VideoTube Backend
 
-<h1 style="color: #333; font-family: Arial, sans-serif;">VideoTube-Backend</h1>
+## Description
+VideoTube Backend is a robust, scalable backend service for a video-sharing platform, providing comprehensive API endpoints for video management, user authentication, and content delivery.
 
-<h2 style="color: #555;">Description</h2>
-<p style="font-family: Arial, sans-serif; line-height: 1.6;">VideoTube is a backend service designed for a video streaming platform. It handles user authentication, video uploads, and management, providing a seamless experience for users and content creators.</p>
+## Live Demo
+🌐 [Backend API Endpoint](https://videotubeapi-uukxbf8d.b4a.run./api/v1/healthcheck)
 
-<h2 style="color: #555;">Table of Contents</h2>
-<ul style="font-family: Arial, sans-serif;">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#technologies-used">Technologies Used</a></li>
-    <li><a href="#installation">Installation</a></li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#api-documentation">API Documentation</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-</ul>
+## Features
+- User Authentication (Register, Login, Logout)
+- Video Upload and Management
+- User Profile Management
+- Comments and Interactions
+- Like and Subscribe Functionality
+- Secure JWT-based Authentication
+- File Upload Handling
 
-<h2 id="features" style="color: #555;">Features</h2>
-<ul style="font-family: Arial, sans-serif;">
-    <li>User authentication and authorization</li>
-    <li>Video upload and storage</li>
-    <li>CRUD operations for video management</li>
-    <li>User profile management</li>
-</ul>
+## Technologies Used
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JSON Web Tokens (JWT)
+- Cloudinary (for media storage)
+- Bcrypt (for password hashing)
+- Multer (for file uploads)
 
-<h2 id="technologies-used" style="color: #555;">Technologies Used</h2>
-<ul style="font-family: Arial, sans-serif;">
-    <li>Node.js</li>
-    <li>Express.js</li>
-    <li>MongoDB</li>
-    <li>Mongoose</li>
-    <li>JSON Web Tokens (JWT)</li>
-    <li>Multer for file uploads</li>
-</ul>
+## Prerequisites
+- Node.js (v14+ recommended)
+- MongoDB
+- Cloudinary Account
+- npm or yarn
 
-<h2 id="installation" style="color: #555;">Installation</h2>
-<ol style="font-family: Arial, sans-serif;">
-    <li>Clone the repository:<br>
-        <code>git clone https://github.com/viraj-gavade/VideoTube-Backend.git</code>
-    </li>
-    <li>Navigate to the project directory:<br>
-        <code>cd VideoTube-Backend</code>
-    </li>
-    <li>Install dependencies:<br>
-        <code>npm install</code>
-    </li>
-    <li>Set up environment variables (create a <code>.env</code> file):<br>
-        <code>DATABASE_URI=your_mongodb_uri<br>
-        JWT_SECRET=your_jwt_secret</code>
-    </li>
-</ol>
+## Installation
 
-<h2 id="usage" style="color: #555;">Usage</h2>
-<ol style="font-family: Arial, sans-serif;">
-    <li>Start the server:<br>
-        <code>npm start</code>
-    </li>
-    <li>Access the API at <code>http://localhost:PORT</code>, where <code>PORT</code> is your configured port.</li>
-</ol>
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/viraj-gavade/VideoTube-Backend.git
+   ```
 
-<h2 id="api-documentation" style="color: #555;">API Documentation</h2>
-<p style="font-family: Arial, sans-serif;">For detailed API endpoints and usage, refer to the <a href="link-to-your-api-docs">API Documentation</a>.</p>
+2. Navigate to the project directory:
+   ```bash
+   cd VideoTube-Backend
+   ```
 
-<h2 id="contributing" style="color: #555;">Contributing</h2>
-<p style="font-family: Arial, sans-serif;">Contributions are welcome! Please follow these steps:</p>
-<ol style="font-family: Arial, sans-serif;">
-    <li>Fork the repository.</li>
-    <li>Create a new branch (<code>git checkout -b feature/YourFeature</code>).</li>
-    <li>Make your changes and commit them (<code>git commit -m 'Add some feature'</code>).</li>
-    <li>Push to the branch (<code>git push origin feature/YourFeature</code>).</li>
-    <li>Create a pull request.</li>
-</ol>
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-<h2 id="license" style="color: #555;">License</h2>
-<p style="font-family: Arial, sans-serif;">This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details.</p>
+4. Create a `.env` file and add the following variables:
+   ```env
+   PORT=8000
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret
+   CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+   CLOUDINARY_API_KEY=your_cloudinary_api_key
+   CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+   ```
 
-<h2 id="contact" style="color: #555;">Contact</h2>
-<p style="font-family: Arial, sans-serif;">Viraj Gavade<br>
-Email: <a href="mailto:vrajgavade17@gmail.com">vrajgavade17@gmail.com</a><br>
-Instagram: <a href="https://www.instagram.com/_viraj.js/" target="_blank"><i class="fab fa-instagram"></i> _viraj.js</a><br>
-Twitter: <a href="https://x.com/viraj_gavade" target="_blank"><i class="fab fa-twitter"></i> @viraj_gavade</a><br>
-GitHub: <a href="https://github.com/viraj-gavade"><i class="fab fa-github"></i> viraj-gavade</a></p>
+5. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-<h2 id="acknowledgments" style="color: #555;">Acknowledgments</h2>
-<p style="font-family: Arial, sans-serif;">Thanks to the open-source community for their resources and libraries that helped build this project.</p>
+## API Documentation
+Comprehensive API documentation is available at: [API Docs](https://your-backend-url.com/api-docs)
 
-</body>
-</html>
+### Key Endpoints
+- `POST /api/auth/register`: User Registration
+- `POST /api/auth/login`: User Login
+- `POST /api/videos/upload`: Video Upload
+- `GET /api/videos`: Retrieve Videos
+- `POST /api/comments`: Add Comments
 
+## Authentication
+- JWT-based authentication
+- Secure password hashing
+- Role-based access control
 
+## Environment Configuration
+Supports multiple environments:
+- Development
+- Production
+- Testing
+
+## Error Handling
+- Comprehensive error logging
+- Structured error responses
+- Middleware-based error management
+
+## Contributing
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## Performance Optimization
+- Efficient database querying
+- Caching mechanisms
+- Pagination for large datasets
+
+## Security Measures
+- Input validation
+- Protection against common web vulnerabilities
+- Rate limiting
+- CORS configuration
+
+## Deployment
+Easily deployable on:
+- Render
+- Heroku
+- DigitalOcean
+- Back4App
+
+## License
+Distributed under the MIT License. See `LICENSE` for more information.
+
+## Contact
+Viraj Gavade
+- Email: vrajgavade17@gmail.com
+- LinkedIn: [Viraj Gavade](https://www.linkedin.com/in/viraj-gavade)
+- GitHub: [@viraj-gavade](https://github.com/viraj-gavade)
+
+## Acknowledgments
+- Express.js Community
+- MongoDB Developers
+- Cloudinary
+- Open Source Contributors
