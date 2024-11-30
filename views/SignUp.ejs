@@ -19,7 +19,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             padding: 30px;
-            width: 350px;
+            width: 400px;
             text-align: center;
         }
         .auth-container h2 {
@@ -79,15 +79,62 @@
             color: #4285f4;
             text-decoration: none;
         }
+        .image-upload-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .image-upload {
+            width: 48%;
+            text-align: center;
+        }
+        .image-upload input[type="file"] {
+            display: none;
+        }
+        .image-upload label {
+            display: block;
+            background-color: #f0f0f0;
+            border: 2px dashed #ddd;
+            padding: 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .preview-image {
+            max-width: 100%;
+            max-height: 150px;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="auth-container">
         <h2>Sign Up</h2>
-        <form id="signup-form" action="/auth/signup" method="POST">
+        <form id="signup-form" action="/api/v1/auth/user/signup" method="POST" enctype="multipart/form-data">
+            <div class="image-upload-container">
+                <div class="image-upload">
+                    <label for="avatar">
+                        Upload Avatar
+                        <input type="file" id="avatar" name="avatar" accept="image/*" required>
+                        <img id="avatar-preview" class="preview-image" src="#" alt="Avatar Preview">
+                    </label>
+                </div>
+                <div class="image-upload">
+                    <label for="cover">
+                        Upload Cover Image
+                        <input type="file" id="cover" name="coverImage" accept="image/*" required>
+                        <img id="cover-preview" class="preview-image" src="#" alt="Cover Image Preview">
+                    </label>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" required>
+                <input type="text" id="name" name="fullname" required>
+            </div>
+            <div class="form-group">
+                <label for="username">User Name</label>
+                <input type="text" id="username" name="username" required>
             </div>
             <div class="form-group">
                 <label for="email">Email</label>
@@ -99,7 +146,7 @@
             </div>
             <div class="form-group">
                 <label for="confirm-password">Confirm Password</label>
-                <input type="password" id="confirm-password" name="confirm-password" required>
+                <input type="password" id="confirm-password" name="confirm_password" required>
             </div>
             <button type="submit" class="btn">Sign Up</button>
             
@@ -115,10 +162,32 @@
     </div>
 
     <script>
+        // Image Preview Functionality
+        function previewImage(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+            
+            input.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        preview.style.display = 'block';
+                    }
+                    
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Setup image previews
+        previewImage('avatar', 'avatar-preview');
+        previewImage('cover', 'cover-preview');
+
         // Google Login Handler (Placeholder)
         document.getElementById('google-signup').addEventListener('click', function() {
-            // This is a placeholder. In a real application, 
-            // you would integrate Google OAuth here
             alert('Google Sign Up functionality to be implemented');
         });
 
@@ -131,7 +200,6 @@
                 e.preventDefault(); // Prevent form submission
                 alert('Passwords do not match');
             }
-            // The form will submit to the server-side route /auth/signup if passwords match
         });
     </script>
 </body>

@@ -23,8 +23,8 @@ const generateAccessTokenAndRefreshToken = async(userId)=>{
 
 const registerUser = asyncHandler(async(req,res)=>{
 
-    const {username,email,fullname,password} = req.body
-    if([username,email,fullname,password].some((field)=>
+    const {username,email,fullname,password,confirm_password} = req.body
+    if([username,email,fullname,password,confirm_password].some((field)=>
         field?.trim()===''
     )){
         throw new CustomApiError(400,'All fields must be filled!')
@@ -37,20 +37,26 @@ const registerUser = asyncHandler(async(req,res)=>{
     }
 
     const avatarLocalpath = req.files?.avatar[0]?.path
-    // const coverImageLocalpath = req.files?.coverImage[0]?.path
+    const coverImageLocalpath = req.files?.coverImage[0]?.path
     if (avatarLocalpath===undefined) {
         throw new CustomApiError(404,'Avatar must be uploaded!')
     }
 
-    let coverImageLocalpath;
-    if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length>0){
-        coverImageLocalpath = req.files.coverImage[0].path
-    }
+    // let coverImageLocalpath;
+    // if(req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length>0){
+    //     coverImageLocalpath = req.files?.coverImage[0]?.path
+    // }
 
     const avatar = await uploadFile(avatarLocalpath)
     const coverImage = await uploadFile(coverImageLocalpath)
     if(!avatar){
         throw new CustomApiError(400,'Avatar file is required')
+    }
+
+
+    if(password!==confirm_password){
+        throw new CustomApiError(400,'Passwords do not match')
+
     }
 
     const user = await User.create({
@@ -59,7 +65,7 @@ const registerUser = asyncHandler(async(req,res)=>{
         fullname,
         email,
         username:username.toLowerCase(),
-        password
+        password:confirm_password
     })
 
     const createdUser = await User.findById(user._id).select(

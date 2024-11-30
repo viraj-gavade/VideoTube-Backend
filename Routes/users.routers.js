@@ -25,7 +25,7 @@ const VerifyJwt = require('../Middlerwares/auth')
 const UserRouter =express.Router()
 
 
-UserRouter.route('/sigup').get((req,res)=>{
+UserRouter.route('/signup').get((req,res)=>{
     res.render('SignUp')
 }).post(
     upload.fields([
