@@ -25,7 +25,9 @@ const VerifyJwt = require('../Middlerwares/auth')
 const UserRouter =express.Router()
 
 
-UserRouter.route('/register').post(
+UserRouter.route('/sigup').get((req,res)=>{
+    res.render('SignUp')
+}).post(
     upload.fields([
         {
             name:'avatar',
@@ -36,7 +38,9 @@ UserRouter.route('/register').post(
         }]),
     registerUser)
 
-UserRouter.route('/login').post(loginUser)
+UserRouter.route('/signin').get((req,res)=>{
+    res.render('SignIn')
+}).post(loginUser)
 
 //Secured Routes
 
