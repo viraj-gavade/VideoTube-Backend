@@ -3,6 +3,7 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const connectdb = require('./DataBase/connect');
 const UserRouter = require('./Routes/users.routers');
+const path = require('path');
 const app = express();
 
 // All router Imports
@@ -10,7 +11,7 @@ const VideoRouter = require('./Routes/videos.routers');
 const TweetRouter = require('./Routes/tweets.routers');
 const CommentRouter = require('./Routes/comments.routers');
 const healthCheck = require('./Controllers/healthcheck.controllers');
-const subscriptionRouter = require('./Routes/subscription.routers'); // Fixed spelling
+const subscriptionRouter = require('./Routes/subscritption.routers')
 const LikeRouter = require('./Routes/like.routers');
 const PlaylistRouter = require('./Routes/playlist.routers');
 const DashboardRouter = require('./Routes/dashboard.router');
@@ -22,12 +23,14 @@ app.use(express.json());
 app.use(express.static('./public'));
 app.use(cookieParser());
 
+// // Middleware setups
+app.set('view engine', 'ejs');
+app.set('views', path.resolve('./views'));
+
+
 // Main Routes
 app.get("/", (req, res) => {
-    res.status(200).json({
-        Status: "Ok", 
-        Message: "Healthcheck Router Working Successfully!"
-    });
+    res.render('UploadVideo')
 });
 
 // Register routers

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Video</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .file-input {
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px dashed #ccc;
+            border-radius: 4px;
+        }
+        .preview-container {
+            max-height: 300px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .preview-container video,
+        .preview-container img {
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+        }
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #333;">Upload Video</h1>
+        
+        <form id="videoUploadForm" action="/publish-video" method="POST" enctype="multipart/form-data">
+            <div class="grid">
+                <div class="form-group">
+                    <label for="videoFileInput">Video File</label>
+                    <input 
+                        type="file" 
+                        name="videoFile" 
+                        id="videoFileInput" 
+                        accept="video/*" 
+                        required 
+                        class="form-control file-input"
+                    >
+                    <div id="videoPreview" class="preview-container"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="thumbnailInput">Thumbnail</label>
+                    <input 
+                        type="file" 
+                        name="thumbnail" 
+                        id="thumbnailInput" 
+                        accept="image/*" 
+                        required 
+                        class="form-control file-input"
+                    >
+                    <div id="thumbnailPreview" class="preview-container"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="title">Video Title</label>
+                <input 
+                    type="text" 
+                    name="title" 
+                    id="title" 
+                    required 
+                    placeholder="Enter video title" 
+                    class="form-control"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea 
+                    name="description" 
+                    id="description" 
+                    rows="4" 
+                    placeholder="Describe your video" 
+                    class="form-control"
+                ></textarea>
+            </div>
+
+            <div class="grid">
+                <div class="form-group">
+                    <label for="views">Initial Views</label>
+                    <input 
+                        type="number" 
+                        name="views" 
+                        id="views" 
+                        min="0" 
+                        value="0" 
+                        class="form-control"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="isPublished">Publish Status</label>
+                    <select 
+                        name="isPublished" 
+                        id="isPublished" 
+                        class="form-control"
+                    >
+                        <option value="true">Publish Now</option>
+                        <option value="false">Save as Draft</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-top: 20px;">
+                <button type="submit" class="btn">
+                    Upload Video
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Video File Preview
+        document.getElementById('videoFileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const videoPreview = document.getElementById('videoPreview');
+            
+            if (file) {
+                const videoElement = document.createElement('video');
+                videoElement.src = URL.createObjectURL(file);
+                videoElement.controls = true;
+                
+                videoPreview.innerHTML = '';
+                videoPreview.appendChild(videoElement);
+            }
+        });
+
+        // Thumbnail Preview
+        document.getElementById('thumbnailInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const thumbnailPreview = document.getElementById('thumbnailPreview');
+            
+            if (file) {
+                const imgElement = document.createElement('img');
+                imgElement.src = URL.createObjectURL(file);
+                
+                thumbnailPreview.innerHTML = '';
+                thumbnailPreview.appendChild(imgElement);
+            }
+        });
+    </script>
+</body>
+</html>
