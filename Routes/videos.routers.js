@@ -5,7 +5,9 @@ const VideoRouter = express.Router()
 const {publishAVideo,getVideoById,updateVideo, deleteVideo,toogglepublishStatus} = require('../Controllers/videos.controllers')
 
 
-VideoRouter.route('/publish-video').post(VerifyJwt,
+VideoRouter.route('/publish-video').get((req,res)=>{
+    res.render('UploadVideo')
+}).post(VerifyJwt,
     upload.fields([
         {
             name: "videoFile",
