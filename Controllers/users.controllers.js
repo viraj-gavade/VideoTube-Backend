@@ -17,6 +17,7 @@ const generateAccessTokenAndRefreshToken = async(userId)=>{
 
        return {accessToken,refreshToken}
     } catch (error) {
+        console.log("Access token Error:-", error)
         throw new CustomApiError(500,'Something went wrong while generating the access and refresh token!')
     }
 }   
@@ -75,9 +76,7 @@ const registerUser = asyncHandler(async(req,res)=>{
         throw new CustomApiError(500,'Server was unable to create the user please try agin later!')
     }
 
-    return res.status(201).json(
-        new ApiResponse(200,'User Created Successfully!',createdUser)
-    )
+    return res.redirect('/api/v1/auth/user/signup')
 
    
   
@@ -85,7 +84,8 @@ const registerUser = asyncHandler(async(req,res)=>{
 
 const loginUser = asyncHandler(async (req,res)=>{
   const {email,password,username} = req.body 
-  if(!(email || username)){
+  console.log('Body:-',req.body)
+  if(!email || !password){
     throw new CustomApiError(400,'Please provide all the required fields')
   }
   const user = await User.findOne({

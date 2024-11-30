@@ -20,7 +20,7 @@ const DashboardRouter = require('./Routes/dashboard.router');
 // All the important settings
 app.use(express.json());
 // Uncomment to handle form submissions
-// app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./public'));
 app.use(cookieParser());
 
