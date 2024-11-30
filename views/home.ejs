@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Clone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: #030303;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: white;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left img {
+            height: 40px;
+            margin-right: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            width: 600px;
+        }
+
+        .search-bar input {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border: 1px solid #d3d3d3;
+            border-right: none;
+            outline: none;
+        }
+
+        .search-bar button {
+            padding: 8px 20px;
+            background-color: #f8f8f8;
+            border: 1px solid #d3d3d3;
+            cursor: pointer;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-right img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-left: 15px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 240px;
+            background-color: white;
+            height: calc(100vh - 60px);
+            position: fixed;
+            left: 0;
+            top: 60px;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .sidebar-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .sidebar-item img {
+            width: 24px;
+            margin-right: 15px;
+        }
+
+        /* Video Grid Styles */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            margin-left: 240px;
+            margin-top: 60px;
+        }
+
+        .video-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .video-details {
+            padding: 10px;
+            display: flex;
+        }
+
+        .channel-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .video-info {
+            flex-grow: 1;
+        }
+
+        .video-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .video-metadata {
+            color: #606060;
+            font-size: 0.9em;
+        }
+    </style>
+  
+</head>
+<body>
+   
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <img src="/api/placeholder/100/40" alt="YouTube Logo">
+            <div class="search-bar">
+                <input type="text" placeholder="Search">
+                <button>🔍</button>
+            </div>
+        </div>
+        <div class="header-right">
+            <img src="/api/placeholder/32/32" alt="Create">
+            <img src="/api/placeholder/32/32" alt="Apps">
+            <img src="/api/placeholder/32/32" alt="Notifications">
+            <img src="/api/placeholder/32/32" alt="Profile">
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <% 
+        const sidebarItems = ['Home', 'Shorts', 'Subscriptions', 'Library', 'History'];
+        sidebarItems.forEach(function(item) { 
+        %>
+            <div class="sidebar-item">
+                <img src="/api/placeholder/24/24" alt="<%= item %>">
+                <span><%= item %></span>
+            </div>
+        <% }); %>
+    </div>
+
+    <!-- Video Grid -->
+    <div class="video-grid">
+    <% videos.forEach(function(video) { 
+        
+            const createdAtDate = new Date(video.createdAt);
+            const day = createdAtDate.getUTCDate();
+            const month = createdAtDate.toLocaleString("en-US", { month: "long" });
+            const formattedDate = `${day} ${month}`;
+    %>
+        <div class="video-card">
+            <img class="video-thumbnail" src="<%= video.thumbnail %>" alt="Video Thumbnail">
+            <div class="video-details">
+                <img class="channel-icon" src="<%= user.avatar %>" alt="Channel">
+                <div class="video-info">
+                    <div class="video-title"><%= video.title %></div>
+                    <div class="video-metadata">
+                        <%= user.username %> • <%= video.views %> views • <%= formattedDate %>
+                </div>
+            </div>
+        </div>
+    <% }); %>
+</div>
+
+    <script>
+        // Simple interactivity
+        document.querySelectorAll('.video-card').forEach(function(card) {
+            card.addEventListener('mouseover', function() {
+                this.style.transform = 'scale(1.02)';
+                this.style.transition = 'transform 0.2s';
+            });
+
+            card.addEventListener('mouseout', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // Search functionality (just a placeholder)
+        const searchInput = document.querySelector('.search-bar input');
+        const searchButton = document.querySelector('.search-bar button');
+
+        searchButton.addEventListener('click', function() {
+            alert('Search for: ' + searchInput.value);
+        });
+    </script>
+</body>
+</html>

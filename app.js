@@ -6,6 +6,8 @@ const UserRouter = require('./Routes/users.routers');
 const BodyParser = require('body-parser');
 const path = require('path');
 const app = express();
+const Video = require('./Models/video.models') 
+const User = require('./Models/users.models')
 
 // All router Imports
 const VideoRouter = require('./Routes/videos.routers');
@@ -16,6 +18,7 @@ const subscriptionRouter = require('./Routes/subscritption.routers')
 const LikeRouter = require('./Routes/like.routers');
 const PlaylistRouter = require('./Routes/playlist.routers');
 const DashboardRouter = require('./Routes/dashboard.router');
+const asyncHandler = require('./utils/asynchandler');
 
 // All the important settings
 app.use(express.json());
@@ -29,10 +32,24 @@ app.set('view engine', 'ejs');
 app.set('views', path.resolve('./views'));
 
 
+
+
 // Main Routes
-app.get("/", (req, res) => {
-    res.render('UploadVideo')
-});
+app.get("/home", asyncHandler (async(req, res) => {
+
+        const video = await Video.find({
+            isPublished:true
+        })
+
+        const user = await User.find(video.owner)
+        console.log(user)
+        console.log(video)
+        
+        return res.render('home',{
+            videos:video,
+            user:user        })
+    }))
+
 
 // Register routers
 app.use('/api/v1/auth/user', UserRouter);
