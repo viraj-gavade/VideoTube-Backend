@@ -185,7 +185,7 @@ const server = new ApolloServer({ typeDefs, resolvers });
   
     app.get('/home', async (req, res) => {
       try {
-        const data = await request('http://localhost:5000/graphql', GET_VIDEOS_QUERY, {
+        const data = await request('http://localhost:3000/graphql', GET_VIDEOS_QUERY, {
             headers: {
               'Content-Type': 'application/json', // or 'application/graphql'
             }

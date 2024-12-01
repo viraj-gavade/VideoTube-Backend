@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Title - YouTube Clone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: #030303;
+        }
+
+        .container {
+            display: flex;
+            padding: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Video Player Section */
+        .video-player-section {
+            flex: 2;
+            margin-right: 20px;
+        }
+
+        .video-player {
+            width: 100%;
+            background-color: black;
+            aspect-ratio: 16/9;
+        }
+
+        .video-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin: 15px 0 10px;
+        }
+
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .channel-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .channel-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .channel-details {
+            flex-grow: 1;
+        }
+
+        .channel-name {
+            font-weight: bold;
+        }
+
+        .channel-subscribers {
+            color: #606060;
+            font-size: 0.9em;
+        }
+
+        .action-buttons {
+            display: flex;
+            align-items: center;
+        }
+
+        .like-button, .subscribe-button {
+            background-color: #f2f2f2;
+            border: none;
+            padding: 10px 15px;
+            margin-left: 10px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .subscribe-button {
+            background-color: #cc0000;
+            color: white;
+        }
+
+        /* Video Description */
+        .video-description {
+            background-color: #f2f2f2;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .description-views {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .description-text {
+            color: #606060;
+        }
+
+        /* Recommended Videos Section */
+        .recommended-videos {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .recommended-video {
+            display: flex;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .recommended-thumbnail {
+            width: 168px;
+            height: 94px;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+
+        .recommended-info {
+            flex-grow: 1;
+        }
+
+        .recommended-title {
+            font-weight: bold;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .recommended-details {
+            color: #606060;
+            font-size: 0.8em;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            margin-top: 20px;
+        }
+
+        .comments-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .comment-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .comment-input img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .comment-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            border-bottom: 1px solid #d3d3d3;
+            outline: none;
+        }
+
+        .single-comment {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .comment-content {
+            flex-grow: 1;
+        }
+
+        .comment-author {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .comment-text {
+            color: #030303;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Video Player Section -->
+        <div class="video-player-section">
+            <div class="video-player">
+                <!-- Placeholder for video player -->
+                <video width="100%" height="100%" controls>
+                    <source src="<%= video.videoFile %>" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="video-title">
+                <%= video.title %>
+            </div>
+
+            <div class="video-meta">
+                <div class="channel-info">
+                    <img class="channel-avatar" src="<%=owner.avatar %>" alt="Channel Avatar">
+                    <div class="channel-details">
+                        <div class="channel-name"><%=owner.username %></div>
+                        <div class="channel-subscribers">
+                            <%= video.owner.subscribersCount %> subscribers
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="like-button">
+                        👍 <%= video.likes %> Likes
+                    </button>
+                    <button class="subscribe-button">
+                        Subscribe
+                    </button>
+                </div>
+            </div>
+
+            <div class="video-description">
+                <div class="description-views">
+                    <%= video.views %> views • <%= new Date(video.createdAt).toLocaleDateString() %>
+                </div>
+                <div class="description-text">
+                    <%= video.description %>
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+         
+
+        <!-- Recommended Videos Section -->
+    
+
+    <script>
+        // Make recommended videos clickable
+        document.querySelectorAll('.recommended-video').forEach(function(videoCard) {
+            videoCard.addEventListener('click', function() {
+                const videoId = this.getAttribute('data-video-id');
+                window.location.href = `/watch/${videoId}`;
+            });
+        });
+
+        // Optional: Like button interaction
+        const likeButton = document.querySelector('.like-button');
+        likeButton.addEventListener('click', function() {
+            // Placeholder for like functionality
+            alert('Like functionality to be implemented');
+        });
+
+        // Optional: Subscribe button interaction
+        const subscribeButton = document.querySelector('.subscribe-button');
+        subscribeButton.addEventListener('click', function() {
+            // Placeholder for subscribe functionality
+            alert('Subscribe functionality to be implemented');
+        });
+    </script>
+</body>
+</html>

@@ -4,7 +4,9 @@ const VerifyJwt = require('../Middlerwares/auth')
 const VideoRouter = express.Router()
 const {publishAVideo,getVideoById,updateVideo, deleteVideo,toogglepublishStatus} = require('../Controllers/videos.controllers')
 const { verify } = require('jsonwebtoken')
-
+const Video = require('../Models/video.models') 
+const User = require('../Models/users.models') 
+const {getUserChannelProfile} =require('../Controllers/users.controllers')
 
 VideoRouter.route('/publish-video').get(VerifyJwt,(req,res)=>{
     res.render('UploadVideo')
@@ -23,7 +25,17 @@ VideoRouter.route('/publish-video').get(VerifyJwt,(req,res)=>{
     publishAVideo
 )
 
-VideoRouter.route('/video/:videoId').get(getVideoById)
+VideoRouter.route('/video/:videoId').get(async(req,res)=>{
+    const {videoId} = req.params
+    const video = await Video.findById(videoId)
+    const user = await User.findById(video.owner)  
+        console.log(video)
+        console.log(user)
+    res.render('watch',{
+        video: video ,
+        owner:user   
+    })
+},getVideoById)
 .patch(VerifyJwt,upload.single('thumbnail'),updateVideo)
 .delete(VerifyJwt,deleteVideo)
 

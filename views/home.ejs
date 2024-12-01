@@ -116,6 +116,11 @@
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .video-card:hover {
+            transform: scale(1.02);
         }
 
         .video-thumbnail {
@@ -148,6 +153,10 @@
         .video-metadata {
             color: #606060;
             font-size: 0.9em;
+        }
+        .card-link{
+        text-decoration: none;
+        color: black;
         }
     </style>
   
@@ -185,42 +194,31 @@
     </div>
 
     <!-- Video Grid -->
-    <!-- Video Grid -->
-<div class="video-grid">
-<% videos.forEach(function(video) { 
-    const createdAtDate = new Date(video.createdAt);
-    const day = createdAtDate.getUTCDate();
-    const month = createdAtDate.toLocaleString("en-US", { month: "long" });
-    const formattedDate = `${day} ${month}`;
-%>
-    <div class="video-card">
-        <img class="video-thumbnail" src="<%= video.thumbnail %>" alt="Video Thumbnail">
-        <div class="video-details">
-            <img class="channel-icon" src="<%= video.owner.avatar %>" alt="Channel">
-            <div class="video-info">
-                <div class="video-title"><%= video.title %></div>
-                <div class="video-metadata">
-                    <%= video.owner.username %> • <%= video.views %> views • <%= formattedDate %>
+    <div class="video-grid">
+    <% videos.forEach(function(video) { 
+        const createdAtDate = new Date(video.createdAt);
+        const day = createdAtDate.getUTCDate();
+        const month = createdAtDate.toLocaleString("en-US", { month: "long" });
+        const formattedDate = `${day} ${month}`;
+    %>
+       <a href="/api/v1/videos/video/<%= video.id %>" class="card-link"> <div class="video-card" data-video-id="<%= video._id %>">
+            <img class="video-thumbnail" src="<%= video.thumbnail %>" alt="Video Thumbnail">
+            <div class="video-details">
+                <img class="channel-icon" src="<%= video.owner.avatar %>" alt="Channel">
+                <div class="video-info">
+                    <div class="video-title"><%= video.title %></div>
+                    <div class="video-metadata">
+                        <%= video.owner.username %> • <%= video.views %> views • <%= formattedDate %>
+                    </div>
                 </div>
             </div>
-        </div>
+        </div></a>
+    <% }); %>
     </div>
-<% }); %>
-</div>
-
 
     <script>
-        // Simple interactivity
-        document.querySelectorAll('.video-card').forEach(function(card) {
-            card.addEventListener('mouseover', function() {
-                this.style.transform = 'scale(1.02)';
-                this.style.transition = 'transform 0.2s';
-            });
-
-            card.addEventListener('mouseout', function() {
-                this.style.transform = 'scale(1)';
-            });
-        });
+        //Make video cards clickable
+        
 
         // Search functionality (just a placeholder)
         const searchInput = document.querySelector('.search-bar input');
