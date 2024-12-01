@@ -3,9 +3,10 @@ const upload = require('../Middlerwares/multer.middleware')
 const VerifyJwt = require('../Middlerwares/auth')
 const VideoRouter = express.Router()
 const {publishAVideo,getVideoById,updateVideo, deleteVideo,toogglepublishStatus} = require('../Controllers/videos.controllers')
+const { verify } = require('jsonwebtoken')
 
 
-VideoRouter.route('/publish-video').get((req,res)=>{
+VideoRouter.route('/publish-video').get(VerifyJwt,(req,res)=>{
     res.render('UploadVideo')
 }).post(VerifyJwt,
     upload.fields([
