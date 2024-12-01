@@ -185,27 +185,29 @@
     </div>
 
     <!-- Video Grid -->
-    <div class="video-grid">
-    <% videos.forEach(function(video) { 
-        
-            const createdAtDate = new Date(video.createdAt);
-            const day = createdAtDate.getUTCDate();
-            const month = createdAtDate.toLocaleString("en-US", { month: "long" });
-            const formattedDate = `${day} ${month}`;
-    %>
-        <div class="video-card">
-            <img class="video-thumbnail" src="<%= video.thumbnail %>" alt="Video Thumbnail">
-            <div class="video-details">
-                <img class="channel-icon" src="<%= user.avatar %>" alt="Channel">
-                <div class="video-info">
-                    <div class="video-title"><%= video.title %></div>
-                    <div class="video-metadata">
-                        <%= user.username %> • <%= video.views %> views • <%= formattedDate %>
+    <!-- Video Grid -->
+<div class="video-grid">
+<% videos.forEach(function(video) { 
+    const createdAtDate = new Date(video.createdAt);
+    const day = createdAtDate.getUTCDate();
+    const month = createdAtDate.toLocaleString("en-US", { month: "long" });
+    const formattedDate = `${day} ${month}`;
+%>
+    <div class="video-card">
+        <img class="video-thumbnail" src="<%= video.thumbnail %>" alt="Video Thumbnail">
+        <div class="video-details">
+            <img class="channel-icon" src="<%= video.owner.avatar %>" alt="Channel">
+            <div class="video-info">
+                <div class="video-title"><%= video.title %></div>
+                <div class="video-metadata">
+                    <%= video.owner.username %> • <%= video.views %> views • <%= formattedDate %>
                 </div>
             </div>
         </div>
-    <% }); %>
+    </div>
+<% }); %>
 </div>
+
 
     <script>
         // Simple interactivity

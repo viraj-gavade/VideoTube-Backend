@@ -9,6 +9,7 @@ const cors = require('cors');
 const asyncHandler = require('./utils/asynchandler');
 const { GraphQLScalarType, Kind } = require('graphql');
 
+
 const gql = require('graphql-tag');
 
 
@@ -42,13 +43,13 @@ app.set('view engine', 'ejs');
 app.set('views', path.resolve('./views'));
 
 // Home Route
-app.get(
-  '/home',
-  asyncHandler(async (req, res) => {
-    const videos = await Video.find({ isPublished: true }).populate('owner'); // Assuming `owner` is a reference field
-    return res.render('home', { videos });
-  })
-);
+// app.get(
+//   '/home',
+//   asyncHandler(async (req, res) => {
+//     const videos = await Video.find({ isPublished: true }).populate('owner'); // Assuming `owner` is a reference field
+//     return res.render('home', { videos });
+//   })
+// );
 
 // API Routes
 app.use('/api/v1/auth/user', UserRouter);
@@ -77,6 +78,7 @@ const typeDefs = gql`
   type User {
     id: ID!
     username: String!
+    avatar:String!
   }
 
   type Query {
@@ -141,6 +143,45 @@ const resolvers = {
 
 // Create Apollo Server outside the database connection
 const server = new ApolloServer({ typeDefs, resolvers });
+
+
+
+// Define your GraphQL query
+(async () => {
+    const { request } = await import('graphql-request');
+  
+    const GET_VIDEOS_QUERY = `
+      query {
+        getVideoInfo {
+          id
+          title
+          createdAt
+          views
+          thumbnail
+          owner {
+            username
+            avatar
+          }
+        }
+      }
+    `;
+  
+    app.get('/home', async (req, res) => {
+      try {
+        const data = await request('http://localhost:5000/graphql', GET_VIDEOS_QUERY, {
+            headers: {
+              'Content-Type': 'application/json', // or 'application/graphql'
+            }
+            }); console.log('Data ', data);
+        res.render('home', { videos: data.getVideoInfo });
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+        res.status(500).send('Error fetching data');
+      }
+    });
+  })();
+  
+
 
 // Database Connection and Server Initialization
 const ConnectDB = async () => {
