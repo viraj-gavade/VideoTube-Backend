@@ -8,7 +8,9 @@ const { expressMiddleware } = require('@apollo/server/express4');
 const cors = require('cors');
 const asyncHandler = require('./utils/asynchandler');
 const { GraphQLScalarType, Kind } = require('graphql');
-
+const session = require('express-session');
+const OauthRouter = require('./Routes/Oauth2.router');
+const passport = require('passport'); 
 
 const gql = require('graphql-tag');
 
@@ -29,7 +31,7 @@ const PlaylistRouter = require('./Routes/playlist.routers');
 const DashboardRouter = require('./Routes/dashboard.router');
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(express.json());
@@ -51,6 +53,15 @@ app.set('views', path.resolve('./views'));
 //   })
 // );
 
+app.use(session({
+  secret: process.env.SECRETE,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false } // Set to true in production with HTTPS
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 // API Routes
 app.use('/api/v1/auth/user', UserRouter);
 app.use('/api/v1/videos', VideoRouter);
@@ -61,6 +72,12 @@ app.use('/api/v1/subscriptions', subscriptionRouter);
 app.use('/api/v1/likes', LikeRouter);
 app.use('/api/v1/playlists', PlaylistRouter);
 app.use('/api/v1/dashboard', DashboardRouter);
+
+
+app.use('/', OauthRouter); 
+
+
+
 
 const typeDefs = gql`
   scalar Date

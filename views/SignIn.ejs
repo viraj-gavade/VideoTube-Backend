@@ -95,10 +95,11 @@
             </div>
             <button type="submit" class="btn">Sign In</button>
             
+            <a href="/auth/google/callback">
             <button type="button" class="btn google-btn" id="google-signin">
                 <img src="https://img.icons8.com/color/16/000000/google-logo.png" class="google-icon" alt="Google Icon" />
                 Sign In with Google
-            </button>
+            </button></a>
             
             <div class="switch-auth">
                 Don't have an account? <a href="/api/v1/auth/user/signup">Sign Up</a>
@@ -108,17 +109,17 @@
 
     <script>
         // Google Login Handler (Placeholder)
-        document.getElementById('google-signin').addEventListener('click', function() {
+        // document.getElementById('google-signin').addEventListener('click', function() {
             // This is a placeholder. In a real application, 
             // you would integrate Google OAuth here
             alert('Google Sign In functionality to be implemented');
-        });
+        // });
 
-        // Form Submission Handler
-        document.getElementById('signin-form').addEventListener('submit', function(e) {
-            // You can add client-side validation here if needed
-            // The form will submit to the server-side route /auth/signin
-        });
+        // // Form Submission Handler
+        // document.getElementById('signin-form').addEventListener('submit', function(e) {
+        //     // You can add client-side validation here if needed
+        //     // The form will submit to the server-side route /auth/signin
+        // });
     </script>
 </body>
 </html>
