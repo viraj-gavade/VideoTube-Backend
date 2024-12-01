@@ -2,79 +2,161 @@ require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const connectdb = require('./DataBase/connect');
-const UserRouter = require('./Routes/users.routers');
-const BodyParser = require('body-parser');
 const path = require('path');
-const app = express();
-const Video = require('./Models/video.models') 
-const User = require('./Models/users.models')
+const { ApolloServer } = require('@apollo/server');
+const { expressMiddleware } = require('@apollo/server/express4');
+const cors = require('cors');
+const asyncHandler = require('./utils/asynchandler');
+const { GraphQLScalarType, Kind } = require('graphql');
 
-// All router Imports
+const gql = require('graphql-tag');
+
+
+// Models
+const Video = require('./Models/video.models');
+const User = require('./Models/users.models');
+
+// Routers
+const UserRouter = require('./Routes/users.routers');
 const VideoRouter = require('./Routes/videos.routers');
 const TweetRouter = require('./Routes/tweets.routers');
 const CommentRouter = require('./Routes/comments.routers');
 const healthCheck = require('./Controllers/healthcheck.controllers');
-const subscriptionRouter = require('./Routes/subscritption.routers')
+const subscriptionRouter = require('./Routes/subscritption.routers');
 const LikeRouter = require('./Routes/like.routers');
 const PlaylistRouter = require('./Routes/playlist.routers');
 const DashboardRouter = require('./Routes/dashboard.router');
-const asyncHandler = require('./utils/asynchandler');
 
-// All the important settings
+const app = express();
+const port = process.env.PORT || 5000;
+
+// Middleware
 app.use(express.json());
-// Uncomment to handle form submissions
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./public'));
 app.use(cookieParser());
+app.use(cors());
 
-// // Middleware setups
+// View Engine
 app.set('view engine', 'ejs');
 app.set('views', path.resolve('./views'));
 
+// Home Route
+app.get(
+  '/home',
+  asyncHandler(async (req, res) => {
+    const videos = await Video.find({ isPublished: true }).populate('owner'); // Assuming `owner` is a reference field
+    return res.render('home', { videos });
+  })
+);
 
-
-
-// Main Routes
-app.get("/home", asyncHandler (async(req, res) => {
-
-        const video = await Video.find({
-            isPublished:true
-        })
-
-        const user = await User.find(video.owner)
-        console.log(user)
-        console.log(video)
-        
-        return res.render('home',{
-            videos:video,
-            user:user        })
-    }))
-
-
-// Register routers
+// API Routes
 app.use('/api/v1/auth/user', UserRouter);
-app.use('/api/v1/auth/', VideoRouter);
-app.use('/api/v1/auth/', TweetRouter);
-app.use('/api/v1/auth/', CommentRouter);
+app.use('/api/v1/videos', VideoRouter);
+app.use('/api/v1/tweets', TweetRouter);
+app.use('/api/v1/comments', CommentRouter);
 app.use('/api/v1/healthcheck', healthCheck);
-app.use('/api/v1/auth/', subscriptionRouter);
-app.use('/api/v1/auth/', LikeRouter);
-app.use('/api/v1/auth/', PlaylistRouter);
-app.use('/api/v1/auth/dashboard', DashboardRouter);
+app.use('/api/v1/subscriptions', subscriptionRouter);
+app.use('/api/v1/likes', LikeRouter);
+app.use('/api/v1/playlists', PlaylistRouter);
+app.use('/api/v1/dashboard', DashboardRouter);
 
-// Connection to the database
-const port = process.env.PORT || 5000;
+const typeDefs = gql`
+  scalar Date
 
-const ConnectDB = async () => {
-    try {
-        await connectdb();
-        app.listen(port, () => {
-            console.log('Server is listening on:', port);
-        });
-    } catch (error) {
-        console.error('Something Went Wrong!!', error);
-        process.exit(1);
-    }
+  type Video {
+    id: ID!
+    title: String!
+    createdAt: Date
+    views: Int
+    thumbnail: String
+    duration: Float
+    owner: User
+  }
+
+  type User {
+    id: ID!
+    username: String!
+  }
+
+  type Query {
+    getVideoInfo: [Video]
+    getUserById(id: ID!): User
+  }
+`;
+
+const resolvers = {
+  // Custom Date scalar type handling
+  Date: new GraphQLScalarType({
+    name: 'Date',
+    description: 'Custom Date scalar type',
+    parseValue(value) {
+      return new Date(value); // Converts client input (ISO string or timestamp) to JavaScript Date object
+    },
+    serialize(value) {
+      return value instanceof Date ? value.toISOString() : null; // Converts Date object to ISO string for sending it back to the client
+    },
+    parseLiteral(ast) {
+      if (ast.kind === Kind.STRING) {
+        return new Date(ast.value);
+      }
+      return null;
+    },
+  }),
+
+  // Resolvers for Video type
+  Video: {
+    owner: async (video) => {
+      try {
+        const user = await User.findById(video.owner);
+        return user;
+      } catch (error) {
+        console.error('Error fetching owner:', error);
+        throw new Error('Unable to fetch owner information');
+      }
+    },
+  },
+
+  Query: {
+    getVideoInfo: async () => {
+      try {
+        const videos = await Video.find({ isPublished: true }).populate('owner');
+        return videos;
+      } catch (error) {
+        console.error('Error fetching videos:', error);
+        throw new Error('Unable to fetch video information');
+      }
+    },
+    getUserById: async (_, { id }) => {
+      try {
+        const user = await User.findById(id);
+        return user;
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        throw new Error('Unable to fetch user information');
+      }
+    },
+  },
 };
 
+// Create Apollo Server outside the database connection
+const server = new ApolloServer({ typeDefs, resolvers });
+
+// Database Connection and Server Initialization
+const ConnectDB = async () => {
+  try {
+    await connectdb();
+    await server.start();
+    app.use('/graphql', expressMiddleware(server)); // Use Apollo Server middleware
+
+    app.listen(port, () => {
+      console.log(`Server is listening on port: ${port}`);
+    });
+  } catch (error) {
+    console.error('Something Went Wrong!!', error);
+    process.exit(1);
+  }
+};
+
+// Start the server
 ConnectDB();
