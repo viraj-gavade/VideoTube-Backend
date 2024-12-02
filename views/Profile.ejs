@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title><%= fullName %>'s Channel</title>
+    <title><%= channel.fullName %>'s Channel</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -69,7 +69,7 @@
             color: #606060;
         }
         .subscribe-btn {
-            background-color: <%= isSubscribed ? '#606060' : '#cc0000' %>;
+            background-color: <%= channel.isSubscribed ? '#606060' : '#cc0000' %>;
             color: white;
             border: none;
             padding: 10px 20px;
@@ -105,15 +105,15 @@
 <body>
     <div class="channel-container">
         <!-- Cover Image Section -->
-        <% if (coverImage) { %>
-            <img src="<%= coverImage %>" alt="Cover Image" class="cover-image">
+        <% if (channel.coverImage) { %>
+            <img src="<%= channel.coverImage %>" alt="Cover Image" class="cover-image">
         <% } %>
 
         <!-- Profile Header -->
         <div class="profile-header">
             <!-- Avatar -->
             <img 
-                src="<%= avatar || '/default-avatar.png' %>" 
+                src="<%= channel.avatar || '/default-avatar.png' %>" 
                 alt="Channel Avatar" 
                 class="avatar"
             >
@@ -121,7 +121,7 @@
             <!-- Channel Information -->
             <div class="channel-info">
                 <div class="channel-name">
-                    <h1><%= fullName %></h1>
+                    <h1><%= channel.fullName %></h1>
                     <button class="edit-profile-btn" onclick="openEditModal()">
                         Edit Profile
                     </button>
@@ -130,19 +130,19 @@
                 <!-- Channel Stats -->
                 <div class="channel-stats">
                     <span class="stat-item">
-                        <%= username %>
+                        <%= channel.username %>
                     </span>
                     <span class="stat-item">
-                        <%= subscriberCount %> Subscribers
+                        <%= channel.subscriberCount %> Subscribers
                     </span>
                     <span class="stat-item">
-                        Subscribed to <%= subscribedCount %> Channels
+                        Subscribed to <%= channel.subscribedCount %> Channels
                     </span>
                 </div>
 
                 <!-- Subscribe Button -->
                 <button class="subscribe-btn" onclick="toggleSubscribe()">
-                    <%= isSubscribed ? 'Subscribed' : 'Subscribe' %>
+                    <%= channel.isSubscribed ? 'Subscribed' : 'Subscribe' %>
                 </button>
             </div>
         </div>
@@ -158,7 +158,7 @@
                         <input 
                             type="text" 
                             name="avatar" 
-                            value="<%= avatar %>" 
+                            value="<%= channel.avatar %>" 
                             style="width: 100%; margin: 10px 0;"
                         >
                     </div>
@@ -169,7 +169,7 @@
                         <input 
                             type="text" 
                             name="coverImage" 
-                            value="<%= coverImage %>" 
+                            value="<%= channel.coverImage %>" 
                             style="width: 100%; margin: 10px 0;"
                         >
                     </div>
@@ -180,7 +180,7 @@
                         <input 
                             type="text" 
                             name="fullName" 
-                            value="<%= fullName %>" 
+                            value="<%= channel.fullName %>" 
                             style="width: 100%; margin: 10px 0;"
                         >
                     </div>
