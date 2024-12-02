@@ -183,12 +183,19 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <% 
-        const sidebarItems = ['Home', 'Shorts', 'Subscriptions', 'Library', 'History'];
+        const sidebarItems = [
+            { name: 'Home', url: '/home' },
+            { name: 'Shorts', url: '/shorts' },
+            { name: 'Subscriptions', url: '/subscriptions' },
+            { name: 'Library', url: '/library' },
+            { name: 'History', url: '/api/v1/auth/user/watchHistory' }  // Specific URL for history
+        ];
         sidebarItems.forEach(function(item) { 
         %>
             <div class="sidebar-item">
-                <img src="/api/placeholder/24/24" alt="<%= item %>">
-                <span><%= item %></span>
+                <a href="<%= item.url %>" class="sidebar-link">
+                    <img src="/api/placeholder/24/24" alt="<%= item.name %>">
+                </a>
             </div>
         <% }); %>
     </div>
