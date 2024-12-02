@@ -267,6 +267,7 @@ const updateUsercoverImage = asyncHandler(async(req,res)=>{
 
 const getUserChannelProfile = asyncHandler(async(req,res)=>{
     const {username} = req.params
+    console.log(req.params)
     
     if(!username?.trim()){
         throw new CustomApiError(400,'User not found !')
@@ -275,7 +276,7 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
     const channel = await User.aggregate([
        {
             $match:{
-              username:username?.toLowerCase()  
+              username:username?.trim().toLowerCase()
             }
         }, 
         {
@@ -328,6 +329,7 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
     if(!channel?.length){
         throw new CustomApiError(400,'Channel not found!')
     }
+    console.log(channel[0])
     return res.status(200).json(
         new ApiResponse(200,'Channel fetched successfully!',channel[0])
     )

@@ -62,8 +62,11 @@ UserRouter.route('/update-avatar').patch(VerifyJwt,upload.single('avatar'),updat
 
 UserRouter.route('/update-coverImage').patch(VerifyJwt,upload.single('coverImage'),updateUsercoverImage)
 
-UserRouter.route('/channel/:username').get(VerifyJwt,getUserChannelProfile)
+UserRouter.route('/channel/:username').get(VerifyJwt,getUserChannelProfile,(req,res)=>{
+    res.render('Profile')
+},)
 UserRouter.route('/watchHistory').get(VerifyJwt,getUserWatchHistory)
+
 
 
 

@@ -29,6 +29,7 @@ const subscriptionRouter = require('./Routes/subscritption.routers');
 const LikeRouter = require('./Routes/like.routers');
 const PlaylistRouter = require('./Routes/playlist.routers');
 const DashboardRouter = require('./Routes/dashboard.router');
+const VerifyJwt = require('./Middlerwares/auth');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -183,14 +184,14 @@ const server = new ApolloServer({ typeDefs, resolvers });
       }
     `;
   
-    app.get('/home', async (req, res) => {
+    app.get('/home',VerifyJwt, async (req, res) => {
       try {
         const data = await request('http://localhost:3000/graphql', GET_VIDEOS_QUERY, {
             headers: {
               'Content-Type': 'application/json', // or 'application/graphql'
             }
             }); console.log('Data ', data);
-        res.render('home', { videos: data.getVideoInfo });
+        res.render('home', { videos: data.getVideoInfo,user:req.user });
       } catch (error) {
         console.error('Error fetching videos:', error);
         res.status(500).send('Error fetching data');
