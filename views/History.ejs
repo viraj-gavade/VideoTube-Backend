@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Watch History</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            color: #030303;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .history-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+        .clear-history {
+            background-color: #065fd4;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        .no-history {
+            text-align: center;
+            padding: 50px 20px;
+            background-color: white;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .no-history-icon {
+            font-size: 4rem;
+            color: #909090;
+            margin-bottom: 20px;
+        }
+        .no-history-message {
+            color: #606060;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        .explore-btn {
+            background-color: #065fd4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 2px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .video-item {
+            display: flex;
+            background-color: white;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .video-thumbnail {
+            width: 180px;
+            height: 100px;
+            object-fit: cover;
+        }
+        .video-details {
+            padding: 10px;
+            flex-grow: 1;
+        }
+        .video-title {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .video-channel {
+            color: #606060;
+            font-size: 0.9rem;
+        }
+        .video-date {
+            color: #909090;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #065fd4;
+            cursor: pointer;
+            margin-left: auto;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="history-header">
+            <div class="history-title">Watch History</div>
+            <button class="clear-history">Clear History</button>
+        </div>
+
+        <% if (!history || history.length === 0) { %>
+            <div class="no-history">
+                <div class="no-history-icon">📺</div>
+                <div class="no-history-message">
+                    You haven't watched any videos yet
+                </div>
+                <a href="/" class="explore-btn">Explore Videos</a>
+            </div>
+        <% } else { %>
+            <% history.forEach(function(video) { %>
+                <div class="video-item">
+                    <img src="<%= video.thumbnailUrl %>" alt="<%= video.title %>" class="video-thumbnail">
+                    <div class="video-details">
+                        <div class="video-title"><%= video.title %></div>
+                        <div class="video-channel"><%= video.channel %></div>
+                        <div class="video-date"><%= video.watchedDate %></div>
+                    </div>
+                    <button class="remove-btn" data-video-id="<%= video._id %>">Remove</button>
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+
+    <script>
+        // Clear history functionality
+        document.querySelector('.clear-history')?.addEventListener('click', async () => {
+            try {
+                const response = await fetch('/clear-watch-history', { method: 'POST' });
+                if (response.ok) {
+                    location.reload();
+                } else {
+                    alert('Failed to clear watch history');
+                }
+            } catch (error) {
+                console.error('Error clearing history:', error);
+                alert('An error occurred while clearing history');
+            }
+        });
+
+        // Remove individual video from history
+        document.querySelectorAll('.remove-btn')?.forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const videoId = btn.getAttribute('data-video-id');
+                try {
+                    const response = await fetch(`/remove-from-watch-history/${videoId}`, { method: 'POST' });
+                    if (response.ok) {
+                        btn.closest('.video-item').remove();
+                    } else {
+                        alert('Failed to remove video from history');
+                    }
+                } catch (error) {
+                    console.error('Error removing video:', error);
+                    alert('An error occurred while removing video');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

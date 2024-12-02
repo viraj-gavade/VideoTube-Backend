@@ -384,13 +384,12 @@ const getUserWatchHistory = asyncHandler(async(req,res)=>{
         )
     }
 
-    return res.status(200).json(
-        new ApiResponse(
-            200,
-            'Watch history fetched',
-            user[0].watchHistory
-        )
-    )
+    return res.render('History',{
+
+       history: user[0].watchHistory
+    })
+       
+
 }) //Checked and bug fixed
 
 const changeUserEmail = asyncHandler(async(req,res)=>{
