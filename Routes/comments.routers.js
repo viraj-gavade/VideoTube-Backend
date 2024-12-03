@@ -5,9 +5,9 @@ const CommentRouter = express.Router()
 
 
 
-CommentRouter.route('/comment/:videoId')
+CommentRouter.route('/comments/:videoId')
 .post(VerifyJwt,addComment)
-.get(VerifyJwt,getVideoComments)
+
 
 
 CommentRouter.route('/comment/:commentId')

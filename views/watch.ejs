@@ -250,7 +250,66 @@
             </div>
 
             <!-- Comments Section -->
-         
+            <!-- Comments Section -->
+<div class="comments-section">
+    <div class="comments-header">
+        <h3><%= comments.length %> Comments</h3>
+    </div>
+
+    <% if (locals.user) { %>
+    <div class="comment-input">
+        <img src="<%= user.avatar %>" alt="User Avatar" class="comment-avatar">
+        <form action="/api/v1/comments/comments/<%= video._id %>" method="POST" class="w-full">
+            <input 
+                type="text" 
+                name="content" 
+                placeholder="Add a comment..." 
+                required 
+                maxlength="500" 
+                class="w-full"
+            >
+            <button 
+                type="submit" 
+                class="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+            >
+                Comment
+            </button>
+        </form>
+    </div>
+    <% } %>
+
+    <div class="comments-list">
+        <% if (comments.length === 0) { %>
+        <div class="no-comments text-center text-gray-500 py-10">
+            <p>No comments yet</p>
+            <% if (locals.user) { %>
+            <p class="text-sm mt-2">Be the first to comment!</p>
+            <% } %>
+        </div>
+        <% } else { %>
+            <% comments.forEach(function(comment) { %>
+            <div class="single-comment">
+                <img 
+                    src="<%= comment.owner.avatar %>" 
+                    alt="<%= comment.owner.username %>" 
+                    class="comment-avatar"
+                >
+                <div class="comment-content">
+                    <div class="comment-author">
+                        <%= comment.owner.username %>
+                    </div>
+                    <div class="comment-text">
+                        <%= comment.content %>
+                    </div>
+                    <div class="comment-meta text-sm text-gray-500 mt-1">
+                        <%= new Date(comment.createdAt).toLocaleDateString() %>
+                    </div>
+                </div>
+            </div>
+            <% }); %>
+        <% } %>
+    </div>
+</div>
 
         <!-- Recommended Videos Section -->
     

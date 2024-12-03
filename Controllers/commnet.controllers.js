@@ -5,42 +5,6 @@ const  CustomApiError = require('../utils/apiErrors')
 const Video = require('../Models/video.models')
 const { default: mongoose } = require('mongoose')
 
-
-const getVideoComments = asyncHandler(async(req,res)=>{
-    const {videoId} = req.params
-    const comment = await Video.aggregate([
-        {
-            $match:{
-                _id:new mongoose.Types.ObjectId(videoId)
-            }
-        },
-        {
-            $lookup:{
-                from:"comments",
-                localField:'_id',
-                foreignField:'video',
-                as:'comments'
-            }
-        },
-        {
-            $project:{
-                comments:1
-            }
-        }
-    ])
-    if(!comment){
-        throw new CustomApiError(
-            500,
-            `Unable to load the comments please check the videoId again`
-        )
-    }
-
-    const comments = await comment[0].comments
-    return res.status(200).send(comment[0].comments)
-})
-
-
-
 const addComment =asyncHandler(async(req,res)=>{
    try {
      const { videoId } = req.params
@@ -125,5 +89,4 @@ module.exports =
     addComment  ,
     updateCommment,
     deleteComment,
-    getVideoComments
 }

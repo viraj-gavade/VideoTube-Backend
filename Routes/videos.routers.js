@@ -6,6 +6,7 @@ const {publishAVideo,getVideoById,updateVideo, deleteVideo,toogglepublishStatus}
 const { verify } = require('jsonwebtoken')
 const Video = require('../Models/video.models') 
 const User = require('../Models/users.models') 
+const Comment = require('../Models/comment.models') 
 const {getUserChannelProfile} =require('../Controllers/users.controllers')
 
 VideoRouter.route('/publish-video').get(VerifyJwt,(req,res)=>{
@@ -25,17 +26,34 @@ VideoRouter.route('/publish-video').get(VerifyJwt,(req,res)=>{
     publishAVideo
 )
 
-VideoRouter.route('/video/:videoId').get(async(req,res)=>{
-    const {videoId} = req.params
-    const video = await Video.findById(videoId)
-    const user = await User.findById(video.owner)  
-        console.log(video)
-        console.log(user)
-    res.render('watch',{
-        video: video ,
-        owner:user   
-    })
-},getVideoById)
+VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
+    try {
+        const { videoId } = req.params;
+
+        // Fetch the video and owner
+        const video = await Video.findById(videoId).populate('owner');
+        if (!video) {
+            return res.status(404).send('Video not found');
+        }
+
+        const user = video.owner;
+
+        // Fetch comments
+        const comments = await Comment.find({ video: videoId })
+        .populate("owner", "username fullname avatar") 
+        console.log("Comments:", comments); // Debugging
+
+        // Render the page
+        res.render('watch', {
+            video,
+            owner: user,
+            comments, // Send the comments array directly
+            user: req.user,
+        });
+    } catch (error) {
+        next(error);
+    }
+})
 .patch(VerifyJwt,upload.single('thumbnail'),updateVideo)
 .delete(VerifyJwt,deleteVideo)
 

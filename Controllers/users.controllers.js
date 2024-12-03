@@ -5,7 +5,7 @@ const ApiResponse = require('../utils/apiResponse')
 const CustomApiError = require('../utils/apiErrors')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
-
+const { getChannelAllvideos } =require('../Controllers/dashboard.controllers')
 const generateAccessTokenAndRefreshToken = async(userId)=>{
     try {
         const user = await User.findById(userId)
@@ -325,10 +325,11 @@ const getUserChannelProfile = asyncHandler(async(req,res,next)=>{
                 email:1   
              }       
     }
-    ])
+])
     if(!channel?.length){
         throw new CustomApiError(400,'Channel not found!')
     }
+
     console.log(channel)
    return res.render('Profile',{
     channel:channel[0]
