@@ -11,7 +11,7 @@ CommentRouter.route('/comments/:videoId')
 
 
 CommentRouter.route('/comment/:commentId')
-.patch(VerifyJwt,updateCommment)
+.put(VerifyJwt,updateCommment)
 .delete(VerifyJwt,deleteComment)
 
 
