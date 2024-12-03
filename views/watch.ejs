@@ -201,6 +201,10 @@
         .comment-text {
             color: #030303;
         }
+        .channe-name-link{
+            text-decoration: none;
+            color: #030303;
+        }
     </style>
 </head>
 <body>
@@ -221,9 +225,10 @@
 
             <div class="video-meta">
                 <div class="channel-info">
-                    <img class="channel-avatar" src="<%=owner.avatar %>" alt="Channel Avatar">
+                    <a href="">
+                    <img class="channel-avatar" src="<%=owner.avatar %>" alt="Channel Avatar"></a>
                     <div class="channel-details">
-                        <div class="channel-name"><%=owner.username %></div>
+                        <div class="channel-name"> <a href="/api/v1/auth/user/channel/<%=owner.username %>" class="channe-name-link"><%=owner.username %></a></div>
                         <div class="channel-subscribers">
                             <%= video.owner.subscribersCount %> subscribers
                         </div>

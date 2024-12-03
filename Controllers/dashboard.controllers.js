@@ -96,13 +96,31 @@ const Video = require('../Models/video.models')
         `Soemthing went wrong check the aggregation pipeline again!`
         )
     }
-    return res.status(200).json(
-        new ApiResponse(
-            200,
-            'Channel stats feteched successfully!',
-            channelstats[0]
-        )
-    )
+    console.log(channelstats[0])
+    
+    const videos = await Video.find(
+      {
+          owner:req.user?._id,
+          // isPublished:true
+          })
+      if(!videos.lenght<1){
+          return res.status(200).json(
+              new ApiResponse(
+                  200,
+                  'No video uploaded'
+              )
+          )
+      }
+      console.log(videos)
+      return res.status(200).json(
+          new ApiResponse(
+              200,
+              `Channel video fetched successfully!`,
+              channelstats[0],
+              videos       
+          )
+      )
+  
  })
 
 
@@ -116,27 +134,10 @@ const getChannelAllvideos = asyncHandler(async(req,res)=>{
         )
     }
 
-    const videos = await Video.find(
-        {
-            owner:req.user?._id,
-            // isPublished:true
-            })
-        if(!videos.lenght<1){
-            return res.status(200).json(
-                new ApiResponse(
-                    200,
-                    'No video uploaded'
-                )
-            )
-        }
-        return res.status(200).json(
-            new ApiResponse(
-                200,
-                `Channel video fetched successfully!`,
-                videos       
-            )
-        )
+   
 })
+
+
 module.exports = 
 {
     getChannelAllvideos,
