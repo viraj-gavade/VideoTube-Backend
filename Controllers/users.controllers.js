@@ -1,5 +1,6 @@
 const asyncHandler = require('../utils/asynchandler')
 const User = require('../Models/users.models')
+const Video = require('../Models/video.models')
 const uploadFile = require('../utils/cloudinary')
 const ApiResponse = require('../utils/apiResponse')
 const CustomApiError = require('../utils/apiErrors')
@@ -330,9 +331,11 @@ const getUserChannelProfile = asyncHandler(async(req,res,next)=>{
         throw new CustomApiError(400,'Channel not found!')
     }
 
+    const Videos = await Video.find({channel:channel[0]._id}).populate('channel').populate('user')
     console.log(channel)
    return res.render('Profile',{
-    channel:channel[0]
+    channel:channel[0],
+    videos:Videos,
    })
 
 })
