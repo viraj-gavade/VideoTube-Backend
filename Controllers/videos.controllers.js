@@ -38,13 +38,7 @@ const publishAVideo = asyncHandler(async (req,res)=>{
             isPublished:isPublished,
             owner:req.user
         })
-        return res.status(200).json(
-            new ApiResponse(
-                200,
-                'Files uploaded successfully!',
-                video
-            )
-        )
+        return res.redirect('/home')
 } catch (error) {
     console.log(error)    
 }

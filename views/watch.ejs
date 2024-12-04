@@ -3,292 +3,395 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Title - Improved Video Platform</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Upload Video</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-bg: #f5f5f5;
-            --secondary-bg: #ffffff;
-            --text-primary: #0f0f0f;
-            --text-secondary: #606060;
-            --accent-color: #cc0000;
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #f7f9fc;
+            --text-color: #2c3e50;
+            --border-color: #e0e6ed;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            background-color: var(--primary-bg);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-family: 'Inter', Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
         }
 
-        .video-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: 1.5rem;
-            padding: 1rem;
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
 
-        .video-player {
-            background-color: black;
-            aspect-ratio: 16/9;
-            width: 100%;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .video-info {
-            background-color: var(--secondary-bg);
-            border-radius: 0.75rem;
-            padding: 1.25rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .channel-section {
+        .section-title {
+            text-align: center;
+            color: var(--text-color);
+            margin-bottom: 2rem;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .channel-details {
-            display: flex;
-            align-items: center;
+        .section-title i {
+            color: var(--primary-color);
         }
 
-        .channel-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            margin-right: 1rem;
-            object-fit: cover;
-        }
-
-        .subscribe-btn {
-            background-color: var(--accent-color);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
-
-        .subscribe-btn:hover {
-            background-color: #a30000;
-        }
-
-        .video-description {
-            background-color: var(--primary-bg);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-top: 1rem;
-        }
-
-        .recommended-videos {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .recommended-video {
-            display: flex;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            border-radius: 0.5rem;
-            padding: 0.5rem;
-        }
-
-        .recommended-video:hover {
-            background-color: rgba(0,0,0,0.05);
-        }
-
-        .comments-section {
-            background-color: var(--secondary-bg);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin-top: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .comment-input {
-            display: flex;
-            align-items: center;
+        .form-group {
             margin-bottom: 1.5rem;
         }
 
-        .comment-input input {
-            flex-grow: 1;
-            padding: 0.75rem;
-            border: 1px solid #e0e0e0;
-            border-radius: 0.5rem;
-            margin-left: 1rem;
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-color);
         }
 
-        .single-comment {
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .file-input {
+            position: relative;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            border: 2px dashed var(--border-color);
+        }
+
+        .file-input input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .preview-container {
+            max-height: 250px;
+            margin-top: 1rem;
+            text-align: center;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .preview-container video,
+        .preview-container img {
+            max-width: 100%;
+            max-height: 250px;
+            object-fit: contain;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+        }
+
+        .file-input-label {
             display: flex;
-            background-color: var(--primary-bg);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 0.75rem;
+            color: var(--text-color);
+            background-color: #f8f9fa;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .file-input-label i {
+            color: var(--primary-color);
+        }
+
+        /* Popup Styles */
+        .popup {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            max-width: 90%;
+            width: 350px;
+        }
+
+        .popup.show {
+            transform: translateX(-50%) scale(1);
+        }
+
+        .popup-icon {
+            font-size: 2.5rem;
+            color: var(--secondary-color);
+        }
+
+        .popup-content {
+            flex-grow: 1;
+        }
+
+        .popup-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .popup-message {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .popup-close {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .popup-close:hover {
+            color: #333;
         }
     </style>
 </head>
-<body class="text-gray-900">
-    <div class="video-container">
-        <!-- Main Video Section -->
-        <div class="main-video-section">
-            <div class="video-player mb-4">
-                <video width="100%" height="100%" controls>
-                    <source src="<%= video.videoFile %>" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-
-            <div class="video-info">
-                <h1 class="text-2xl font-bold mb-4"><%= video.title %></h1>
-
-                <div class="channel-section">
-                    <div class="channel-details">
-                        <a href="/api/v1/auth/user/channel/<%= owner.username %>">
-                            <img src="<%= owner.avatar %>" alt="Channel Avatar" class="channel-avatar">
-                        </a>
-                        <div>
-                            <h2 class="text-lg font-semibold"><%= owner.username %></h2>
-                            <p class="text-sm text-gray-600"><%= video.owner.subscribersCount %> subscribers</p>
-                        </div>
-                    </div>
-                    <button class="subscribe-btn">Subscribe</button>
-                </div>
-
-                <div class="video-description">
-                    <p class="text-sm text-gray-700 mb-2">
-                        <%= video.views %> views • <%= new Date(video.createdAt).toLocaleDateString() %>
-                    </p>
-                    <p class="text-base"><%= video.description %></p>
-                </div>
-            </div>
-
-            <!-- Comments Section -->
-            <div class="comments-section">
-                <h3 class="text-xl font-semibold mb-4"><%= comments.length %> Comments</h3>
-
-                <% if (locals.user) { %>
-                <div class="comment-input">
-                    <img src="<%= user.avatar %>" alt="User Avatar" class="w-10 h-10 rounded-full">
-                    <form action="/api/v1/comments/comments/<%= video._id %>" method="POST" class="flex-grow">
+<body>
+    <div class="container">
+        <h1 class="section-title">
+            <i class="fas fa-cloud-upload-alt"></i>
+            Upload Video
+        </h1>
+        
+        <form id="videoUploadForm" action="/api/v1/videos/publish-video" method="POST" enctype="multipart/form-data">
+            <div class="grid">
+                <div class="form-group">
+                    <label for="videoFileInput">Video File</label>
+                    <div class="file-input">
                         <input 
-                            type="text" 
-                            name="content" 
-                            placeholder="Add a public comment..." 
+                            type="file" 
+                            name="videoFile" 
+                            id="videoFileInput" 
+                            accept="video/*" 
                             required 
-                            maxlength="500"
+                            class="form-control"
                         >
-                        <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
-                            Comment
-                        </button>
-                    </form>
-                </div>
-                <% } %>
-
-                <div class="comments-list">
-                    <% if (comments.length === 0) { %>
-                    <div class="text-center text-gray-500 py-6">
-                        <p>No comments yet</p>
-                        <% if (locals.user) { %>
-                        <p class="text-sm mt-2">Be the first to comment!</p>
-                        <% } %>
+                        <label for="videoFileInput" class="file-input-label">
+                            <i class="fas fa-video"></i>
+                            Select Video File
+                        </label>
                     </div>
-                    <% } else { %>
-                        <% comments.forEach(function(comment) { %>
-                        <div class="single-comment">
-                            <img 
-                                src="<%= comment.owner.avatar %>" 
-                                alt="<%= comment.owner.username %>" 
-                                class="w-10 h-10 rounded-full mr-4"
-                            >
-                            <div class="flex-grow">
-                                <div class="flex items-center mb-2">
-                                    <span class="font-semibold mr-2"><%= comment.owner.username %></span>
-                                    <span class="text-xs text-gray-500">
-                                        <%= new Date(comment.createdAt).toLocaleDateString() %>
-                                    </span>
-                                </div>
-                                <p class="text-base"><%= comment.content %></p>
-                            </div>
-                        </div>
-                        <% }); %>
-                    <% } %>
+                    <div id="videoPreview" class="preview-container"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="thumbnailInput">Thumbnail</label>
+                    <div class="file-input">
+                        <input 
+                            type="file" 
+                            name="thumbnail" 
+                            id="thumbnailInput" 
+                            accept="image/*" 
+                            required 
+                            class="form-control"
+                        >
+                        <label for="thumbnailInput" class="file-input-label">
+                            <i class="fas fa-image"></i>
+                            Select Thumbnail
+                        </label>
+                    </div>
+                    <div id="thumbnailPreview" class="preview-container"></div>
                 </div>
             </div>
-        </div>
 
-        <!-- Recommended Videos Section -->
-        <div class="recommended-videos">
-            <!-- Recommend placeholder videos -->
-            <div class="recommended-video">
-                <img src="/api/placeholder/168/94" alt="Recommended Video" class="w-42 h-24 object-cover rounded-lg mr-4">
-                <div>
-                    <h4 class="font-semibold text-sm">Recommended Video Title</h4>
-                    <p class="text-xs text-gray-600">Channel Name</p>
+            <div class="form-group">
+                <label for="title">Video Title</label>
+                <input 
+                    type="text" 
+                    name="title" 
+                    id="title" 
+                    required 
+                    placeholder="Enter video title" 
+                    class="form-control"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea 
+                    name="description" 
+                    id="description" 
+                    rows="4" 
+                    placeholder="Describe your video" 
+                    class="form-control"
+                ></textarea>
+            </div>
+
+            <div class="grid">
+                <div class="form-group">
+                    <label for="views">Initial Views</label>
+                    <input 
+                        type="number" 
+                        name="views" 
+                        id="views" 
+                        min="0" 
+                        value="0" 
+                        class="form-control"
+                    >
+                </div>
+                <div class="form-group">
+                    <label for="isPublished">Publish Status</label>
+                    <select 
+                        name="isPublished" 
+                        id="isPublished" 
+                        class="form-control"
+                    >
+                        <option value="true">Publish Now</option>
+                        <option value="false">Save as Draft</option>
+                    </select>
                 </div>
             </div>
+
+            <div class="form-group" style="margin-top: 1.5rem;">
+                <button type="submit" class="btn">
+                    <i class="fas fa-upload" style="margin-right: 10px;"></i>
+                    Upload Video
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Success Popup -->
+    <div id="successPopup" class="popup">
+        <i class="fas fa-check-circle popup-icon"></i>
+        <div class="popup-content">
+            <div class="popup-title">Upload Successful</div>
+            <div class="popup-message">Your video has been uploaded successfully!</div>
         </div>
+        <button class="popup-close" onclick="closePopup()">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Make recommended videos clickable
-            document.querySelectorAll('.recommended-video').forEach(function(videoCard) {
-                videoCard.addEventListener('click', function() {
-                    const videoId = this.getAttribute('data-video-id');
-                    window.location.href = `/watch/${videoId}`;
-                });
-            });
+        // Video File Preview
+        document.getElementById('videoFileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const videoPreview = document.getElementById('videoPreview');
+            const label = this.nextElementSibling;
+            
+            if (file) {
+                const videoElement = document.createElement('video');
+                videoElement.src = URL.createObjectURL(file);
+                videoElement.controls = true;
+                
+                videoPreview.innerHTML = '';
+                videoPreview.appendChild(videoElement);
 
-            // Like button interaction
-            const likeButton = document.querySelector('.like-button');
-            if (likeButton) {
-                likeButton.addEventListener('click', function() {
-                    alert('Like functionality to be implemented');
-                });
+                label.innerHTML = `<i class="fas fa-video"></i> ${file.name}`;
             }
-
-            // Subscribe button interaction
-            const subscribeButton = document.querySelector('.subscribe-btn');
-            if (subscribeButton) {
-                subscribeButton.addEventListener('click', function() {
-                    alert('Subscribe functionality to be implemented');
-                });
-            }
-
-            // Edit comment functionality
-            const editButtons = document.querySelectorAll('.edit-comment-btn');
-            const cancelEditButtons = document.querySelectorAll('.cancel-edit-btn');
-
-            editButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const commentContainer = this.closest('.single-comment');
-                    const commentText = commentContainer.querySelector('.comment-text');
-                    const editForm = commentContainer.querySelector('.edit-comment-form');
-
-                    if (commentText && editForm) {
-                        commentText.classList.add('hidden');
-                        editForm.classList.remove('hidden');
-                    }
-                });
-            });
-
-            cancelEditButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const commentContainer = this.closest('.single-comment');
-                    const commentText = commentContainer.querySelector('.comment-text');
-                    const editForm = commentContainer.querySelector('.edit-comment-form');
-
-                    if (commentText && editForm) {
-                        commentText.classList.remove('hidden');
-                        editForm.classList.add('hidden');
-                    }
-                });
-            });
         });
+
+        // Thumbnail Preview
+        document.getElementById('thumbnailInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const thumbnailPreview = document.getElementById('thumbnailPreview');
+            const label = this.nextElementSibling;
+            
+            if (file) {
+                const imgElement = document.createElement('img');
+                imgElement.src = URL.createObjectURL(file);
+                
+                thumbnailPreview.innerHTML = '';
+                thumbnailPreview.appendChild(imgElement);
+
+                label.innerHTML = `<i class="fas fa-image"></i> ${file.name}`;
+            }
+        });
+
+        // Form Submission and Popup
+        document.getElementById('videoUploadForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent actual form submission for this example
+
+            // Simulate form submission
+            setTimeout(() => {
+                const successPopup = document.getElementById('successPopup');
+                successPopup.classList.add('show');
+
+                // Automatically close popup after 3 seconds
+                setTimeout(() => {
+                    successPopup.classList.remove('show');
+                }, 3000);
+            }, 500);
+        });
+
+        // Close Popup Function
+        function closePopup() {
+            const successPopup = document.getElementById('successPopup');
+            successPopup.classList.remove('show');
+        }
     </script>
 </body>
 </html>
