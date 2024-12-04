@@ -326,16 +326,18 @@ const getUserChannelProfile = asyncHandler(async(req,res,next)=>{
                 email:1   
              }       
     }
-])
+])      
+    console.log(channel[0].username)
+        const user = await User.find({username:channel[0].username})
+        const UserId = user[0]._id
     if(!channel?.length){
         throw new CustomApiError(400,'Channel not found!')
     }
 
-    const Videos = await Video.find({channel:channel[0]._id}).populate('channel').populate('user')
-    console.log(channel)
+    const Videos = await Video.find({owner: UserId})
    return res.render('Profile',{
     channel:channel[0],
-    videos:Videos,
+    videos:Videos
    })
 
 })
