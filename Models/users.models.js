@@ -23,14 +23,15 @@ const UserSchema = mongoose.Schema({
         index:true,
         trim:true,
     },
-   avatar:{
-    type:String,
-    required:true
-   },
-   coverImage:{
-    type:String,
-
-   },
+    avatar: {
+        type: String,
+        default: "https://static.vecteezy.com/system/resources/previews/024/983/914/non_2x/simple-user-default-icon-free-png.png",
+        required: true
+      },
+      coverImage: {
+        type: String,
+        default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRF33NHxM7qEJwv1ouSYlpE_5WQmKRf4Qznyw&s"
+      },
    watchHistory:[
     {
         type:mongoose.Schema.Types.ObjectId,

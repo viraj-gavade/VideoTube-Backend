@@ -100,8 +100,6 @@ OauthRouter.get('/auth/google/callback',async (req, res, next) => {
         email:Useremail,
         fullname:fullName,
         avatar:ProfileImage,
-        coverImage:ProfileImage
-
     })
      console.log(user)
      const paylod = {
