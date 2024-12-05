@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --background-light: #f4f7fa;
+            --text-dark: #2c3e50;
+            --border-light: #e0e6ed;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-light);
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 2rem auto;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
+            display: flex;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #f8f9fd;
+            padding: 2rem 1rem;
+            border-right: 1px solid var(--border-light);
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-nav a {
+            text-decoration: none;
+            color: #6b7280;
+            font-weight: 500;
+            padding: 0.75rem 1rem;
+            display: block;
+            border-radius: 8px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .sidebar-nav a:hover, 
+        .sidebar-nav a.active {
+            background-color: rgba(74, 144, 226, 0.1);
+            color: var(--primary-color);
+        }
+
+        .settings-content {
+            flex-grow: 1;
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .profile-section {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .profile-group {
+            background-color: #f9fafb;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .profile-group:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transform: translateY(-3px);
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .profile-header h3 {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: white;
+            transition: all var(--transition-speed) ease;
+            margin-top: 0.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all var(--transition-speed) ease;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background-color: #3a7bd5;
+        }
+
+        .textarea-input {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .image-upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .image-preview {
+            max-width: 200px;
+            max-height: 200px;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .file-input-label:hover {
+            background-color: #3a7bd5;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-light);
+            }
+
+            .sidebar-nav {
+                display: flex;
+                justify-content: space-around;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <ul class="sidebar-nav">
+                <li><a href="#profile" class="active">Profile</a></li>
+                <li><a href="#security">Security</a></li>
+                <li><a href="#appearance">Appearance</a></li>
+            </ul>
+        </div>
+
+        <div class="settings-content">
+            <section id="profile">
+                <h2 class="section-title">Profile Settings</h2>
+                
+                <div class="profile-section">
+                    <div class="profile-group">
+                        <div class="profile-header">
+                            <h3>Personal Information</h3>
+                        </div>
+                        <form id="personalInfoForm">
+                            <div>
+                                <label for="fullName" class="form-label">Full Name</label>
+                                <input type="text" id="fullName" class="form-input" placeholder="Enter your full name">
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" id="username" class="form-input" placeholder="Choose a unique username">
+                            </div>
+                            <div style="margin-top: 1.5rem; text-align: right;">
+                                <button type="submit" class="btn">Update Profile</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="profile-group">
+                        <div class="profile-header">
+                            <h3>About You</h3>
+                        </div>
+                        <form id="bioForm">
+                            <div>
+                                <label for="bio" class="form-label">Bio</label>
+                                <textarea id="bio" class="form-input textarea-input" placeholder="Tell us about yourself"></textarea>
+                            </div>
+                            <div style="margin-top: 1.5rem; text-align: right;">
+                                <button type="submit" class="btn">Update Bio</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <section id="security" style="display:none;">
+                <h2 class="section-title">Account Security</h2>
+                
+                <div class="profile-section">
+                    <div class="profile-group">
+                        <div class="profile-header">
+                            <h3>Change Password</h3>
+                        </div>
+                        <form id="passwordForm">
+                            <div>
+                                <label for="currentPassword" class="form-label">Current Password</label>
+                                <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password">
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <label for="newPassword" class="form-label">New Password</label>
+                                <input type="password" id="newPassword" class="form-input" placeholder="Enter new password">
+                            </div>
+                            <div style="margin-top: 1rem;">
+                                <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm new password">
+                            </div>
+                            <div style="margin-top: 1.5rem; text-align: right;">
+                                <button type="submit" class="btn">Change Password</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <section id="appearance" style="display:none;">
+                <h2 class="section-title">Appearance</h2>
+                
+                <div class="profile-section">
+                    <div class="profile-group">
+                        <div class="profile-header">
+                            <h3>Profile Picture</h3>
+                        </div>
+                        <div class="image-upload-container">
+                            <img id="avatarPreview" src="" alt="Profile Picture" class="image-preview" style="display: none;">
+                            <div class="file-input-wrapper">
+                                <input type="file" id="avatarUpload" accept="image/*">
+                                <label for="avatarUpload" class="file-input-label">
+                                    Change Profile Picture
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-group">
+                        <div class="profile-header">
+                            <h3>Cover Image</h3>
+                        </div>
+                        <div class="image-upload-container">
+                            <img id="coverPreview" src="" alt="Cover Image" class="image-preview" style="display: none;">
+                            <div class="file-input-wrapper">
+                                <input type="file" id="coverUpload" accept="image/*">
+                                <label for="coverUpload" class="file-input-label">
+                                    Change Cover Image
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Navigation functionality
+        const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+        const sections = document.querySelectorAll('section');
+
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                
+                sidebarLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+
+                sections.forEach(section => {
+                    section.style.display = 'none';
+                });
+
+                const targetSection = document.querySelector(link.getAttribute('href'));
+                targetSection.style.display = 'block';
+            });
+        });
+
+        // Image preview functionality
+        function previewImage(inputElement, previewElement) {
+            const file = inputElement.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewElement.src = e.target.result;
+                    previewElement.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Add event listeners for image uploads
+        document.getElementById('avatarUpload').addEventListener('change', function() {
+            const preview = document.getElementById('avatarPreview');
+            previewImage(this, preview);
+        });
+
+        document.getElementById('coverUpload').addEventListener('change', function() {
+            const preview = document.getElementById('coverPreview');
+            previewImage(this, preview);
+        });
+
+        // Form submission handlers
+        document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('fullName').value;
+            const username = document.getElementById('username').value;
+            
+            // Here you would typically send data to server
+            console.log('Updating Personal Info:', { fullName, username });
+            alert('Profile updated successfully!');
+        });
+
+        document.getElementById('bioForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const bio = document.getElementById('bio').value;
+            
+            // Here you would typically send data to server
+            console.log('Updating Bio:', bio);
+            alert('Bio updated successfully!');
+        });
+
+        document.getElementById('passwordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return;
+            }
+            
+            // Here you would typically send data to server
+            console.log('Changing Password');
+            alert('Password changed successfully!');
+        });
+    </script>
+</body>
+</html>

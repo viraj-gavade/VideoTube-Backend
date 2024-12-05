@@ -42,6 +42,13 @@ UserRouter.route('/signin').get((req,res)=>{
     res.render('SignIn')
 }).post(loginUser)
 
+UserRouter.route('/edit-profile').get(VerifyJwt,(req,res)=>{
+    res.render('EditProfile', {
+        user:req.user
+    })
+})
+
+
 //Secured Routes
 
 UserRouter.route('/logout').post(VerifyJwt,logoutUser)
