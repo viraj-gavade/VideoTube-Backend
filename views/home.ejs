@@ -63,6 +63,7 @@
         .header-right {
             display: flex;
             align-items: center;
+            position: relative;
         }
 
         .header-right img {
@@ -70,9 +71,41 @@
             height: 32px;
             border-radius: 50%;
             margin-left: 15px;
+            cursor: pointer;
         }
 
-        /* Sidebar Styles */
+        /* Profile Dropdown Styles */
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border: 1px solid #d3d3d3;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-width: 180px;
+            z-index: 1000;
+            margin-top: 10px;
+        }
+
+        .profile-dropdown.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #030303;
+            display: block;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Rest of the previous styles remain the same */
         .sidebar {
             width: 240px;
             background-color: white;
@@ -158,11 +191,10 @@
             font-size: 0.9em;
         }
         .card-link{
-        text-decoration: none;
-        color: black;
+            text-decoration: none;
+            color: black;
         }
     </style>
-  
 </head>
 <body>
    
@@ -176,8 +208,16 @@
             </div>
         </div>
         <div class="header-right">
-           <a href="/api/v1/videos/publish-video"> <img src="https://brandeps.com/icon-download/V/Video-call-icon-vector-04.svg" alt="Create"> </a>
-            <a href="/api/v1/auth/user/channel/ <%= user.username %>"><img src="<%= user.avatar %>" alt="https://static.vecteezy.com/system/resources/previews/024/983/914/non_2x/simple-user-default-icon-free-png.png"></a>
+           <a href="/api/v1/videos/publish-video"> 
+                <img src="https://brandeps.com/icon-download/V/Video-call-icon-vector-04.svg" alt="Create"> 
+           </a>
+           <img src="<%= user.avatar %>" alt="Profile" class="profile-image">
+           
+           <!-- Profile Dropdown -->
+           <div class="profile-dropdown">
+               <a href="/api/v1/auth/user/channel/<%= user.username %>" class="dropdown-item">Dashboard</a>
+               <a href="/api/v1/auth/user/signin" class="dropdown-item">Sign Out</a>
+           </div>
         </div>
     </div>
 
@@ -208,31 +248,45 @@
         const month = createdAtDate.toLocaleString("en-US", { month: "long" });
         const formattedDate = `${day} ${month}`;
     %>
-       <a href="/api/v1/videos/video/<%= video.id %>" class="card-link"> <div class="video-card" data-video-id="<%= video._id %>">
-            <img class="video-thumbnail" src="<%= video.thumbnail %>" alt="Video Thumbnail">
-            <div class="video-details">
-                <img class="channel-icon" src="<%= video.owner.avatar %>" alt="Channel">
-                <div class="video-info">
-                    <div class="video-title"><%= video.title %></div>
-                    <div class="video-metadata">
-                        <%= video.owner.username %> • <%= video.views %> views • <%= formattedDate %>
+       <a href="/api/v1/videos/video/<%= video.id %>" class="card-link"> 
+            <div class="video-card" data-video-id="<%= video._id %>">
+                <img class="video-thumbnail" src="<%= video.thumbnail %>" alt="Video Thumbnail">
+                <div class="video-details">
+                    <img class="channel-icon" src="<%= video.owner.avatar %>" alt="Channel">
+                    <div class="video-info">
+                        <div class="video-title"><%= video.title %></div>
+                        <div class="video-metadata">
+                            <%= video.owner.username %> • <%= video.views %> views • <%= formattedDate %>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div></a>
+       </a>
     <% }); %>
     </div>
 
     <script>
-        //Make video cards clickable
-        
-
-        // Search functionality (just a placeholder)
+        // Search functionality (placeholder)
         const searchInput = document.querySelector('.search-bar input');
         const searchButton = document.querySelector('.search-bar button');
 
         searchButton.addEventListener('click', function() {
             alert('Search for: ' + searchInput.value);
+        });
+
+        // Profile Dropdown Toggle
+        const profileImage = document.querySelector('.profile-image');
+        const profileDropdown = document.querySelector('.profile-dropdown');
+
+        profileImage.addEventListener('click', function() {
+            profileDropdown.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!profileImage.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.classList.remove('show');
+            }
         });
     </script>
 </body>
