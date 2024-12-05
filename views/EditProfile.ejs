@@ -3,412 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Account Settings</title>
+    <title>Profile Settings</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #4a90e2;
-            --background-light: #f4f7fa;
-            --text-dark: #2c3e50;
-            --border-light: #e0e6ed;
-            --transition-speed: 0.3s;
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --success-bg: #dcfce7;
+            --success-text: #15803d;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
-            background-color: var(--background-light);
-            line-height: 1.6;
-            color: var(--text-dark);
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            padding: 2rem;
+            min-height: 100vh;
         }
 
         .container {
-            width: 100%;
-            max-width: 1000px;
-            margin: 2rem auto;
-            background-color: white;
-            border-radius: 16px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.05);
-            display: flex;
-            overflow: hidden;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .sidebar {
-            width: 250px;
-            background-color: #f8f9fd;
-            padding: 2rem 1rem;
-            border-right: 1px solid var(--border-light);
+        .card {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .sidebar-nav {
-            list-style: none;
+        .card-header {
+            margin-bottom: 1.5rem;
         }
 
-        .sidebar-nav li {
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
             margin-bottom: 0.5rem;
         }
 
-        .sidebar-nav a {
-            text-decoration: none;
-            color: #6b7280;
-            font-weight: 500;
-            padding: 0.75rem 1rem;
-            display: block;
-            border-radius: 8px;
-            transition: all var(--transition-speed) ease;
+        .card-description {
+            color: var(--text-secondary);
         }
 
-        .sidebar-nav a:hover, 
-        .sidebar-nav a.active {
-            background-color: rgba(74, 144, 226, 0.1);
-            color: var(--primary-color);
-        }
-
-        .settings-content {
-            flex-grow: 1;
-            padding: 2rem;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            color: var(--text-dark);
+        .tabs {
             margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--border-light);
         }
 
-        .profile-section {
+        .tab-list {
             display: grid;
-            gap: 1.5rem;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .profile-group {
-            background-color: #f9fafb;
-            border: 1px solid var(--border-light);
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all var(--transition-speed) ease;
-        }
-
-        .profile-group:hover {
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transform: translateY(-3px);
-        }
-
-        .profile-header {
+        .tab-trigger {
+            background: none;
+            border: none;
+            padding: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tab-trigger.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
             margin-bottom: 1rem;
         }
 
-        .profile-header h3 {
-            font-size: 1.1rem;
-            color: var(--text-dark);
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
-            font-size: 1rem;
-            background-color: white;
-            transition: all var(--transition-speed) ease;
-            margin-top: 0.5rem;
-        }
-
-        .form-label {
+        label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
         }
 
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: border-color 0.2s;
         }
 
-        .btn {
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
+            border-radius: 0.375rem;
+            font-weight: 500;
             cursor: pointer;
-            font-weight: 600;
-            transition: all var(--transition-speed) ease;
-            font-size: 0.9rem;
+            transition: background-color 0.2s;
         }
 
-        .btn:hover {
-            background-color: #3a7bd5;
+        button:hover {
+            background-color: var(--primary-hover);
         }
 
-        .textarea-input {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .image-upload-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .image-preview {
-            max-width: 200px;
-            max-height: 200px;
+        .alert {
+            padding: 1rem;
+            border-radius: 0.375rem;
             margin-bottom: 1rem;
-            border-radius: 8px;
-            object-fit: cover;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+        }
+
+        .profile-picture-upload {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .picture-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
         }
 
         .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .file-input-wrapper input[type=file] {
-            position: absolute;
-            left: -9999px;
-        }
-
-        .file-input-label {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .file-input-label:hover {
-            background-color: #3a7bd5;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid var(--border-light);
-            }
-
-            .sidebar-nav {
-                display: flex;
-                justify-content: space-around;
-            }
+            flex: 1;
         }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <div class="sidebar">
-            <ul class="sidebar-nav">
-                <li><a href="#profile" class="active">Profile</a></li>
-                <li><a href="#security">Security</a></li>
-                <li><a href="#appearance">Appearance</a></li>
-            </ul>
-        </div>
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">Profile Settings</h1>
+                <p class="card-description">Manage your account settings and preferences</p>
+            </div>
 
-        <div class="settings-content">
-            <section id="profile">
-                <h2 class="section-title">Profile Settings</h2>
-                
-                <div class="profile-section">
-                    <div class="profile-group">
-                        <div class="profile-header">
-                            <h3>Personal Information</h3>
-                        </div>
-                        <form id="personalInfoForm">
-                            <div>
-                                <label for="fullName" class="form-label">Full Name</label>
-                                <input type="text" id="fullName" class="form-input" placeholder="Enter your full name">
-                            </div>
-                            <div style="margin-top: 1rem;">
-                                <label for="username" class="form-label">Username</label>
-                                <input type="text" id="username" class="form-input" placeholder="Choose a unique username">
-                            </div>
-                            <div style="margin-top: 1.5rem; text-align: right;">
-                                <button type="submit" class="btn">Update Profile</button>
-                            </div>
-                        </form>
-                    </div>
+            <div class="alert alert-success" id="successAlert"></div>
 
-                    <div class="profile-group">
-                        <div class="profile-header">
-                            <h3>About You</h3>
-                        </div>
-                        <form id="bioForm">
-                            <div>
-                                <label for="bio" class="form-label">Bio</label>
-                                <textarea id="bio" class="form-input textarea-input" placeholder="Tell us about yourself"></textarea>
-                            </div>
-                            <div style="margin-top: 1.5rem; text-align: right;">
-                                <button type="submit" class="btn">Update Bio</button>
-                            </div>
-                        </form>
-                    </div>
+            <div class="tabs">
+                <div class="tab-list">
+                    <button class="tab-trigger active" data-tab="password">
+                        <i class="fas fa-key"></i>
+                        Password
+                    </button>
+                    <button class="tab-trigger" data-tab="picture">
+                        <i class="fas fa-camera"></i>
+                        Picture
+                    </button>
+                    <button class="tab-trigger" data-tab="email">
+                        <i class="fas fa-envelope"></i>
+                        Email
+                    </button>
+                    <button class="tab-trigger" data-tab="username">
+                        <i class="fas fa-user"></i>
+                        Username
+                    </button>
                 </div>
-            </section>
 
-            <section id="security" style="display:none;">
-                <h2 class="section-title">Account Security</h2>
-                
-                <div class="profile-section">
-                    <div class="profile-group">
-                        <div class="profile-header">
-                            <h3>Change Password</h3>
+                <div class="tab-content active" id="password">
+                    <form method="post" action="/api/v1/auth/user/change-password" enctype="application/x-www-form-urlencoded">
+                        <div class="form-group">
+                            <label for="old_password">Current Password</label>
+                            <input type="password" id="old_password" name="oldPassword" required>
                         </div>
-                        <form id="passwordForm">
-                            <div>
-                                <label for="currentPassword" class="form-label">Current Password</label>
-                                <input type="password" id="currentPassword" class="form-input" placeholder="Enter current password">
-                            </div>
-                            <div style="margin-top: 1rem;">
-                                <label for="newPassword" class="form-label">New Password</label>
-                                <input type="password" id="newPassword" class="form-input" placeholder="Enter new password">
-                            </div>
-                            <div style="margin-top: 1rem;">
-                                <label for="confirmPassword" class="form-label">Confirm New Password</label>
-                                <input type="password" id="confirmPassword" class="form-input" placeholder="Confirm new password">
-                            </div>
-                            <div style="margin-top: 1.5rem; text-align: right;">
-                                <button type="submit" class="btn">Change Password</button>
-                            </div>
-                        </form>
-                    </div>
+                        <div class="form-group">
+                            <label for="new_password">New Password</label>
+                            <input type="password" id="new_password" name="newPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm New Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required>
+                        </div>
+                        <button type="submit">Update Password</button>
+                    </form>
                 </div>
-            </section>
 
-            <section id="appearance" style="display:none;">
-                <h2 class="section-title">Appearance</h2>
-                
-                <div class="profile-section">
-                    <div class="profile-group">
-                        <div class="profile-header">
-                            <h3>Profile Picture</h3>
-                        </div>
-                        <div class="image-upload-container">
-                            <img id="avatarPreview" src="" alt="Profile Picture" class="image-preview" style="display: none;">
-                            <div class="file-input-wrapper">
-                                <input type="file" id="avatarUpload" accept="image/*">
-                                <label for="avatarUpload" class="file-input-label">
-                                    Change Profile Picture
-                                </label>
+                <div class="tab-content" id="picture">
+                    <form method="post" action="/api/v1/library/user/change-profile-picture" enctype="multipart/form-data" >
+                        <div class="form-group">
+                            <label>Upload New Picture</label>
+                            <div class="profile-picture-upload">
+                                <div class="picture-preview">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                                <div class="file-input-wrapper">
+                                    <input type="file" accept="image/*" name="profileImg" required>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="profile-group">
-                        <div class="profile-header">
-                            <h3>Cover Image</h3>
-                        </div>
-                        <div class="image-upload-container">
-                            <img id="coverPreview" src="" alt="Cover Image" class="image-preview" style="display: none;">
-                            <div class="file-input-wrapper">
-                                <input type="file" id="coverUpload" accept="image/*">
-                                <label for="coverUpload" class="file-input-label">
-                                    Change Cover Image
-                                </label>
-                            </div>
-                        </div>
-                    </div>
+                        <button type="submit">Update Picture</button>
+                    </form>
                 </div>
-            </section>
+
+                <div class="tab-content" id="email">
+                    <form method="post" action="/api/v1/library/user/change-email" enctype="application/x-www-form-urlencoded">
+                        <div class="form-group">
+                            <label for="email">New Email Address</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <button type="submit">Update Email</button>
+                    </form>
+                </div>
+
+                <div class="tab-content" id="username">
+                    <form method="post" action="/api/v1/library/user/change-username" enctype="application/x-www-form-urlencoded">
+                        <div class="form-group">
+                            <label for="username">New Username</label>
+                            <input type="text" id="username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_username">Confirm New Username</label>
+                            <input type="text" id="confirm_username" name="confirm_username" required>
+                        </div>
+                        <button type="submit">Update Username</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Navigation functionality
-        const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
-        const sections = document.querySelectorAll('section');
-
-        sidebarLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
+        // Tab switching functionality
+        document.querySelectorAll('.tab-trigger').forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                // Remove active class from all triggers and contents
+                document.querySelectorAll('.tab-trigger').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                 
-                sidebarLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-
-                sections.forEach(section => {
-                    section.style.display = 'none';
-                });
-
-                const targetSection = document.querySelector(link.getAttribute('href'));
-                targetSection.style.display = 'block';
+                // Add active class to clicked trigger and corresponding content
+                trigger.classList.add('active');
+                document.getElementById(trigger.dataset.tab).classList.add('active');
             });
         });
 
-        // Image preview functionality
-        function previewImage(inputElement, previewElement) {
-            const file = inputElement.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewElement.src = e.target.result;
-                    previewElement.style.display = 'block';
-                }
-                reader.readAsDataURL(file);
-            }
+        // Handle form submission
+        function handleSubmit(event, formType) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const alert = document.getElementById('successAlert');
+
+            // Simulate API request
+            setTimeout(() => {
+                alert.style.display = 'block';
+                alert.textContent = `${formType} updated successfully!`;
+                alert.classList.add('alert-success');
+            }, 1000);
         }
-
-        // Add event listeners for image uploads
-        document.getElementById('avatarUpload').addEventListener('change', function() {
-            const preview = document.getElementById('avatarPreview');
-            previewImage(this, preview);
-        });
-
-        document.getElementById('coverUpload').addEventListener('change', function() {
-            const preview = document.getElementById('coverPreview');
-            previewImage(this, preview);
-        });
-
-        // Form submission handlers
-        document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const fullName = document.getElementById('fullName').value;
-            const username = document.getElementById('username').value;
-            
-            // Here you would typically send data to server
-            console.log('Updating Personal Info:', { fullName, username });
-            alert('Profile updated successfully!');
-        });
-
-        document.getElementById('bioForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const bio = document.getElementById('bio').value;
-            
-            // Here you would typically send data to server
-            console.log('Updating Bio:', bio);
-            alert('Bio updated successfully!');
-        });
-
-        document.getElementById('passwordForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const currentPassword = document.getElementById('currentPassword').value;
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (newPassword !== confirmPassword) {
-                alert('New passwords do not match!');
-                return;
-            }
-            
-            // Here you would typically send data to server
-            console.log('Changing Password');
-            alert('Password changed successfully!');
-        });
     </script>
 </body>
 </html>

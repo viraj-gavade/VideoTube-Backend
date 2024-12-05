@@ -95,7 +95,8 @@ const loginUser = asyncHandler(async (req,res)=>{
   if(!user){
     throw new CustomApiError(404,'User not found!')
   }
-    const ValidPassword = user.isPasswordCorrect(password)
+    const ValidPassword = await user.isPasswordCorrect(password)
+    console.log("Password:-",ValidPassword)
     if(!ValidPassword){
         throw new CustomApiError(401,'Invalid user credentials!')
     }
@@ -117,19 +118,11 @@ const loginUser = asyncHandler(async (req,res)=>{
 
 
 const logoutUser = asyncHandler(async (req,res)=>{
-
-await User.findByIdAndUpdate(req.user._id,{
-    $set:{
-        refreshToken:null
-    }
-},{
-    new:true
-})
 const options = {
     httpOnly:true,
     secure:true}
 
-res.status(200).clearCookie('accessToken',options).clearCookie('refreshToken',options).json(
+return res.status(200).clearCookie('accessToken',options).clearCookie('refreshToken',options).json(
     new ApiResponse(200,'User Logged Out Successfully!')
 )
 }) 
@@ -177,11 +170,14 @@ const refreshAccessToken = asyncHandler(async(req,res)=>{
 const changeCurrentPassword = asyncHandler(async(req,res)=>{
 
     try {
-        const {oldPassword,newPassword} = req.body
+        const {oldPassword,newPassword,confirm_password} = req.body
        const user = await User.findById(req.user._id)
        const isPasswordCorrect = await user.isPasswordCorrect(oldPassword)
         if (!isPasswordCorrect) {
             throw new CustomApiError(401,'The old password you have entered is not correct!')
+        }
+        if (newPassword !== confirm_password) {
+            throw new CustomApiError(401,'The new password and confirm password you have entered are not the same!')
         }
         user.password = newPassword
        await user.save({validateBeforeSave:true})
@@ -198,30 +194,6 @@ const getCurrentUser = asyncHandler(async(req,res)=>{
     res.status(200).json(
         new ApiResponse(200,'Current Used feteched successfully!',req.user)
         )
-}) //Checked and bugs fixed
-
-
-const updateUserdetails = asyncHandler(async (req,res)=>{
-    const {email,fullname} = req.body
-    if(!email || !fullname){
-        throw new CustomApiError(404,'All fields are required!')
-    }
-    const user =User.findByIdAndUpdate(req.user?._id,
-        {
-            $set:{
-                email:email,
-                fullname:fullname
-            }
-        },
-        {
-            new:true
-        }
-    )
-    return res.status(200).json(
-        new ApiResponse(200,
-            'User details updated successfully!',
-        )
-    )
 }) //Checked and bugs fixed
 
 const updateUserAvtar = asyncHandler(async(req,res)=>{
@@ -488,7 +460,6 @@ logoutUser,
 refreshAccessToken,
 changeCurrentPassword,
 getCurrentUser,
-updateUserdetails,
 updateUserAvtar,
 updateUsercoverImage,
 getUserChannelProfile,

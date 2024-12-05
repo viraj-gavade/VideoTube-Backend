@@ -51,7 +51,7 @@ UserRouter.route('/edit-profile').get(VerifyJwt,(req,res)=>{
 
 //Secured Routes
 
-UserRouter.route('/logout').post(VerifyJwt,logoutUser)
+UserRouter.route('/logout').get(VerifyJwt,logoutUser)
 
 UserRouter.route('/refresh-token').post(VerifyJwt,refreshAccessToken)
 
@@ -63,7 +63,6 @@ UserRouter.route('/change-username').post(VerifyJwt,changeUserUsername)
 
 UserRouter.route('/current-user').get(VerifyJwt,getCurrentUser)
 
-UserRouter.route('/update-account-details').patch(VerifyJwt,updateUserdetails)
 
 UserRouter.route('/update-avatar').patch(VerifyJwt,upload.single('avatar'),updateUserAvtar)
 
