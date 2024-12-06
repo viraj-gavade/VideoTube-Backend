@@ -64,7 +64,7 @@ UserRouter.route('/change-username').post(VerifyJwt,changeUserUsername)
 UserRouter.route('/current-user').get(VerifyJwt,getCurrentUser)
 
 
-UserRouter.route('/update-avatar').patch(VerifyJwt,upload.single('avatar'),updateUserAvtar)
+UserRouter.route('/update-avatar').post(VerifyJwt,upload.single('avatar'),updateUserAvtar)
 
 UserRouter.route('/update-coverImage').patch(VerifyJwt,upload.single('coverImage'),updateUsercoverImage)
 

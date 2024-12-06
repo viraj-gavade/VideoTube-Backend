@@ -181,9 +181,8 @@ const changeCurrentPassword = asyncHandler(async(req,res)=>{
         }
         user.password = newPassword
        await user.save({validateBeforeSave:true})
-        return res.status(200).json(
-            new ApiResponse(200,'Password changed successfully!',{})
-        )
+       return res.redirect('/api/v1/auth/user/edit-profile')
+
     } catch (error) {
         console.log(error)
         throw new CustomApiError(500,'Something went wrong while changing the password please try again later!')
@@ -211,8 +210,7 @@ const updateUserAvtar = asyncHandler(async(req,res)=>{
             avatar:avatar?.url
         }
     },{new:true}).select('-password')
-    return res.status(200).json(
-        new ApiResponse(200,'Avatar updated sucessfully!'))
+    return res.redirect('/api/v1/auth/user/edit-profile')
 
 }) //Checked and bugs fixed
 
