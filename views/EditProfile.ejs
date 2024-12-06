@@ -29,11 +29,12 @@
             background-color: var(--bg-color);
             color: var(--text-primary);
             line-height: 1.5;
-            padding: 2rem;
+            padding: 1rem;
             min-height: 100vh;
         }
 
         .container {
+            width: 100%;
             max-width: 600px;
             margin: 0 auto;
         }
@@ -51,13 +52,14 @@
         }
 
         .card-title {
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
         }
 
         .card-description {
             color: var(--text-secondary);
+            font-size: 0.875rem;
         }
 
         .tabs {
@@ -65,25 +67,33 @@
         }
 
         .tab-list {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
             gap: 0.5rem;
             margin-bottom: 1.5rem;
             border-bottom: 1px solid var(--border-color);
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) transparent;
         }
 
         .tab-trigger {
             background: none;
             border: none;
-            padding: 0.75rem;
-            font-size: 0.875rem;
+            padding: 0.75rem 0.5rem;
+            font-size: 0.75rem;
             color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.25rem;
+            white-space: nowrap;
+        }
+
+        .tab-trigger i {
+            font-size: 0.75rem;
         }
 
         .tab-trigger.active {
@@ -107,11 +117,12 @@
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
+            font-size: 0.875rem;
         }
 
         input {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.625rem;
             border: 1px solid var(--border-color);
             border-radius: 0.375rem;
             font-size: 0.875rem;
@@ -125,7 +136,7 @@
 
         button {
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.625rem;
             background-color: var(--primary-color);
             color: white;
             border: none;
@@ -133,6 +144,7 @@
             font-weight: 500;
             cursor: pointer;
             transition: background-color 0.2s;
+            font-size: 0.875rem;
         }
 
         button:hover {
@@ -140,10 +152,11 @@
         }
 
         .alert {
-            padding: 1rem;
+            padding: 0.75rem;
             border-radius: 0.375rem;
             margin-bottom: 1rem;
             display: none;
+            font-size: 0.875rem;
         }
 
         .alert-success {
@@ -158,24 +171,46 @@
         }
 
         .picture-preview {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             background-color: var(--bg-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             color: var(--text-secondary);
         }
 
         .file-input-wrapper {
             flex: 1;
         }
+
+        @media (max-width: 480px) {
+            .tab-list {
+                font-size: 0.625rem;
+                gap: 0.25rem;
+            }
+
+            .tab-trigger {
+                padding: 0.5rem 0.25rem;
+            }
+
+            .tab-trigger i {
+                font-size: 0.625rem;
+            }
+
+            .container {
+                padding: 0.5rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
-
     <div class="container">
         <div class="card">
             <div class="card-header">
@@ -232,7 +267,7 @@
                 </div>
 
                 <div class="tab-content" id="picture">
-                    <form method="post" action="/api/v1/auth/user/update-avatar" enctype="multipart/form-data" >
+                    <form method="post" action="/api/v1/auth/user/update-avatar" enctype="multipart/form-data">
                         <div class="form-group">
                             <label>Upload New Picture</label>
                             <div class="profile-picture-upload">
@@ -287,7 +322,7 @@
                 </div>
 
                 <div class="tab-content" id="coverImage">
-                    <form method="post" action="/api/v1/auth/user/update-coverImage" enctype="multipart/form-data" >
+                    <form method="post" action="/api/v1/auth/user/update-coverImage" enctype="multipart/form-data">
                         <div class="form-group">
                             <label>Upload New Cover Image</label>
                             <div class="profile-picture-upload">

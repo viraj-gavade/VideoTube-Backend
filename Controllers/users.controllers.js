@@ -225,14 +225,13 @@ const updateUsercoverImage = asyncHandler(async(req,res)=>{
         throw new CustomApiError(400,'Error while uploading on cloudinary!')
     }
 
-    const user = User.findByIdAndUpdate(req.user?._id,{
+    const user = await User.findByIdAndUpdate(req.user?._id,{
         $set:{
             coverImage:coverImage?.url
         }
     },{new:true}).select('-password')
-    return res.status(200).json(
-        new ApiResponse(200,'Cover image updated sucessfully!')
-    )
+    return res.redirect('/api/v1/auth/user/edit-profile')
+
 
 })//Checked and bugs fixed
 
