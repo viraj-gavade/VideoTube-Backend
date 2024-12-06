@@ -437,13 +437,8 @@ const changeUserUsername = asyncHandler(async(req,res)=>{
     }
     user.username=username
     await user.save({validateBeforeSave:false})
-    return res.status(200).json(
-        new customApiResponse(
-            200,
-            'Username changed successfully',
-            user.username
-        )
-    )
+    return res.redirect('/api/v1/auth/user/edit-profile')
+
 })
 
 module.exports =
