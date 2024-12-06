@@ -393,12 +393,8 @@ const changeUserEmail = asyncHandler(async(req,res)=>{
     }
     user.email=email
     await user.save({validateBeforeSave:false})
-    return res.status(200).json(
-        new customApiResponse(
-            200,
-            'Email changed successfully!'
-        )
-    )
+    return res.redirect('/api/v1/auth/user/edit-profile')
+
 
 })
 const changeUserUsername = asyncHandler(async(req,res)=>{
