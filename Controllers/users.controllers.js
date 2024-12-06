@@ -441,6 +441,51 @@ const changeUserUsername = asyncHandler(async(req,res)=>{
 
 })
 
+const changeUserfullname = asyncHandler(async(req,res)=>{
+    const UserId = req.user?._id
+    if(!UserId){
+        throw new CustomApiError(
+            401,
+            ' user id not found! maybe an unauthorized request'
+        )
+    }
+    const {fullname,confirm_fullname}=req.body
+    if(!fullname){
+        throw new CustomApiError(
+            402,
+            'Please provide the fullname to change the fullname!'
+        )
+    }
+
+    const existinguser = await User.findOne({fullname})  
+    if(existinguser){
+        throw new CustomApiError(
+            402,
+            'username is already taken please try another username'
+        )
+    }  
+    const user = await User.findById(UserId)
+    if(!user){
+        throw new CustomApiError(
+            402,
+            'Unable to find the user please check the user id again!'
+        )
+    }
+    if(fullname!==confirm_fullname){
+        return res.status(403).json(
+            new customApiResponse(
+                402,
+                'Username does not match with confirm username'
+            )
+        )
+    }
+    user.fullname=fullname
+    await user.save({validateBeforeSave:false})
+    return res.redirect('/api/v1/auth/user/edit-profile')
+
+})
+
+
 module.exports =
  {
 loginUser,
@@ -454,5 +499,6 @@ updateUsercoverImage,
 getUserChannelProfile,
 getUserWatchHistory,
 changeUserEmail,
-changeUserUsername
+changeUserUsername,
+changeUserfullname
 }
