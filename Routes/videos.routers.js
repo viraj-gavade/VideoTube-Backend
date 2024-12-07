@@ -32,6 +32,8 @@ VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
 
         // Fetch the video and owner
         const video = await Video.findById(videoId).populate('owner');
+        const entry = await Video.findByIdAndUpdate(videoId, { $inc: { views: 1 } }, 
+            { new: true })
         if (!video) {
             return res.status(404).send('Video not found');
         }
