@@ -8,6 +8,7 @@ const Video = require('../Models/video.models')
 const User = require('../Models/users.models') 
 const Comment = require('../Models/comment.models') 
 const {getUserChannelProfile} =require('../Controllers/users.controllers')
+const subscriptionModels = require('../Models/subscription.models')
 
 VideoRouter.route('/publish-video').get(VerifyJwt,(req,res)=>{
     res.render('UploadVideo')
@@ -29,28 +30,45 @@ VideoRouter.route('/publish-video').get(VerifyJwt,(req,res)=>{
 VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
     try {
         const { videoId } = req.params;
+
         // Fetch the video and owner
         const video = await Video.findById(videoId).populate('owner');
-        const entry = await Video.findByIdAndUpdate(videoId, { $inc: { views: 1 } }, 
-            { new: true })
         if (!video) {
             return res.status(404).send('Video not found');
         }
 
-        const user = video.owner;
+        // Check the subscription status
+        const subscription = await subscriptionModels.findOne({
+            subscriber: req.user._id,
+            channel: video.owner._id
+        });
+
+        const ChannelSubscribers = await subscriptionModels.find({
+            channel: video.owner._id
+        })
+
+        console.log("subs",ChannelSubscribers.length)
+
+        // Set isSubscribed flag based on whether the user is subscribed or not
+        const isSubscribed = subscription ? true : false;
+
+        // Increment video views count
+        await Video.findByIdAndUpdate(videoId, { $inc: { views: 1 } }, { new: true });
 
         // Fetch comments
         const comments = await Comment.find({ video: videoId })
-        .populate("owner", "username fullname avatar") 
+            .populate("owner", "username fullname avatar");
+
         console.log("Comments:", comments); // Debugging
-     
-        console.log(video)
-        // Render the page
+
+        // Render the page with video data, subscription status, and comments
         res.render('watch', {
             video,
-            owner: user,
-            comments, // Send the comments array directly
+            owner: video.owner,
+            comments,
+            isSubscribed,  // Pass subscription status to the view
             user: req.user,
+            ChannelSubscribers:ChannelSubscribers.length  // Pass the logged-in user
         });
     } catch (error) {
         next(error);

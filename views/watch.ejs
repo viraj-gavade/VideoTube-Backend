@@ -156,10 +156,16 @@
                         </a>
                         <div>
                             <h2 class="text-lg font-semibold"><%= owner.username %></h2>
-                            <p class="text-sm text-gray-600"><%= video.owner.subscribersCount %> subscribers</p>
+                            <p class="text-sm text-gray-600"><%= ChannelSubscribers %> subscribers</p>
                         </div>
                     </div>
-                    <a class ="subscribe-link" href="/api/v1/subscriptions/subscribed/<%= video._id %>" ></a><button class="subscribe-btn">Subscribe</button>
+                    <button 
+                    class="subscribe-btn"
+                    id="subscribeButton"
+                    data-subscribed="<%= isSubscribed %>"
+                >
+                    <%= isSubscribed ? 'Unsubscribe' : 'Subscribe' %>
+                </button>
                 </div>
 
                 <div class="video-description">
