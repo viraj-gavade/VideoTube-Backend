@@ -12,6 +12,8 @@
             --text-primary: #0f0f0f;
             --text-secondary: #606060;
             --accent-color: #cc0000;
+            --subscribe-bg: #cc0000;
+            --subscribed-bg: #1a73e8;
         }
 
         body {
@@ -62,17 +64,66 @@
             object-fit: cover;
         }
 
+        /* Enhanced Subscribe Button Styles */
         .subscribe-btn {
-            background-color: var(--accent-color);
+            background-color: var(--subscribe-bg);
             color: white;
             padding: 0.5rem 1rem;
             border-radius: 9999px;
             font-weight: 600;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            transform: scale(1);
         }
 
         .subscribe-btn:hover {
-            background-color: #a30000;
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .subscribe-btn.subscribed {
+            background-color: var(--subscribed-bg);
+            color: white;
+        }
+
+        .subscribe-btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255,255,255,0.2);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        .subscribe-btn:hover::before {
+            opacity: 1;
+            transform: translate(-25%, -25%) rotate(45deg);
+        }
+
+        .subscribe-tooltip {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0,0,0,0.8);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .subscribe-btn-wrapper:hover .subscribe-tooltip {
+            opacity: 1;
+            visibility: visible;
         }
 
         .video-description {
@@ -129,7 +180,7 @@
             padding: 1rem;
             margin-bottom: 1rem;
         }
-        .subscribe-link{
+        .subscribe-link {
             text-decoration: none;
             color: #0f0f0f;
         }
@@ -159,13 +210,18 @@
                             <p class="text-sm text-gray-600"><%= ChannelSubscribers %> subscribers</p>
                         </div>
                     </div>
-                    <button 
-                    class="subscribe-btn"
-                    id="subscribeButton"
-                    data-subscribed="<%= isSubscribed %>"
-                >
-                    <%= isSubscribed ? 'Unsubscribe' : 'Subscribe' %>
-                </button>
+                    <div class="subscribe-btn-wrapper relative">
+                        <button 
+                            class="subscribe-btn <%= isSubscribed ? 'subscribed' : '' %>"
+                            id="subscribeButton"
+                            data-subscribed="<%= isSubscribed %>"
+                        >
+                            <%= isSubscribed ? 'Subscribed' : 'Subscribe' %>
+                        </button>
+                        <span class="subscribe-tooltip">
+                            <%= isSubscribed ? 'You are subscribed' : 'Click to subscribe' %>
+                        </span>
+                    </div>
                 </div>
 
                 <div class="video-description">
@@ -253,51 +309,46 @@
                 });
             });
 
-            // Like button interaction
-            const likeButton = document.querySelector('.like-button');
-            if (likeButton) {
-                likeButton.addEventListener('click', function() {
-                    alert('Like functionality to be implemented');
+            // Subscribe button interaction
+            const subscribeButtonWrapper = document.querySelector('.subscribe-btn-wrapper');
+            const subscribeButton = document.querySelector('.subscribe-btn');
+
+            if (subscribeButton) {
+                subscribeButton.addEventListener('click', async function () {
+                    try {
+                        const videoId = '<%= video._id %>'; // Dynamically insert the video ID
+
+                        // Make the request to toggle subscription
+                        const response = await fetch(`/api/v1/subscriptions/subscribed/${videoId}`, {
+                            method: 'GET', // POST method to toggle subscription
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        });
+
+                        const data = await response.json();
+
+                        if (data.success) {
+                            // Update button text and classes based on subscription status
+                            if (data.isSubscribed) {
+                                subscribeButton.textContent = 'Subscribed';
+                                subscribeButton.classList.add('subscribed');
+                                subscribeButtonWrapper.querySelector('.subscribe-tooltip').textContent = 'You are subscribed';
+                            } else {
+                                subscribeButton.textContent = 'Subscribe';
+                                subscribeButton.classList.remove('subscribed');
+                                subscribeButtonWrapper.querySelector('.subscribe-tooltip').textContent = 'Click to subscribe';
+                            }
+                        } else {
+                            alert(data.message); // Show error message if any
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
                 });
             }
 
-            // Subscribe button interaction
-            const subscribeButton = document.querySelector('.subscribe-btn');
-if (subscribeButton) {
-    subscribeButton.addEventListener('click', async function () {
-        try {
-            const videoId = '<%= video._id %>'; // Dynamically insert the video ID
-
-            // Make the request to toggle subscription
-            const response = await fetch(`/api/v1/subscriptions/subscribed/${videoId}`, {
-                method: 'GET', // POST method to toggle subscription
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                // Update button text based on subscription status
-                if (data.isSubscribed) {
-                    subscribeButton.textContent = 'subscribed';
-                    subscribeButton.classList.add('subscribed'); // Visual update
-                } else {
-                    subscribeButton.textContent = 'Subscribe';
-                    subscribeButton.classList.remove('subscribed'); // Visual update
-                }
-            } else {
-                alert(data.message); // Show error message if any
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    });
-}
-});
-
-            // Edit comment functionality
+            // Edit comment functionality (previous implementation remains the same)
             const editButtons = document.querySelectorAll('.edit-comment-btn');
             const cancelEditButtons = document.querySelectorAll('.cancel-edit-btn');
 
@@ -326,6 +377,7 @@ if (subscribeButton) {
                     }
                 });
             });
+        });
     </script>
 </body>
 </html>
