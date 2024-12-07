@@ -29,7 +29,6 @@ VideoRouter.route('/publish-video').get(VerifyJwt,(req,res)=>{
 VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
     try {
         const { videoId } = req.params;
-
         // Fetch the video and owner
         const video = await Video.findById(videoId).populate('owner');
         const entry = await Video.findByIdAndUpdate(videoId, { $inc: { views: 1 } }, 
@@ -44,7 +43,8 @@ VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
         const comments = await Comment.find({ video: videoId })
         .populate("owner", "username fullname avatar") 
         console.log("Comments:", comments); // Debugging
-
+     
+        console.log(video)
         // Render the page
         res.render('watch', {
             video,

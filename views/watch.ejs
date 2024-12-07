@@ -129,6 +129,10 @@
             padding: 1rem;
             margin-bottom: 1rem;
         }
+        .subscribe-link{
+            text-decoration: none;
+            color: #0f0f0f;
+        }
     </style>
 </head>
 <body class="text-gray-900">
@@ -155,7 +159,7 @@
                             <p class="text-sm text-gray-600"><%= video.owner.subscribersCount %> subscribers</p>
                         </div>
                     </div>
-                    <button class="subscribe-btn">Subscribe</button>
+                    <a class ="subscribe-link" href="/api/v1/subscriptions/subscribed/<%= video._id %>" ></a><button class="subscribe-btn">Subscribe</button>
                 </div>
 
                 <div class="video-description">
@@ -253,11 +257,39 @@
 
             // Subscribe button interaction
             const subscribeButton = document.querySelector('.subscribe-btn');
-            if (subscribeButton) {
-                subscribeButton.addEventListener('click', function() {
-                    alert('Subscribe functionality to be implemented');
-                });
+if (subscribeButton) {
+    subscribeButton.addEventListener('click', async function () {
+        try {
+            const videoId = '<%= video._id %>'; // Dynamically insert the video ID
+
+            // Make the request to toggle subscription
+            const response = await fetch(`/api/v1/subscriptions/subscribed/${videoId}`, {
+                method: 'GET', // POST method to toggle subscription
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Update button text based on subscription status
+                if (data.isSubscribed) {
+                    subscribeButton.textContent = 'subscribed';
+                    subscribeButton.classList.add('subscribed'); // Visual update
+                } else {
+                    subscribeButton.textContent = 'Subscribe';
+                    subscribeButton.classList.remove('subscribed'); // Visual update
+                }
+            } else {
+                alert(data.message); // Show error message if any
             }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+}
+});
 
             // Edit comment functionality
             const editButtons = document.querySelectorAll('.edit-comment-btn');
@@ -288,7 +320,6 @@
                     }
                 });
             });
-        });
     </script>
 </body>
 </html>
