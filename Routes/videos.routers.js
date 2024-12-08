@@ -37,6 +37,14 @@ VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
             return res.status(404).send('Video not found');
         }
 
+      const history =   await User.findByIdAndUpdate(
+            req.user._id,
+            { $addToSet: { watchHistory: videoId } }, // $addToSet ensures no duplicates
+            { new: true } // Returns the updated document
+          );
+
+          console.log("History:-",history)
+
         // Check the subscription status
         const subscription = await subscriptionModels.findOne({
             subscriber: req.user._id,

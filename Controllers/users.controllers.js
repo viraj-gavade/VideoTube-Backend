@@ -311,62 +311,32 @@ const getUserChannelProfile = asyncHandler(async(req,res,next)=>{
 
 })
 
-const getUserWatchHistory = asyncHandler(async(req,res)=>{
-    const user = await User.aggregate([ 
-        {
-            $match:{
-                _id: new mongoose.Types.ObjectId(req.user._id)
-            }
-        },
-        {
-            $lookup:{
-                from:"videos",
-                localField:'watchHistory',
-                foreignField:'_id',
-                as:"WatchHistory",
-                pipeline:[
-                    {
-                        $lookup:{
-                            from:"users",
-                            localField:'owner',
-                            foreignField:'_id',
-                            as:'owner',
-                            pipeline:[
-                                {
-                                    $project:{
-                                        fullname:1,
-                                        username:1,
-                                        avatar:1
-                                    }
-                                }
-                            ]
-                        }
-                    } ,
-                    {
-                        $addFields:{
-                            owner:{
-                                $first:"$owner"
-                            }
-                        }
-                    }
-                ]
-            }
+const getUserWatchHistory = asyncHandler(async (req, res) => {
+    // Fetch user by ID
+    const userHistory = await User.findById(req.user._id)
+    .populate({
+        path: 'watchHistory', // Populate the watchHistory field
+        populate: {
+            path: 'owner', // Nested population for the owner field inside watchHistory
+            select: 'username email fullname avatar' // Optional: Specify fields to retrieve from the owner document
         }
-    ])
-    if(!user){
-        throw new CustomApiError(
-            200,'User not found!'
-        )
+    });
+
+console.log(userHistory.watchHistory);
+    
+    // Check if user exists
+    if (!userHistory) {
+      throw new CustomApiError(404, 'User not found!');
     }
-
-    return res.render('History',{
-
-       history: user[0].watchHistory
-    })
-       
-
-}) //Checked and bug fixed
-
+  
+    console.log("User Watch History:", userHistory.watchHistory);
+  
+    // Render the history page with watchHistory data
+    return res.render('History', {
+      history: userHistory.watchHistory,
+    });
+  });
+  
 const changeUserEmail = asyncHandler(async(req,res)=>{
 
     const {email} = req.body

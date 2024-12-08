@@ -99,6 +99,13 @@
             margin-left: auto;
             padding: 5px;
         }
+        .channel-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -119,11 +126,12 @@
         <% } else { %>
             <% history.forEach(function(video) { %>
                 <div class="video-item">
-                    <img src="<%= video.thumbnailUrl %>" alt="<%= video.title %>" class="video-thumbnail">
+                    <img src="<%= video.thumbnail %>" alt="<%= video.title %>" class="video-thumbnail">
                     <div class="video-details">
                         <div class="video-title"><%= video.title %></div>
-                        <div class="video-channel"><%= video.channel %></div>
-                        <div class="video-date"><%= video.watchedDate %></div>
+                        <img class="channel-icon" src="<%= video.owner.avatar %>" alt="Channel">
+                        <div class="video-channel"><%= video.owner.username %></div>
+                        <div class="video-date"><%= video.createdAt %></div>
                     </div>
                     <button class="remove-btn" data-video-id="<%= video._id %>">Remove</button>
                 </div>
