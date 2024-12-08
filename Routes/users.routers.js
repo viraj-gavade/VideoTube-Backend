@@ -13,7 +13,8 @@ const {
     updateUsercoverImage,
     changeUserEmail,
     changeUserUsername,
-    changeUserfullname
+    changeUserfullname,
+    ClearWatchHistory
 } = require('../Controllers/users.controllers')
 
 
@@ -73,6 +74,7 @@ UserRouter.route('/channel/:username').get(VerifyJwt,getUserChannelProfile)
 
 
 UserRouter.route('/watchHistory').get(VerifyJwt,getUserWatchHistory)
+UserRouter.route('/ClearwatchHistory').get(VerifyJwt,ClearWatchHistory)
 
 
 

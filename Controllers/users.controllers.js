@@ -454,6 +454,27 @@ const changeUserfullname = asyncHandler(async(req,res)=>{
 
 })
 
+const ClearWatchHistory = asyncHandler(async (req, res) => {
+    // Clear the watch history by setting it to an empty array
+    const userHistory = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: { watchHistory: [] } }, // Set watchHistory to an empty array
+      { new: true } // Return the updated document
+    );
+  
+    // Check if user exists
+    if (!userHistory) {
+      throw new CustomApiError(404, 'User not found!');
+    }
+  
+    console.log("User Watch History:", userHistory.watchHistory);
+  
+    // Render the history page with cleared watchHistory data
+    return res.render('History', {
+      history: userHistory.watchHistory, // This will now be an empty array
+    });
+  });
+  
 
 module.exports =
  {
@@ -469,5 +490,6 @@ getUserChannelProfile,
 getUserWatchHistory,
 changeUserEmail,
 changeUserUsername,
-changeUserfullname
+changeUserfullname,
+ClearWatchHistory
 }

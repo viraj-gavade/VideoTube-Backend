@@ -143,7 +143,7 @@
         // Clear history functionality
         document.querySelector('.clear-history')?.addEventListener('click', async () => {
             try {
-                const response = await fetch('/clear-watch-history', { method: 'POST' });
+                const response = await fetch('/api/v1/auth/user/ClearwatchHistory', { method: 'GET' });
                 if (response.ok) {
                     location.reload();
                 } else {
