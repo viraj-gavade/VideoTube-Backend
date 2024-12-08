@@ -133,7 +133,7 @@
                         <div class="video-channel"><%= video.owner.username %></div>
                         <div class="video-date"><%= video.createdAt %></div>
                     </div>
-                    <button class="remove-btn" data-video-id="<%= video._id %>">Remove</button>
+                    <a href="/api/v1/auth/user/remove-video/<%= video._id %>"><button class="remove-btn" data-video-id="<%= video._id %>">Remove</button></a>
                 </div>
             <% }); %>
         <% } %>
@@ -159,17 +159,8 @@
         document.querySelectorAll('.remove-btn')?.forEach(btn => {
             btn.addEventListener('click', async () => {
                 const videoId = btn.getAttribute('data-video-id');
-                try {
                     const response = await fetch(`/remove-from-watch-history/${videoId}`, { method: 'POST' });
-                    if (response.ok) {
-                        btn.closest('.video-item').remove();
-                    } else {
-                        alert('Failed to remove video from history');
-                    }
-                } catch (error) {
-                    console.error('Error removing video:', error);
-                    alert('An error occurred while removing video');
-                }
+              
             });
         });
     </script>

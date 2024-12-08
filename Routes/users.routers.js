@@ -14,7 +14,8 @@ const {
     changeUserEmail,
     changeUserUsername,
     changeUserfullname,
-    ClearWatchHistory
+    ClearWatchHistory,
+    RemoveVideoFromHistory
 } = require('../Controllers/users.controllers')
 
 
@@ -75,6 +76,7 @@ UserRouter.route('/channel/:username').get(VerifyJwt,getUserChannelProfile)
 
 UserRouter.route('/watchHistory').get(VerifyJwt,getUserWatchHistory)
 UserRouter.route('/ClearwatchHistory').get(VerifyJwt,ClearWatchHistory)
+UserRouter.route('/remove-video/:videoId').get(VerifyJwt,RemoveVideoFromHistory)
 
 
 

@@ -474,6 +474,28 @@ const ClearWatchHistory = asyncHandler(async (req, res) => {
       history: userHistory.watchHistory, // This will now be an empty array
     });
   });
+
+
+const RemoveVideoFromHistory = asyncHandler(async (req, res) => {
+    const { videoId } = req.params; // Assuming videoId is passed as a URL parameter
+  
+    // Remove the specific video from the user's watchHistory
+    const userHistory = await User.findByIdAndUpdate(
+      req.user._id,
+      { $pull: { watchHistory: videoId } }, // Remove videoId from watchHistory array
+      { new: true } // Return the updated document
+    );
+  
+    // Check if user exists
+    if (!userHistory) {
+      throw new CustomApiError(404, 'User not found!');
+    }
+  
+    console.log("Updated Watch History:", userHistory.watchHistory);
+  
+    // Render the history page with the updated watchHistory data
+    return res.redirect('/api/v1/auth/user/watchHistory')
+  });
   
 
 module.exports =
@@ -491,5 +513,6 @@ getUserWatchHistory,
 changeUserEmail,
 changeUserUsername,
 changeUserfullname,
-ClearWatchHistory
+ClearWatchHistory,
+RemoveVideoFromHistory
 }
