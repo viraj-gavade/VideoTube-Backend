@@ -4,94 +4,149 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Subscriptions</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
             background-color: #f4f4f4;
-            line-height: 1.6;
         }
-
-        .subscriptions-container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+        .subscription-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
         }
-
-        .no-subscriptions {
-            text-align: center;
-            color: #666;
-            padding: 40px 0;
+        .subscription-toggle {
+            transition: all 0.3s ease;
         }
-
-        .subscription-list {
-            list-style-type: none;
-            padding: 0;
+        .subscription-toggle.subscribed {
+            background-color: #ef4444;
+            color: white;
         }
-
-        .subscription-item {
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-            padding: 15px 0;
-        }
-
-        .subscription-avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin-right: 15px;
-            object-fit: cover;
-        }
-
-        .subscription-info {
-            flex-grow: 1;
-        }
-
-        .subscription-username {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .subscription-fullname {
-            color: #666;
-            font-size: 0.9em;
+        .subscription-toggle.unsubscribed {
+            background-color: #3b82f6;
+            color: white;
         }
     </style>
 </head>
-<body>
-    <div class="subscriptions-container">
-        <h1>My Subscriptions</h1>
-        
-        <% if (subscriptions.length === 0) { %>
-            <div class="no-subscriptions">
-                <h2>No Subscriptions Found</h2>
-                <p>You haven't subscribed to any channels yet. Start exploring and find channels you love!</p>
+<body class="antialiased text-gray-900">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">My Subscriptions</h1>
+            <div class="flex items-center space-x-4">
+                <input 
+                    type="text" 
+                    placeholder="Search channels" 
+                    class="px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+            </div>
+        </div>
+
+        <% if (!subscriptions || subscriptions.length === 0) { %>
+            <div class="bg-white shadow-md rounded-lg p-10 text-center">
+                <div class="text-6xl mb-4 text-gray-400">🔔</div>
+                <p class="text-xl text-gray-600 mb-6">
+                    <%= message || "No subscriptions found" %>
+                </p>
+                <a href="/home" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-md transition duration-300 ease-in-out">
+                    Explore Channels
+                </a>
             </div>
         <% } else { %>
-            <ul class="subscription-list">
+            <div class="space-y-4">
                 <% subscriptions.forEach(function(subscription) { %>
-                    <li class="subscription-item">
+                    <div class="subscription-item flex bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out transform">
                         <img 
                             src="<%= subscription.channel.avatar || '/default-avatar.png' %>" 
                             alt="<%= subscription.channel.username %> avatar" 
-                            class="subscription-avatar"
+                            class="w-48 h-28 object-cover"
                         >
-                        <div class="subscription-info">
-                            <div class="subscription-username">
-                                <%= subscription.channel.username %>
+                        <div class="flex-1 p-4 flex items-center justify-between">
+                            <div>
+                                <h2 class="text-lg font-semibold text-gray-800">
+                                    <%= subscription.channel.username %>
+                                </h2>
+                                <p class="text-sm text-gray-500">
+                                    <%= subscription.channel.fullname %>
+                                </p>
                             </div>
-                            <div class="subscription-fullname">
-                                <%= subscription.channel.fullname %>
-                            </div>
+                            <button 
+                                data-channel-id="<%= subscription.channel._id %>"
+                                class="subscription-toggle subscribed px-4 py-2 rounded-md transition duration-300 ease-in-out font-semibold hover:opacity-90"
+                            >
+                                Unsubscribe
+                            </button>
                         </div>
-                    </li>
+                    </div>
                 <% }); %>
-            </ul>
+            </div>
         <% } %>
     </div>
+
+    <script>
+        document.querySelectorAll('.subscription-toggle')?.forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const channelId = e.target.getAttribute('data-channel-id');
+                console.log('Channel Id:-',channelId)
+                const subscriptionItem = e.target.closest('.subscription-item');
+                
+                try {
+                    const response = await fetch(`/api/v1/subscriptions/subscribed/toggle/${channelId}`, { 
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        if (result.isSubscribed) {
+                            // Subscribed
+                            e.target.textContent = 'Unsubscribe';
+                            e.target.classList.remove('unsubscribed');
+                            e.target.classList.add('subscribed');
+                        } else {
+                            // Unsubscribed
+                            subscriptionItem.remove();
+                            
+                            // If no subscriptions left, reload to show empty state
+                            const subscriptionItems = document.querySelectorAll('.subscription-item');
+                            if (subscriptionItems.length === 0) {
+                                location.reload();
+                            }
+                        }
+
+                        // Optional: Show a toast or notification
+                        alert(result.message);
+                    } else {
+                        // Handle error case
+                        alert(result.message || 'Failed to toggle subscription');
+                    }
+                } catch (error) {
+                    console.error('Error toggling subscription:', error);
+                    alert('An error occurred while processing your request');
+                }
+            });
+        });
+
+        // Optional: Search functionality
+        const searchInput = document.querySelector('input[placeholder="Search channels"]');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const subscriptionItems = document.querySelectorAll('.subscription-item');
+                
+                subscriptionItems.forEach(item => {
+                    const username = item.querySelector('.text-lg').textContent.toLowerCase();
+                    const fullname = item.querySelector('.text-sm').textContent.toLowerCase();
+                    
+                    if (username.includes(searchTerm) || fullname.includes(searchTerm)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        }
+    </script>
 </body>
 </html>

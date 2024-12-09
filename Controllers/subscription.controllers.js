@@ -61,6 +61,55 @@ const togglesubscription = asyncHandler(async (req, res) => {
     }
 });
 
+const togglesubscriptionById = asyncHandler(async (req, res) => {
+    try {
+        // Extract channelId from params
+        const { channelId } = req.params;
+
+        if (!channelId) {
+            return res.status(400).json({
+                success: false,
+                message: 'No channel ID provided',
+            });
+        }
+
+        // Check if the user is already subscribed to this channel
+        const existingSubscription = await Subscription.findOne({
+            subscriber: req.user?._id,
+            channel: channelId,
+        });
+
+        // If subscribed, unsubscribe the user
+        if (existingSubscription) {
+            await Subscription.findByIdAndDelete(existingSubscription._id);
+
+            return res.status(200).json({
+                success: true,
+                message: 'Unsubscribed from the channel successfully!',
+                isSubscribed: false,
+            });
+        }
+
+        // If not subscribed, subscribe the user
+        const newSubscription = await Subscription.create({
+            subscriber: req.user?._id,
+            channel: channelId,
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: 'Subscribed to the channel successfully!',
+            isSubscribed: true,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message || 'An error occurred while processing the subscription.',
+        });
+    }
+});
+
 const getUserChannelSubscribers = asyncHandler(async(req,res)=>{
     const { channelId } = req.params
     if(!channelId){
@@ -172,7 +221,8 @@ module.exports =
 { 
     togglesubscription,
     getUserChannelSubscribers,
-    getSubscribedChannels
+    getSubscribedChannels,
+    togglesubscriptionById
 }
 
 

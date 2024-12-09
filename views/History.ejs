@@ -87,7 +87,6 @@
             btn.addEventListener('click', async (e) => {
                 e.preventDefault();
                 const videoId = btn.closest('a').getAttribute('href').split('/').pop();
-                console.log("VideoId :-",videoId)
                 try {
                     const response = await fetch(`/api/v1/auth/user/remove-video/${videoId}`, { method: 'GET' });
                     if (response.ok) {

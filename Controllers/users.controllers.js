@@ -503,7 +503,7 @@ const RemoveVideoFromHistory = asyncHandler(async (req, res) => {
     try {
         const subscriptions = await subscriptionModels.find({
             subscriber: req.user._id
-        }).populate('channel', 'username fullname avatar');
+        }).populate('channel', '_id username fullname avatar');
 
         if (!subscriptions || subscriptions.length === 0) {
             console.log("No subscriptions found");
