@@ -335,6 +335,7 @@ console.log(userHistory.watchHistory);
     // Render the history page with watchHistory data
     return res.render('History', {
       history: userHistory.watchHistory,
+      user:req.user
     });
   });
   
@@ -472,7 +473,8 @@ const ClearWatchHistory = asyncHandler(async (req, res) => {
   
     // Render the history page with cleared watchHistory data
     return res.render('History', {
-      history: userHistory.watchHistory, // This will now be an empty array
+      history: userHistory.watchHistory, 
+      user:req.user// This will now be an empty array
     });
   });
 
