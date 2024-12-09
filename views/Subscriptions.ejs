@@ -3,9 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subscriptions</title>
+    <title>My Subscriptions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            line-height: 1.6;
+        }
+
+        .subscriptions-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .no-subscriptions {
+            text-align: center;
+            color: #666;
+            padding: 40px 0;
+        }
+
+        .subscription-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .subscription-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+        }
+
+        .subscription-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            object-fit: cover;
+        }
+
+        .subscription-info {
+            flex-grow: 1;
+        }
+
+        .subscription-username {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .subscription-fullname {
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
-    <h1>This is the Subscriptions page</h1>
+    <div class="subscriptions-container">
+        <h1>My Subscriptions</h1>
+        
+        <% if (subscriptions.length === 0) { %>
+            <div class="no-subscriptions">
+                <h2>No Subscriptions Found</h2>
+                <p>You haven't subscribed to any channels yet. Start exploring and find channels you love!</p>
+            </div>
+        <% } else { %>
+            <ul class="subscription-list">
+                <% subscriptions.forEach(function(subscription) { %>
+                    <li class="subscription-item">
+                        <img 
+                            src="<%= subscription.channel.avatar || '/default-avatar.png' %>" 
+                            alt="<%= subscription.channel.username %> avatar" 
+                            class="subscription-avatar"
+                        >
+                        <div class="subscription-info">
+                            <div class="subscription-username">
+                                <%= subscription.channel.username %>
+                            </div>
+                            <div class="subscription-fullname">
+                                <%= subscription.channel.fullname %>
+                            </div>
+                        </div>
+                    </li>
+                <% }); %>
+            </ul>
+        <% } %>
+    </div>
 </body>
 </html>
