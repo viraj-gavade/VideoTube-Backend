@@ -7,6 +7,7 @@ const CustomApiError = require('../utils/apiErrors')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 const { getChannelAllvideos } =require('../Controllers/dashboard.controllers')
+const subscriptionModels = require('../Models/subscription.models')
 const generateAccessTokenAndRefreshToken = async(userId)=>{
     try {
         const user = await User.findById(userId)
@@ -498,6 +499,26 @@ const RemoveVideoFromHistory = asyncHandler(async (req, res) => {
   });
   
 
+  const getUserSubscriptions = asyncHandler(async (req, res) => {
+    try {
+        const subscriptions = await subscriptionModels.find({
+            subscriber: req.user._id
+        }).populate('channel', 'username fullname avatar');
+
+        if (!subscriptions || subscriptions.length === 0) {
+            console.log("No subscriptions found");
+            return res.render('Subscriptions', { subscriptions: [], message: "No subscriptions found" });
+        }
+
+        console.log("Subscriptions:", subscriptions);
+        return res.render('Subscriptions', { subscriptions });
+    } catch (error) {
+        console.error("Error fetching subscriptions:", error);
+        return res.status(500).send("An error occurred while fetching subscriptions");
+    }
+});
+
+
 module.exports =
  {
 loginUser,
@@ -514,5 +535,6 @@ changeUserEmail,
 changeUserUsername,
 changeUserfullname,
 ClearWatchHistory,
-RemoveVideoFromHistory
+RemoveVideoFromHistory,
+getUserSubscriptions
 }
