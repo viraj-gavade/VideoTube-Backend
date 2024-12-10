@@ -189,7 +189,7 @@
                             data-video-id="<%= video._id %>"
                         >
                             <i class="fas fa-thumbs-up"></i>
-                            <span><%= video.likes || 0 %></span>
+                            <span><%= VideoLikes || 0 %></span>
                         </button>
 
                         <div class="share-dropdown relative">
@@ -282,8 +282,7 @@
                                         <%= comment.likes || 0 %>
                                     </button>
                                     <% if (locals.user && user._id.toString() === comment.owner._id.toString()) { %>
-                                    <button class="edit-comment ml-4 text-blue-500">Edit</button>
-                                    <button class="delete-comment ml-2 text-red-500">Delete</button>
+                                    <a href="/api/v1/comments/comment/delete/<%= comment._id %>"><button class="delete-comment ml-2 text-red-500">Delete</button></a>
                                     <% } %>
                                 </div>
                             </div>
@@ -318,6 +317,8 @@
                             this.innerHTML = data.isSubscribed 
                                 ? '<i class="fas fa-check"></i> Subscribed' 
                                 : '<i class="fas fa-plus"></i> Subscribe';
+                                window.location.reload(true);
+
                         }
                     } catch (error) {
                         console.error('Subscription Error:', error);
@@ -336,6 +337,8 @@
                         if (data.success) {
                             this.classList.toggle('active');
                             this.querySelector('span').textContent = data.likes;
+                            window.location.reload(true);
+
                         }
                     } catch (error) {
                         console.error('Like Error:', error);
@@ -351,7 +354,7 @@
                     const videoId = '<%= video._id %>';
 
                     try {
-                        const response = await fetch(`/api/comments/${videoId}`, {
+                        const response = await fetch(`/api/v1/comments/comments/${videoId}`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -360,6 +363,7 @@
                         });
 
                         const data = await response.json();
+                        console.log('data',data)
                         
                         if (data.success) {
                             location.reload(); // Simple refresh approach

@@ -61,7 +61,12 @@ VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
             channel: video.owner._id
         })
 
+        const VideoLikes = await likeModels.find({
+            video: videoId
+        })
+
         console.log("subs",ChannelSubscribers.length)
+        console.log("Likes",VideoLikes.length)
 
         // Set isSubscribed flag based on whether the user is subscribed or not
         const isSubscribed = subscription ? true : false;
@@ -86,6 +91,7 @@ VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
             user: req.user,
             channelSubscribers:ChannelSubscribers.length ,
             isLiked,
+            VideoLikes:VideoLikes.length
              // Pass the logged-in user
         });
     } catch (error) {

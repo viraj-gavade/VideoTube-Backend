@@ -14,7 +14,8 @@ CommentRouter.route('/comment/:commentId')
 .put(VerifyJwt,updateCommment)
 .delete(VerifyJwt,deleteComment)
 
-
+CommentRouter.route('/comment/delete/:commentId')
+.get(VerifyJwt,deleteComment)
 module.exports = CommentRouter
 
 
