@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Title - Improved Video Platform</title>
+    <title><%= video.title %> - Video Platform</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-bg: #f5f5f5;
+            --primary-bg: #f0f0f0;
             --secondary-bg: #ffffff;
             --text-primary: #0f0f0f;
             --text-secondary: #606060;
             --accent-color: #cc0000;
             --subscribe-bg: #cc0000;
-            --subscribed-bg: #1a73e8;
         }
 
         body {
@@ -26,114 +26,93 @@
             margin: 0 auto;
             display: grid;
             grid-template-columns: 3fr 1fr;
-            gap: 1.5rem;
+            gap: 1rem;
             padding: 1rem;
+        }
+
+        .main-video-section {
+            grid-column: 1;
         }
 
         .video-player {
             background-color: black;
-            aspect-ratio: 16/9;
-            width: 100%;
+            border-radius: 0.75rem;
+            overflow: hidden;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        .video-info {
-            background-color: var(--secondary-bg);
-            border-radius: 0.75rem;
-            padding: 1.25rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        .video-player video {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: contain;
         }
 
-        .channel-section {
+        .interaction-buttons {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1rem;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .interaction-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            transition: all 0.3s ease;
+            font-weight: 500;
         }
 
         .channel-details {
             display: flex;
             align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
 
         .channel-avatar {
-            width: 48px;
-            height: 48px;
+            width: 3rem;
+            height: 3rem;
             border-radius: 50%;
-            margin-right: 1rem;
             object-fit: cover;
         }
 
-        /* Enhanced Subscribe Button Styles */
-        .subscribe-btn {
-            background-color: var(--subscribe-bg);
+        .like-btn {
+            background-color: transparent;
+            border: 1px solid #e0e0e0;
+            color: var(--text-secondary);
+        }
+
+        .like-btn.active {
+            background-color: #1a73e8;
             color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 9999px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            border-color: #1a73e8;
+        }
+
+        .share-dropdown {
             position: relative;
-            overflow: hidden;
-            transform: scale(1);
         }
 
-        .subscribe-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .subscribe-btn.subscribed {
-            background-color: var(--subscribed-bg);
-            color: white;
-        }
-
-        .subscribe-btn::before {
-            content: '';
+        .share-options {
+            display: none;
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: rgba(255,255,255,0.2);
-            transform: rotate(45deg);
-            transition: all 0.5s ease;
-            opacity: 0;
-        }
-
-        .subscribe-btn:hover::before {
-            opacity: 1;
-            transform: translate(-25%, -25%) rotate(45deg);
-        }
-
-        .subscribe-tooltip {
-            position: absolute;
-            bottom: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0,0,0,0.8);
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .subscribe-btn-wrapper:hover .subscribe-tooltip {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .video-description {
-            background-color: var(--primary-bg);
+            right: 0;
+            top: 100%;
+            background-color: white;
+            border: 1px solid #e0e0e0;
             border-radius: 0.5rem;
-            padding: 1rem;
-            margin-top: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 10;
+            min-width: 150px;
+        }
+
+        .share-dropdown:hover .share-options {
+            display: block;
         }
 
         .recommended-videos {
+            grid-column: 2;
             display: flex;
             flex-direction: column;
             gap: 1rem;
@@ -142,56 +121,39 @@
         .recommended-video {
             display: flex;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s;
             border-radius: 0.5rem;
             padding: 0.5rem;
         }
 
         .recommended-video:hover {
-            background-color: rgba(0,0,0,0.05);
+            background-color: #f5f5f5;
         }
 
-        .comments-section {
-            background-color: var(--secondary-bg);
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            margin-top: 1.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .comment-input {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .comment-input input {
-            flex-grow: 1;
-            padding: 0.75rem;
-            border: 1px solid #e0e0e0;
+        .recommended-video img {
+            width: 120px;
+            height: 70px;
+            object-fit: cover;
             border-radius: 0.5rem;
-            margin-left: 1rem;
+            margin-right: 0.5rem;
         }
 
-        .single-comment {
-            display: flex;
-            background-color: var(--primary-bg);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-        .subscribe-link {
-            text-decoration: none;
-            color: #0f0f0f;
+        @media (max-width: 768px) {
+            .video-container {
+                grid-template-columns: 1fr;
+            }
+
+            .recommended-videos {
+                grid-column: 1;
+            }
         }
     </style>
 </head>
 <body class="text-gray-900">
     <div class="video-container">
-        <!-- Main Video Section -->
         <div class="main-video-section">
             <div class="video-player mb-4">
-                <video width="100%" height="100%" controls>
+                <video controls>
                     <source src="<%= video.videoFile %>" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
@@ -202,179 +164,217 @@
 
                 <div class="channel-section">
                     <div class="channel-details">
-                        <a href="/api/v1/auth/user/channel/<%= owner.username %>">
+                        <a href="/channel/<%= owner.username %>">
                             <img src="<%= owner.avatar %>" alt="Channel Avatar" class="channel-avatar">
                         </a>
                         <div>
                             <h2 class="text-lg font-semibold"><%= owner.username %></h2>
-                            <p class="text-sm text-gray-600"><%= ChannelSubscribers %> subscribers</p>
+                            <p class="text-sm text-gray-600"><%= channelSubscribers %> subscribers</p>
                         </div>
                     </div>
-                    <div class="subscribe-btn-wrapper relative">
+
+                    <div class="interaction-buttons">
                         <button 
-                            class="subscribe-btn <%= isSubscribed ? 'subscribed' : '' %>"
-                            id="subscribeButton"
-                            data-subscribed="<%= isSubscribed %>"
+                            id="subscribeBtn" 
+                            class="interaction-btn subscribe-btn <%= isSubscribed ? 'active' : '' %>"
+                            data-channel-id="<%= owner._id %>"
                         >
+                            <i class="fas <%= isSubscribed ? 'fa-check' : 'fa-plus' %>"></i>
                             <%= isSubscribed ? 'Subscribed' : 'Subscribe' %>
                         </button>
-                        <span class="subscribe-tooltip">
-                            <%= isSubscribed ? 'You are subscribed' : 'Click to subscribe' %>
-                        </span>
+
+                        <button 
+                            id="likeBtn" 
+                            class="interaction-btn like-btn <%= isLiked ? 'active' : '' %>"
+                            data-video-id="<%= video._id %>"
+                        >
+                            <i class="fas fa-thumbs-up"></i>
+                            <span><%= video.likes || 0 %></span>
+                        </button>
+
+                        <div class="share-dropdown relative">
+                            <button class="interaction-btn share-btn">
+                                <i class="fas fa-share"></i> Share
+                            </button>
+                            <div class="share-options p-2">
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100">
+                                    <i class="fab fa-facebook mr-2"></i>Facebook
+                                </a>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100">
+                                    <i class="fab fa-twitter mr-2"></i>Twitter
+                                </a>
+                                <a href="#" class="block px-4 py-2 hover:bg-gray-100">
+                                    <i class="fab fa-linkedin mr-2"></i>LinkedIn
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="video-description">
-                    <p class="text-sm text-gray-700 mb-2">
+                <div class="video-description mt-4 bg-white p-4 rounded-lg shadow-sm">
+                    <p class="text-sm text-gray-500">
                         <%= video.views %> views • <%= new Date(video.createdAt).toLocaleDateString() %>
                     </p>
-                    <p class="text-base"><%= video.description %></p>
+                    <p class="mt-2"><%= video.description %></p>
                 </div>
-            </div>
 
-            <!-- Comments Section -->
-            <div class="comments-section">
-                <h3 class="text-xl font-semibold mb-4"><%= comments.length %> Comments</h3>
-
-                <% if (locals.user) { %>
-                <div class="comment-input">
-                    <img src="<%= user.avatar %>" alt="User Avatar" class="w-10 h-10 rounded-full">
-                    <form action="/api/v1/comments/comments/<%= video._id %>" method="POST" class="flex-grow">
-                        <input 
-                            type="text" 
-                            name="content" 
-                            placeholder="Add a public comment..." 
-                            required 
-                            maxlength="500"
-                        >
-                        <button type="submit" class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
-                            Comment
-                        </button>
-                    </form>
-                </div>
-                <% } %>
-
-                <div class="comments-list">
-                    <% if (comments.length === 0) { %>
-                    <div class="text-center text-gray-500 py-6">
-                        <p>No comments yet</p>
-                        <% if (locals.user) { %>
-                        <p class="text-sm mt-2">Be the first to comment!</p>
-                        <% } %>
+                <!-- Comments Section -->
+                <div class="comments-section mt-6 bg-white p-6 rounded-lg shadow-sm">
+                    <div class="comments-header flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold"><%= comments.length %> Comments</h3>
+                        <div class="sort-comments">
+                            <select class="border rounded px-2 py-1">
+                                <option>Top Comments</option>
+                                <option>Newest First</option>
+                            </select>
+                        </div>
                     </div>
-                    <% } else { %>
+
+                    <% if (locals.user) { %>
+                    <div class="comment-input flex mb-6">
+                        <img src="<%= user.avatar %>" alt="User Avatar" class="w-10 h-10 rounded-full mr-4">
+                        <form id="commentForm" class="flex-grow">
+                            <input 
+                                type="text" 
+                                name="content" 
+                                placeholder="Add a public comment..." 
+                                class="w-full border rounded-lg px-4 py-2"
+                                required 
+                                maxlength="500"
+                            >
+                            <div class="comment-actions flex justify-end mt-2">
+                                <button 
+                                    type="button" 
+                                    class="mr-2 px-4 py-2 text-gray-500 hover:bg-gray-100 rounded"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    type="submit" 
+                                    class="bg-blue-500 text-white px-4 py-2 rounded"
+                                >
+                                    Comment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <% } %>
+
+                    <div class="comments-list">
                         <% comments.forEach(function(comment) { %>
-                        <div class="single-comment">
+                        <div class="single-comment flex mb-4 pb-4 border-b">
                             <img 
                                 src="<%= comment.owner.avatar %>" 
                                 alt="<%= comment.owner.username %>" 
                                 class="w-10 h-10 rounded-full mr-4"
                             >
-                            <div class="flex-grow">
-                                <div class="flex items-center mb-2">
+                            <div class="comment-content flex-grow">
+                                <div class="comment-header flex items-center mb-2">
                                     <span class="font-semibold mr-2"><%= comment.owner.username %></span>
                                     <span class="text-xs text-gray-500">
                                         <%= new Date(comment.createdAt).toLocaleDateString() %>
                                     </span>
                                 </div>
-                                <p class="text-base"><%= comment.content %></p>
+                                <p class="text-base mb-2"><%= comment.content %></p>
+                                <div class="comment-actions flex items-center">
+                                    <button class="like-comment mr-4">
+                                        <i class="fas fa-thumbs-up mr-1"></i>
+                                        <%= comment.likes || 0 %>
+                                    </button>
+                                    <% if (locals.user && user._id.toString() === comment.owner._id.toString()) { %>
+                                    <button class="edit-comment ml-4 text-blue-500">Edit</button>
+                                    <button class="delete-comment ml-2 text-red-500">Delete</button>
+                                    <% } %>
+                                </div>
                             </div>
                         </div>
                         <% }); %>
-                    <% } %>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- Recommended Videos Section -->
-        <div class="recommended-videos">
-            <!-- Recommend placeholder videos -->
-            <div class="recommended-video">
-                <img src="/api/placeholder/168/94" alt="Recommended Video" class="w-42 h-24 object-cover rounded-lg mr-4">
-                <div>
-                    <h4 class="font-semibold text-sm">Recommended Video Title</h4>
-                    <p class="text-xs text-gray-600">Channel Name</p>
-                </div>
-            </div>
-        </div>
+      
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Make recommended videos clickable
-            document.querySelectorAll('.recommended-video').forEach(function(videoCard) {
-                videoCard.addEventListener('click', function() {
-                    const videoId = this.getAttribute('data-video-id');
-                    window.location.href = `/watch/${videoId}`;
-                });
-            });
+            // Interaction Buttons
+            const subscribeBtn = document.getElementById('subscribeBtn');
+            const likeBtn = document.getElementById('likeBtn');
+            const commentForm = document.getElementById('commentForm');
 
-            // Subscribe button interaction
-            const subscribeButtonWrapper = document.querySelector('.subscribe-btn-wrapper');
-            const subscribeButton = document.querySelector('.subscribe-btn');
-
-            if (subscribeButton) {
-                subscribeButton.addEventListener('click', async function () {
+            // Subscribe Button Handler
+            if (subscribeBtn) {
+                subscribeBtn.addEventListener('click', async function() {
+                    const channelId = this.dataset.channelId;
                     try {
-                        const videoId = '<%= video._id %>'; // Dynamically insert the video ID
-
-                        // Make the request to toggle subscription
-                        const response = await fetch(`/api/v1/subscriptions/subscribed/${videoId}`, {
-                            method: 'GET', // POST method to toggle subscription
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                        });
-
+                        const response = await fetch(`/api/v1/subscriptions/subscribed/toggle/${channelId}`, { method: 'GET' });
                         const data = await response.json();
-
+                        
                         if (data.success) {
-                            // Update button text and classes based on subscription status
-                            if (data.isSubscribed) {
-                                subscribeButton.textContent = 'Subscribed';
-                                subscribeButton.classList.add('subscribed');
-                                subscribeButtonWrapper.querySelector('.subscribe-tooltip').textContent = 'You are subscribed';
-                            } else {
-                                subscribeButton.textContent = 'Subscribe';
-                                subscribeButton.classList.remove('subscribed');
-                                subscribeButtonWrapper.querySelector('.subscribe-tooltip').textContent = 'Click to subscribe';
-                            }
-                        } else {
-                            alert(data.message); // Show error message if any
+                            this.classList.toggle('active');
+                            this.innerHTML = data.isSubscribed 
+                                ? '<i class="fas fa-check"></i> Subscribed' 
+                                : '<i class="fas fa-plus"></i> Subscribe';
                         }
                     } catch (error) {
-                        console.error('Error:', error);
+                        console.error('Subscription Error:', error);
                     }
                 });
             }
 
-            // Edit comment functionality (previous implementation remains the same)
-            const editButtons = document.querySelectorAll('.edit-comment-btn');
-            const cancelEditButtons = document.querySelectorAll('.cancel-edit-btn');
-
-            editButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const commentContainer = this.closest('.single-comment');
-                    const commentText = commentContainer.querySelector('.comment-text');
-                    const editForm = commentContainer.querySelector('.edit-comment-form');
-
-                    if (commentText && editForm) {
-                        commentText.classList.add('hidden');
-                        editForm.classList.remove('hidden');
+            // Like Button Handler
+            if (likeBtn) {
+                likeBtn.addEventListener('click', async function() {
+                    const videoId = this.dataset.videoId;
+                    try {
+                        const response = await fetch(`/api/v1/likes/likes/video/${videoId}`, { method: 'GET' });
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            this.classList.toggle('active');
+                            this.querySelector('span').textContent = data.likes;
+                        }
+                    } catch (error) {
+                        console.error('Like Error:', error);
                     }
                 });
-            });
+            }
 
-            cancelEditButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const commentContainer = this.closest('.single-comment');
-                    const commentText = commentContainer.querySelector('.comment-text');
-                    const editForm = commentContainer.querySelector('.edit-comment-form');
+            // Comment Form Handler
+            if (commentForm) {
+                commentForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    const content = this.querySelector('input[name="content"]').value;
+                    const videoId = '<%= video._id %>';
 
-                    if (commentText && editForm) {
-                        commentText.classList.remove('hidden');
-                        editForm.classList.add('hidden');
+                    try {
+                        const response = await fetch(`/api/comments/${videoId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ content })
+                        });
+
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            location.reload(); // Simple refresh approach
+                        }
+                    } catch (error) {
+                        console.error('Comment Error:', error);
                     }
+                });
+            }
+
+            // Recommended Videos Navigation
+            document.querySelectorAll('.recommended-video').forEach(video => {
+                video.addEventListener('click', function() {
+                    const videoId = this.dataset.videoId;
+                    window.location.href = `/watch/${videoId}`;
                 });
             });
         });

@@ -9,6 +9,7 @@ const User = require('../Models/users.models')
 const Comment = require('../Models/comment.models') 
 const {getUserChannelProfile} =require('../Controllers/users.controllers')
 const subscriptionModels = require('../Models/subscription.models')
+const likeModels = require('../Models/like.models')
 
 VideoRouter.route('/publish-video').get(VerifyJwt,(req,res)=>{
     res.render('UploadVideo')
@@ -51,6 +52,11 @@ VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
             channel: video.owner._id
         });
 
+        const like = await likeModels.findOne({
+            video:videoId ,
+            likedBy: req.user._id
+        });
+
         const ChannelSubscribers = await subscriptionModels.find({
             channel: video.owner._id
         })
@@ -59,6 +65,8 @@ VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
 
         // Set isSubscribed flag based on whether the user is subscribed or not
         const isSubscribed = subscription ? true : false;
+
+        const isLiked = like? true : false
 
         // Increment video views count
         await Video.findByIdAndUpdate(videoId, { $inc: { views: 1 } }, { new: true });
@@ -76,7 +84,9 @@ VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
             comments,
             isSubscribed,  // Pass subscription status to the view
             user: req.user,
-            ChannelSubscribers:ChannelSubscribers.length  // Pass the logged-in user
+            channelSubscribers:ChannelSubscribers.length ,
+            isLiked,
+             // Pass the logged-in user
         });
     } catch (error) {
         next(error);
