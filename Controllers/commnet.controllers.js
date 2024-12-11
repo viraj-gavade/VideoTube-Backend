@@ -27,7 +27,14 @@ const addComment =asyncHandler(async(req,res)=>{
              'Something went wrong while creating the comment!'
          )
      }
-     return res.redirect(`/api/v1/videos/video/${videoId}`)
+     return res.status(200).json(
+        new ApiResponse(
+            200,
+            'Comment Added successfully!',
+            comment
+        )
+    )
+    
    } catch (error) {
     throw new CustomApiError(
         error.statusCode,

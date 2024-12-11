@@ -509,11 +509,12 @@ const RemoveVideoFromHistory = asyncHandler(async (req, res) => {
 
         if (!subscriptions || subscriptions.length === 0) {
             console.log("No subscriptions found");
-            return res.render('Subscriptions', { subscriptions: [], message: "No subscriptions found" });
+            return res.render('Subscriptions', { subscriptions: [], message: "No subscriptions found",user:req.user });
         }
 
+        console.log(req.user)
         console.log("Subscriptions:", subscriptions);
-        return res.render('Subscriptions', { subscriptions });
+        return res.render('Subscriptions', { subscriptions , user:req.user });
     } catch (error) {
         console.error("Error fetching subscriptions:", error);
         return res.status(500).send("An error occurred while fetching subscriptions");

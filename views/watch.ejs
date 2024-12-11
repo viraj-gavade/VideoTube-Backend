@@ -366,7 +366,7 @@
                         console.log('data',data)
                         
                         if (data.success) {
-                            location.reload(); // Simple refresh approach
+                            window.location.reload(true); // Simple refresh approach
                         }
                     } catch (error) {
                         console.error('Comment Error:', error);
