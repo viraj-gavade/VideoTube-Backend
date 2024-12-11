@@ -129,7 +129,7 @@
         }
 
         .sidebar-item img {
-            width: 24px;
+            width: 116px;
             margin-right: 15px;
         }
         .sidebar-link {
@@ -234,8 +234,9 @@
         sidebarItems.forEach(function(item) { 
         %>
             <div class="sidebar-item">
-                <a  href="<%= item.url %>" class="sidebar-link" >
-                    <img src="/api/placeholder/24/24" alt="<%= item.name %>">
+                <a href="<%= item.url %>" class="sidebar-link">
+                    <img src="/api/placeholder/24/24" alt="<%=  %>">
+                    <%= item.name %>
                 </a>
             </div>
         <% }); %>

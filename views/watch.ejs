@@ -27,7 +27,8 @@
             display: grid;
             grid-template-columns: 3fr 1fr;
             gap: 1rem;
-            padding: 1rem;
+            padding-left: 10rem;
+            padding-top: 2rem;
         }
 
         .main-video-section {
@@ -234,6 +235,38 @@
         .dropdown-item:hover {
             background-color: #f0f0f0;
         }
+        .sidebar {
+            width: 240px;
+            background-color: white;
+            height: calc(100vh - 60px);
+            position: fixed;
+            left: 0;
+            top: 60px;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .sidebar-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .sidebar-item img {
+            width: 24px;
+            margin-right: 15px;
+        }
+
+        .sidebar-link {
+            text-decoration: none;
+            color: #030303;
+        }
+
     </style>
 </head>
 <body class="text-gray-900">
@@ -260,6 +293,26 @@
            </div>
         </div>
     </div>
+
+    <div class="sidebar">
+        <% 
+        const sidebarItems = [
+            { name: 'Home', url: '/home' },
+            { name: 'Subscriptions', url: '/api/v1/auth/user/subscriptions' },
+            { name: 'Library', url: '/library' },
+            { name: 'History', url: '/api/v1/auth/user/watchHistory' }  // Specific URL for history
+        ];
+        sidebarItems.forEach(function(item) { 
+        %>
+            <div class="sidebar-item">
+                <a href="<%= item.url %>" class="sidebar-link">
+                    <img src="/api/placeholder/24/24" alt="<%=  %>">
+                    <%= item.name %>
+                </a>
+            </div>
+        <% }); %>
+    </div>
+
     <div class="video-container">
         <div class="main-video-section">
             <div class="video-player mb-4">
