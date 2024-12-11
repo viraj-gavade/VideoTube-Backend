@@ -307,7 +307,8 @@ const getUserChannelProfile = asyncHandler(async(req,res,next)=>{
     const Videos = await Video.find({owner: UserId})
    return res.render('Profile',{
     channel:channel[0],
-    videos:Videos
+    videos:Videos,
+    user:req.user
    })
 
 })
