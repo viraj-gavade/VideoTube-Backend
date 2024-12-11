@@ -202,15 +202,178 @@
 
             .container {
                 padding: 0.5rem;
+                
             }
 
             .card {
                 padding: 1rem;
+                margin-top  : 5rem;
             }
+        }
+           /* Header Styles */
+           .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: white;
+            border-bottom: 1px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left img {
+            height: 40px;
+            margin-right: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            width: 600px;
+        }
+
+        .search-bar input {
+            flex-grow: 1;
+            padding: 8px 12px;
+            border: 1px solid #d3d3d3;
+            border-right: none;
+            outline: none;
+        }
+
+        .search-bar button {
+            padding: 8px 20px;
+            background-color: #f8f8f8;
+            border: 1px solid #d3d3d3;
+            cursor: pointer;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .header-right img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+
+        /* Profile Dropdown Styles */
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            border: 1px solid #d3d3d3;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            min-width: 180px;
+            z-index: 1000;
+            margin-top: 10px;
+        }
+
+        .profile-dropdown.show {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #030303;
+            display: block;
+            transition: background-color 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+        .sidebar {
+            width: 240px;
+            background-color: white;
+            height: calc(100vh - 60px);
+            position: fixed;
+            left: 0;
+            top: 60px;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .sidebar-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .sidebar-item img {
+            width: 24px;
+            margin-right: 15px;
+        }
+
+        .sidebar-link {
+            text-decoration: none;
+            color: #030303;
         }
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <img src="https://w7.pngwing.com/pngs/936/468/png-transparent-youtube-logo-youtube-logo-computer-icons-subscribe-angle-rectangle-airplane-thumbnail.png" alt="YouTube Logo">
+            <div class="search-bar">
+                <input type="text" placeholder="Search">
+                <button>🔍</button>
+            </div>
+        </div>
+        <div class="header-right">
+           <a href="/api/v1/videos/publish-video"> 
+                <img src="https://brandeps.com/icon-download/V/Video-call-icon-vector-04.svg" alt="Create"> 
+           </a>
+           <img src="<%= user.avatar %>" alt="Profile" class="profile-image">
+           
+           <!-- Profile Dropdown -->
+           <div class="profile-dropdown">
+               <a href="/api/v1/auth/user/channel/<%= user.username %>" class="dropdown-item">Dashboard</a>
+               <a href="/api/v1/auth/user/edit-profile" class="dropdown-item">Edit Profile</a>
+               <a href="/api/v1/auth/user/logout" class="dropdown-item">Sign Out</a>
+           </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <% 
+        const sidebarItems = [
+            { name: 'Home', url: '/home' },
+            { name: 'Subscriptions', url: '/api/v1/auth/user/subscriptions' },
+            { name: 'Library', url: '/library' },
+            { name: 'History', url: '/api/v1/auth/user/watchHistory' }  // Specific URL for history
+        ];
+        sidebarItems.forEach(function(item) { 
+        %>
+            <div class="sidebar-item">
+                <a href="<%= item.url %>" class="sidebar-link">
+                    <img src="/api/placeholder/24/24" alt="<%=  %>">
+                    <%= item.name %>
+                </a>
+            </div>
+        <% }); %>
+    </div>
     <div class="container">
         <div class="card">
             <div class="card-header">
@@ -369,6 +532,28 @@
                 alert.classList.add('alert-success');
             }, 1000);
         }
+        // Search functionality (placeholder)
+        const searchInput = document.querySelector('.search-bar input');
+        const searchButton = document.querySelector('.search-bar button');
+
+        searchButton.addEventListener('click', function() {
+            alert('Search for: ' + searchInput.value);
+        });
+
+        // Profile Dropdown Toggle
+        const profileImage = document.querySelector('.profile-image');
+        const profileDropdown = document.querySelector('.profile-dropdown');
+
+        profileImage.addEventListener('click', function() {
+            profileDropdown.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!profileImage.contains(event.target) && !profileDropdown.contains(event.target)) {
+                profileDropdown.classList.remove('show');
+            }
+        });
     </script>
 </body>
 </html>
