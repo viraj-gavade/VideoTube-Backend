@@ -6,93 +6,9 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
+            margin: 0;
+            padding: 0;
             background-color: #f4f4f4;
-        }
-        .form-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-        .file-input-wrapper input[type=file] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-        }
-        .file-input-wrapper .btn-file-input {
-            border: 1px solid #ddd;
-            display: inline-block;
-            padding: 6px 12px;
-            cursor: pointer;
-            background-color: #f8f9fa;
-            color: #212529;
-        }
-        .file-name {
-            margin-left: 10px;
-            color: #6c757d;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        #current-thumbnail {
-            max-width: 200px;
-            max-height: 200px;
-            margin-top: 10px;
-        }
-        #preview-thumbnail {
-            max-width: 200px;
-            max-height: 200px;
-            margin-top: 10px;
-            display: none;
-        }
-        #message {
-            margin-top: 15px;
-            padding: 10px;
-            border-radius: 4px;
-            text-align: center;
-        }
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
         }
         .header {
             display: flex;
@@ -104,6 +20,8 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            height: 60px;
+            margin-bottom: -2rem;
         }
 
         .header-left {
@@ -150,7 +68,6 @@
             cursor: pointer;
         }
 
-        /* Profile Dropdown Styles */
         .profile-dropdown {
             display: none;
             position: absolute;
@@ -180,13 +97,14 @@
         .dropdown-item:hover {
             background-color: #f0f0f0;
         }
+
         .sidebar {
             width: 240px;
             background-color: white;
             height: calc(100vh - 60px);
             position: fixed;
             left: 0;
-            top: 60px;
+            top: 80px;
             border-right: 1px solid #e0e0e0;
             overflow-y: auto;
         }
@@ -211,11 +129,135 @@
             text-decoration: none;
             color: #030303;
         }
+
+        .content-wrapper {
+            display: flex;
+            margin-top: 60px;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+            width: calc(100% - 240px);
+        }
+
+        .video-container {
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .video-container video {
+            max-width: 100%;
+            max-height: 450px;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+
+        .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+        }
+
+        .file-input-wrapper .btn-file-input {
+            border: 1px solid #ddd;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+
+        .file-name {
+            margin-left: 10px;
+            color: #6c757d;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #current-thumbnail {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+
+        #preview-thumbnail {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        #message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
     </style>
 </head>
 <body>
-     <!-- Header -->
-     <div class="header">
+    <!-- Header -->
+    <div class="header">
         <div class="header-left">
             <img src="https://w7.pngwing.com/pngs/936/468/png-transparent-youtube-logo-youtube-logo-computer-icons-subscribe-angle-rectangle-airplane-thumbnail.png" alt="YouTube Logo">
             <div class="search-bar">
@@ -238,59 +280,72 @@
         </div>
     </div>
 
-    <div class="sidebar">
-        <% 
-        const sidebarItems = [
-            { name: 'Home', url: '/home' },
-            { name: 'Subscriptions', url: '/api/v1/auth/user/subscriptions' },
-            { name: 'Library', url: '/library' },
-            { name: 'History', url: '/api/v1/auth/user/watchHistory' }  // Specific URL for history
-        ];
-        sidebarItems.forEach(function(item) { 
-        %>
-            <div class="sidebar-item">
-                <a href="<%= item.url %>" class="sidebar-link">
-                    <img src="/api/placeholder/24/24" alt="<%=  %>">
-                    <%= item.name %>
-                </a>
-            </div>
-        <% }); %>
-    </div>
-    <div class="form-container">
-        <h2>Edit Video</h2>
-        <form id="updateVideoForm" action="/api/v1/videos/video/edit/<%= video._id %>" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="videoId" value="<%= video._id %>">
-            
-            <div class="form-group">
-                <label for="title">Title</label>
-                <input type="text" id="title" name="title" value="">
-            </div>
-            
-            <div class="form-group">
-               
-                
-                <label>Update Thumbnail</label>
-                <div class="file-input-wrapper">
-                    <button type="button" class="btn-file-input">Choose File</button>
-                    <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
-                    <span class="file-name">No file chosen</span>
+    <div class="content-wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <% 
+            const sidebarItems = [
+                { name: 'Home', url: '/home' },
+                { name: 'Subscriptions', url: '/api/v1/auth/user/subscriptions' },
+                { name: 'Library', url: '/library' },
+                { name: 'History', url: '/api/v1/auth/user/watchHistory' }
+            ];
+            sidebarItems.forEach(function(item) { 
+            %>
+                <div class="sidebar-item">
+                    <a href="<%= item.url %>" class="sidebar-link">
+                        <img src="/api/placeholder/24/24" alt="<%=  %>">
+                        <%= item.name %>
+                    </a>
                 </div>
-                <img id="preview-thumbnail" src="#" alt="New Thumbnail Preview">
+            <% }); %>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="video-container">
+                <video controls>
+                    <source src="<%= video.videoFile %>" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
-            
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea id="description" name="description" rows="4"></textarea>
+
+            <div class="form-container">
+                <h2>Edit Video</h2>
+                <form id="updateVideoForm" action="/api/v1/videos/video/edit/<%= video._id %>" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="videoId" value="<%= video._id %>">
+                    
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="title" value="<%= video.title %>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Update Thumbnail</label>
+                        <div class="file-input-wrapper">
+                            <button type="button" class="btn-file-input">Choose File</button>
+                            <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
+                            <span class="file-name">No file chosen</span>
+                        </div>
+                        <img id="current-thumbnail" src="<%= video.thumbnail %>" alt="Current Thumbnail">
+                        <img id="preview-thumbnail" src="#" alt="New Thumbnail Preview">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea id="description" name="description" rows="4"><%= video.description %></textarea>
+                    </div>
+                    
+                    <button type="submit">Update Video</button>
+                </form>
+                <div id="message"></div>
             </div>
-            
-            <button type="submit">Update Video</button>
-        </form>
-        <div id="message"></div>
+        </div>
     </div>
 
     <script>
         // Profile Dropdown Toggle
-          const profileImage = document.querySelector('.profile-image');
+        const profileImage = document.querySelector('.profile-image');
         const profileDropdown = document.querySelector('.profile-dropdown');
 
         profileImage.addEventListener('click', function() {
@@ -303,6 +358,7 @@
                 profileDropdown.classList.remove('show');
             }
         });
+
         // File input custom styling and preview
         const fileInput = document.getElementById('thumbnail');
         const fileNameSpan = document.querySelector('.file-name');
@@ -331,7 +387,7 @@
             }
         });
 
-        // Optional: Client-side form submission handling with fetch
+        // Form submission handling with fetch
         document.getElementById('updateVideoForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const messageDiv = document.getElementById('message');
@@ -352,7 +408,7 @@
                     messageDiv.innerHTML = 'Video updated successfully!';
                     messageDiv.className = 'success';
                     
-                    // Optional: Update current thumbnail if a new one was uploaded
+                    // Update current thumbnail if a new one was uploaded
                     if (data.updatedVideo && data.updatedVideo.thumbnail) {
                         currentThumbnail.src = data.updatedVideo.thumbnail;
                         currentThumbnail.style.display = 'block';
