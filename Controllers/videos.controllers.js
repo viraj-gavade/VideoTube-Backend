@@ -63,69 +63,62 @@ const getVideoById = asyncHandler(async(req,res)=>{
     )
 })
 
-const updateVideo = asyncHandler(async(req,res)=>{
-    const { videoId } = req.params
-    const { title ,description } = req.body
+const updateVideo = asyncHandler(async (req, res) => {
+    const { videoId } = req.params;
+    const { title, thumbnail, description } = req.body;
 
-    if(!title || !description){
-        throw new CustomApiError(
-            400,
-            'title and description fields cannot be empty'
-        )
-    }
-    const thumbnailLocalpath = req.file?.path
-    if(!thumbnailLocalpath){
-        throw new CustomApiError(
-            500,
-            'Thumbnnail local path not found!'
-        )
+    // Check if video ID is provided
+    if (!videoId) {
+        throw new CustomApiError(400, 'Video ID is required.');
     }
 
-    const Newthumbnail = await uploadFile(thumbnailLocalpath)
-    if(!Newthumbnail){
-        throw new CustomApiError(
-            500,
-            'Something went wrong while uploading the file on cloudinary'
-        )
+    try {
+        // Retrieve the existing video details
+        const existingVideo = await Video.findById(videoId);
+        if (!existingVideo) {
+            return res.status(404).json(
+                new ApiResponse(404, `No video found with ID: ${videoId}.`)
+            );
+        }
+
+        // Update the video details, keeping existing values if not provided
+        const updatedVideo = await Video.findByIdAndUpdate(
+            videoId,
+            {
+                $set: {
+                    title: title || existingVideo.title,
+                    thumbnail: thumbnail || existingVideo.thumbnail,
+                    description: description || existingVideo.description,
+                },
+            },
+            { new: true, runValidators: true }
+        );
+
+        // Success response
+        return res.status(200).json(
+            new ApiResponse(200, 'Video details updated successfully!', updatedVideo)
+        );
+    } catch (error) {
+        // Handle unexpected errors
+        console.error('Error updating video:', error);
+        throw new CustomApiError(500, 'An unexpected error occurred while updating the video.');
     }
+});
 
-    const video = await  Video.findByIdAndUpdate(videoId,{
-        $set:{ title:title,
-        description:description,
-        thumbnail:Newthumbnail?.url}
-    },{new:true})
 
-    if(!video){
-        return  res.status(200).json(
-             new ApiResponse(
-                 200,
-                 `There is no such video with Id : ${videoId}`,
-             )
-         )
-     }
-
-    return res.status(200).json(
-        new ApiResponse(
-            200,
-            'Video details updated successfully!',
-            video
-            
-        )
-    )
-})
 
 const deleteVideo = asyncHandler (async(req,res)=>{
     const { videoId } = req.params
-
+    
     const video = await Video.findByIdAndDelete(videoId)
-
+    
     if(!video){
         throw new CustomApiError(
             400,
             `There is no such video with Id:${videoId}`
         )
     }
-
+    
     return res.status(200).json(
         new ApiResponse(
             200,
@@ -145,7 +138,7 @@ const toogglepublishStatus = asyncHandler(async(req,res)=>{
     }
     video.isPublished =!video.isPublished
     await video.save({validateBeforeSave:false})
-
+    
     return res.status(200).json(
         new ApiResponse(
             200,
@@ -154,9 +147,8 @@ const toogglepublishStatus = asyncHandler(async(req,res)=>{
         )
     )
     
-
+    
 })
-
 
 module.exports =
 {
