@@ -10,6 +10,7 @@ const Comment = require('../Models/comment.models')
 const {getUserChannelProfile} =require('../Controllers/users.controllers')
 const subscriptionModels = require('../Models/subscription.models')
 const likeModels = require('../Models/like.models')
+const CustomApiError = require('../utils/apiErrors')
 
 VideoRouter.route('/publish-video').get(VerifyJwt,(req,res)=>{
     res.render('UploadVideo')
@@ -98,9 +99,21 @@ VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
         next(error);
     }
 })
-.patch(VerifyJwt,upload.single('thumbnail'),updateVideo)
 .delete(VerifyJwt,deleteVideo)
 
 VideoRouter.route('/video/publishstatus/:videoId').get(toogglepublishStatus)
+VideoRouter.route('/video/edit/:videoId').get(VerifyJwt,async(req,res)=>{
+    const {videoId} = req.params
+    const video = await Video.findById(videoId)
+    if(!video){
+        throw new CustomApiError(
+            400,
+            `There is no such video with video Id :- ${videoId}`
+        )
 
+    }
+    return res.render('EditVideo',{
+        video:video
+    })
+}).post(VerifyJwt,upload.single('thumbnail'),updateVideo)
 module.exports = VideoRouter

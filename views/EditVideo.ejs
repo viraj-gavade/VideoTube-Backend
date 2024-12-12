@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Update Video Details</title>
+    <title>Edit Video - <%= video.title %></title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -69,6 +69,11 @@
         button:hover {
             background-color: #0056b3;
         }
+        #current-thumbnail {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+        }
         #preview-thumbnail {
             max-width: 200px;
             max-height: 200px;
@@ -93,29 +98,32 @@
 </head>
 <body>
     <div class="form-container">
-        <h2>Update Video Details</h2>
-        <form id="updateVideoForm" enctype="multipart/form-data">
-            <div class="form-group">
-                <label for="videoId">Video ID</label>
-                <input type="text" id="videoId" name="videoId" required>
-            </div>
+        <h2>Edit Video</h2>
+        <form id="updateVideoForm" action="/api/v1/videos/video/edit/<%= video._id %>" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="videoId" value="<%= video._id %>">
+            
             <div class="form-group">
                 <label for="title">Title</label>
-                <input type="text" id="title" name="title">
+                <input type="text" id="title" name="title" value="">
             </div>
+            
             <div class="form-group">
-                <label>Thumbnail</label>
+               
+                
+                <label>Update Thumbnail</label>
                 <div class="file-input-wrapper">
                     <button type="button" class="btn-file-input">Choose File</button>
                     <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
                     <span class="file-name">No file chosen</span>
                 </div>
-                <img id="preview-thumbnail" src="#" alt="Thumbnail Preview">
+                <img id="preview-thumbnail" src="#" alt="New Thumbnail Preview">
             </div>
+            
             <div class="form-group">
                 <label for="description">Description</label>
                 <textarea id="description" name="description" rows="4"></textarea>
             </div>
+            
             <button type="submit">Update Video</button>
         </form>
         <div id="message"></div>
@@ -126,11 +134,15 @@
         const fileInput = document.getElementById('thumbnail');
         const fileNameSpan = document.querySelector('.file-name');
         const previewImage = document.getElementById('preview-thumbnail');
+        const currentThumbnail = document.getElementById('current-thumbnail');
 
         fileInput.addEventListener('change', function() {
             if (this.files && this.files[0]) {
                 const fileName = this.files[0].name;
                 fileNameSpan.textContent = fileName;
+
+                // Hide current thumbnail
+                currentThumbnail.style.display = 'none';
 
                 // Image preview
                 const reader = new FileReader();
@@ -142,32 +154,22 @@
             } else {
                 fileNameSpan.textContent = 'No file chosen';
                 previewImage.style.display = 'none';
+                currentThumbnail.style.display = 'block';
             }
         });
 
+        // Optional: Client-side form submission handling with fetch
         document.getElementById('updateVideoForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const messageDiv = document.getElementById('message');
             messageDiv.innerHTML = '';
             messageDiv.className = '';
 
-            const videoId = document.getElementById('videoId').value;
-            const title = document.getElementById('title').value;
-            const thumbnailFile = document.getElementById('thumbnail').files[0];
-            const description = document.getElementById('description').value;
-
-            // Create FormData for file upload
-            const formData = new FormData();
-            formData.append('videoId', videoId);
-            
-            // Only append non-empty fields
-            if (title) formData.append('title', title);
-            if (thumbnailFile) formData.append('thumbnail', thumbnailFile);
-            if (description) formData.append('description', description);
+            const formData = new FormData(this);
 
             try {
-                const response = await fetch(`/api/videos/${videoId}`, {
-                    method: 'PUT',
+                const response = await fetch(this.action, {
+                    method: 'POST',
                     body: formData
                 });
 
@@ -176,6 +178,14 @@
                 if (response.ok) {
                     messageDiv.innerHTML = 'Video updated successfully!';
                     messageDiv.className = 'success';
+                    
+                    // Optional: Update current thumbnail if a new one was uploaded
+                    if (data.updatedVideo && data.updatedVideo.thumbnail) {
+                        currentThumbnail.src = data.updatedVideo.thumbnail;
+                        currentThumbnail.style.display = 'block';
+                        previewImage.style.display = 'none';
+                        fileNameSpan.textContent = 'No file chosen';
+                    }
                 } else {
                     messageDiv.innerHTML = data.message || 'Failed to update video';
                     messageDiv.className = 'error';

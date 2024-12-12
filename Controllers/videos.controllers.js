@@ -81,19 +81,34 @@ const updateVideo = asyncHandler(async (req, res) => {
             );
         }
 
+        const thumbnailLocalpath = req.file?.path
+        if(!thumbnailLocalpath){
+            throw new CustomApiError(400,
+                'No local Path to be found using the exsting thumbnail'
+            )
+        }
+        const thumbnail = await uploadFile(thumbnailLocalpath)
+        console.log(thumbnail)
+        if(!thumbnail){
+            throw new CustomApiError(
+                400,
+                'Something went wrong while uploading the thumbnail on cloudinary !'
+            )
+        }
         // Update the video details, keeping existing values if not provided
-        const updatedVideo = await Video.findByIdAndUpdate(
+        const video = await Video.findByIdAndUpdate(
             videoId,
             {
                 $set: {
                     title: title || existingVideo.title,
-                    thumbnail: thumbnail || existingVideo.thumbnail,
+                    thumbnail: thumbnail.url || existingVideo.thumbnail,
                     description: description || existingVideo.description,
                 },
             },
             { new: true, runValidators: true }
         );
-
+        const updatedVideo = await Video.findById(video._id)
+        console.log("Updated Video:- " , updateVideo)
         // Success response
         return res.status(200).json(
             new ApiResponse(200, 'Video details updated successfully!', updatedVideo)
