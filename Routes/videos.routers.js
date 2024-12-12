@@ -102,6 +102,7 @@ VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
 .delete(VerifyJwt,deleteVideo)
 
 VideoRouter.route('/video/publishstatus/:videoId').get(toogglepublishStatus)
+
 VideoRouter.route('/video/edit/:videoId').get(VerifyJwt,async(req,res)=>{
     const {videoId} = req.params
     const video = await Video.findById(videoId)
@@ -113,7 +114,8 @@ VideoRouter.route('/video/edit/:videoId').get(VerifyJwt,async(req,res)=>{
 
     }
     return res.render('EditVideo',{
-        video:video
+        video:video,
+        user:req.user
     })
 }).post(VerifyJwt,upload.single('thumbnail'),updateVideo)
 module.exports = VideoRouter
