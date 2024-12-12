@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Video Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+        }
+        .file-input-wrapper .btn-file-input {
+            border: 1px solid #ddd;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .file-name {
+            margin-left: 10px;
+            color: #6c757d;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #preview-thumbnail {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+            display: none;
+        }
+        #message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Update Video Details</h2>
+        <form id="updateVideoForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="videoId">Video ID</label>
+                <input type="text" id="videoId" name="videoId" required>
+            </div>
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title">
+            </div>
+            <div class="form-group">
+                <label>Thumbnail</label>
+                <div class="file-input-wrapper">
+                    <button type="button" class="btn-file-input">Choose File</button>
+                    <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
+                    <span class="file-name">No file chosen</span>
+                </div>
+                <img id="preview-thumbnail" src="#" alt="Thumbnail Preview">
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+            </div>
+            <button type="submit">Update Video</button>
+        </form>
+        <div id="message"></div>
+    </div>
+
+    <script>
+        // File input custom styling and preview
+        const fileInput = document.getElementById('thumbnail');
+        const fileNameSpan = document.querySelector('.file-name');
+        const previewImage = document.getElementById('preview-thumbnail');
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const fileName = this.files[0].name;
+                fileNameSpan.textContent = fileName;
+
+                // Image preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                }
+                reader.readAsDataURL(this.files[0]);
+            } else {
+                fileNameSpan.textContent = 'No file chosen';
+                previewImage.style.display = 'none';
+            }
+        });
+
+        document.getElementById('updateVideoForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const messageDiv = document.getElementById('message');
+            messageDiv.innerHTML = '';
+            messageDiv.className = '';
+
+            const videoId = document.getElementById('videoId').value;
+            const title = document.getElementById('title').value;
+            const thumbnailFile = document.getElementById('thumbnail').files[0];
+            const description = document.getElementById('description').value;
+
+            // Create FormData for file upload
+            const formData = new FormData();
+            formData.append('videoId', videoId);
+            
+            // Only append non-empty fields
+            if (title) formData.append('title', title);
+            if (thumbnailFile) formData.append('thumbnail', thumbnailFile);
+            if (description) formData.append('description', description);
+
+            try {
+                const response = await fetch(`/api/videos/${videoId}`, {
+                    method: 'PUT',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    messageDiv.innerHTML = 'Video updated successfully!';
+                    messageDiv.className = 'success';
+                } else {
+                    messageDiv.innerHTML = data.message || 'Failed to update video';
+                    messageDiv.className = 'error';
+                }
+            } catch (error) {
+                messageDiv.innerHTML = 'An error occurred. Please try again.';
+                messageDiv.className = 'error';
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
