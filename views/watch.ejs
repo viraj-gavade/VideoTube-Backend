@@ -396,12 +396,6 @@
                 <div class="comments-section mt-6 bg-white p-6 rounded-lg shadow-sm">
                     <div class="comments-header flex justify-between items-center mb-4">
                         <h3 class="text-xl font-semibold"><%= comments.length %> Comments</h3>
-                        <div class="sort-comments">
-                            <select class="border rounded px-2 py-1">
-                                <option>Top Comments</option>
-                                <option>Newest First</option>
-                            </select>
-                        </div>
                     </div>
 
                     <% if (locals.user) { %>
@@ -456,7 +450,9 @@
                                         <%= comment.likes || 0 %>
                                     </button>
                                     <% if (locals.user && user._id.toString() === comment.owner._id.toString()) { %>
-                                    <a href="/api/v1/comments/comment/delete/<%= comment._id %>"><button class="delete-comment ml-2 text-red-500">Delete</button></a>
+                                    <button class="delete-comment ml-2 text-red-500" id="delete-comment"
+                                    data-comment-id="<%= comment._id %>"
+                                    >Delete</button>
                                     <% } %>
                                 </div>
                             </div>
@@ -489,6 +485,7 @@
             const subscribeBtn = document.getElementById('subscribeBtn');
             const likeBtn = document.getElementById('likeBtn');
             const commentForm = document.getElementById('commentForm');
+            const DeleteComment = document.getElementById('delete-comment')
 
             // Subscribe Button Handler
             if (subscribeBtn) {
@@ -560,14 +557,31 @@
                 });
             }
 
-            // Recommended Videos Navigation
-            document.querySelectorAll('.recommended-video').forEach(video => {
-                video.addEventListener('click', function() {
-                    const videoId = this.dataset.videoId;
-                    window.location.href = `/watch/${videoId}`;
+            if (DeleteComment) {
+                DeleteComment.addEventListener('click', async function(e) {
+                    console.log('Onclick Working')
+                    e.preventDefault();
+                    const commentId = this.dataset.commentId;
+
+                    try {
+                        const response = await fetch(`/api/v1/comments/comment/delete/${commentId}`, {
+                            method: 'GET'
+                           
+                        });
+
+                        const data = await response.json();
+                        console.log('data',data)
+                        
+                        if (data.success) {
+                            window.location.reload(true); // Simple refresh approach
+                        }
+                    } catch (error) {
+                        console.error('Comment Error:', error);
+                    }
                 });
-            });
-        });
+            }
+        
+        }); 
     </script>
 </body>
 </html>

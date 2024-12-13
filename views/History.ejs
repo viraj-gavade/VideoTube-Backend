@@ -242,7 +242,7 @@
             <% } else { %>
                 <div class="space-y-4">
                     <% history.forEach(function(video) { %>
-                        <div class="video-item flex bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out transform">
+                      <a href="/api/v1/videos/video/<%= video.id %>">  <div class="video-item flex bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out transform">
                             <img src="<%= video.thumbnail %>" alt="<%= video.title %>" class="w-48 h-28 object-cover">
                             <div class="flex-1 p-4 relative">
                                 <h2 class="text-lg font-semibold mb-2 text-gray-800"><%= video.title %></h2>
@@ -257,7 +257,7 @@
                                     </svg>
                                 </a>
                             </div>
-                        </div>
+                        </div></a>
                     <% }); %>
                 </div>
             <% } %>
