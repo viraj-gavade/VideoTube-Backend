@@ -73,7 +73,7 @@
             <% } else { %>
                 <div class="space-y-4">
                     <% subscriptions.forEach(function(subscription) { %>
-                        <div class="subscription-item flex bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out transform">
+                       <a href="/api/v1/auth/user/channel/<%= subscription.channel.username %>"> <div class="subscription-item flex bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition duration-300 ease-in-out transform">
                             <img 
                                 src="<%= subscription.channel.avatar || '/default-avatar.png' %>" 
                                 alt="<%= subscription.channel.username %> avatar" 
@@ -95,7 +95,7 @@
                                     Unsubscribe
                                 </button>
                             </div>
-                        </div>
+                        </div></a>
                     <% }); %>
                 </div>
             <% } %>

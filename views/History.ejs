@@ -75,8 +75,8 @@
                             <div class="flex-1 p-4 relative">
                                 <h2 class="text-lg font-semibold mb-2 text-gray-800"><%= video.title %></h2>
                                 <div class="flex items-center mb-2">
-                                    <img class="w-10 h-10 rounded-full mr-3" src="<%= video.owner.avatar %>" alt="Channel">
-                                    <span class="text-gray-600"><%= video.owner.username %></span>
+                                    <a href="/api/v1/auth/user/channel/<%=video.owner.username %>"><img class="w-10 h-10 rounded-full mr-3" src="<%= video.owner.avatar %>" alt="Channel"></a>
+                                    <a href="/api/v1/auth/user/channel/<%=video.owner.username %>"><span class="text-gray-600"><%= video.owner.username %></span></a>
                                 </div>
                                 <p class="text-sm text-gray-500"><%= video.createdAt %></p>
                                 <a href="/api/v1/auth/user/remove-video/<%= video._id %>" class="remove-btn absolute top-4 right-4 text-blue-600 hover:text-blue-800 transition duration-300">
