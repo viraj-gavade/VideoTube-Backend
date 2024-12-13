@@ -18,127 +18,6 @@
             background-color: #f4f4f4;
         }
 
-        /* Header Styles */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: white;
-            border-bottom: 1px solid #e0e0e0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-        }
-
-        .header-left img {
-            height: 40px;
-            margin-right: 20px;
-        }
-
-        .search-bar {
-            display: flex;
-            width: 600px;
-        }
-
-        .search-bar input {
-            flex-grow: 1;
-            padding: 8px 12px;
-            border: 1px solid #d3d3d3;
-            border-right: none;
-            outline: none;
-        }
-
-        .search-bar button {
-            padding: 8px 20px;
-            background-color: #f8f8f8;
-            border: 1px solid #d3d3d3;
-            cursor: pointer;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            position: relative;
-        }
-
-        .header-right img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            margin-left: 15px;
-            cursor: pointer;
-        }
-
-        /* Profile Dropdown Styles */
-        .profile-dropdown {
-            display: none;
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background-color: white;
-            border: 1px solid #d3d3d3;
-            border-radius: 4px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            min-width: 180px;
-            z-index: 1000;
-            margin-top: 10px;
-        }
-
-        .profile-dropdown.show {
-            display: block;
-        }
-
-        .dropdown-item {
-            padding: 10px 15px;
-            text-decoration: none;
-            color: #030303;
-            display: block;
-            transition: background-color 0.2s;
-        }
-
-        .dropdown-item:hover {
-            background-color: #f0f0f0;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            width: 240px;
-            background-color: white;
-            height: calc(100vh - 60px);
-            position: fixed;
-            left: 0;
-            top: 60px;
-            border-right: 1px solid #e0e0e0;
-            overflow-y: auto;
-        }
-
-        .sidebar-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-
-        .sidebar-item:hover {
-            background-color: #f0f0f0;
-        }
-
-        .sidebar-item img {
-            width: 24px;
-            margin-right: 15px;
-        }
-
-        .sidebar-link {
-            text-decoration: none;
-            color: #030303;
-        }
-
         /* Subscriptions Page Specific Styles */
         .subscription-content {
             margin-left: 240px;
@@ -169,58 +48,10 @@
 </head>
 <body class="antialiased text-gray-900">
     <!-- Header -->
-    <div class="header">
-        <div class="header-left">
-            <img src="https://w7.pngwing.com/pngs/936/468/png-transparent-youtube-logo-youtube-logo-computer-icons-subscribe-angle-rectangle-airplane-thumbnail.png" alt="YouTube Logo">
-            <div class="search-bar">
-                <input type="text" placeholder="Search">
-                <button><i class="fas fa-search"></i></button>
-            </div>
-        </div>
-        <div class="header-right">
-            <a href="/api/v1/videos/publish-video">
-                <i class="fas fa-video"></i>
-            </a>
-            <img src="<%= user.avatar %>" alt="Profile" class="profile-image">
-           
-            <!-- Profile Dropdown -->
-            <div class="profile-dropdown">
-                <a href="/api/v1/auth/user/channel/<%= user.username %>" class="dropdown-item">
-                    <i class="fas fa-user"></i> Dashboard
-                </a>
-                <a href="/api/v1/auth/user/edit-profile" class="dropdown-item">
-                    <i class="fas fa-cog"></i> Edit Profile
-                </a>
-                <a href="/api/v1/auth/user/logout" class="dropdown-item">
-                    <i class="fas fa-sign-out-alt"></i> Sign Out
-                </a>
-            </div>
-        </div>
-    </div>
+    <%- include('./partials/nav') %>
 
     <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-item">
-            <a href="/home" class="sidebar-link">
-                <i class="fas fa-home"></i> Home
-            </a>
-        </div>
-        <div class="sidebar-item">
-            <a href="/api/v1/auth/user/subscriptions" class="sidebar-link">
-                <i class="fas fa-play-circle"></i> Subscriptions
-            </a>
-        </div>
-        <div class="sidebar-item">
-            <a href="/library" class="sidebar-link">
-                <i class="fas fa-folder"></i> Library
-            </a>
-        </div>
-        <div class="sidebar-item">
-            <a href="/api/v1/auth/user/watchHistory" class="sidebar-link">
-                <i class="fas fa-history"></i> History
-            </a>
-        </div>
-    </div>
+    <%- include('./partials/sidebar') %>
 
     <!-- Subscriptions Content -->
     <div class="subscription-content">
@@ -272,20 +103,6 @@
     </div>
 
     <script>
-        // Profile Dropdown Toggle
-        const profileImage = document.querySelector('.profile-image');
-        const profileDropdown = document.querySelector('.profile-dropdown');
-
-        profileImage.addEventListener('click', function() {
-            profileDropdown.classList.toggle('show');
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!profileImage.contains(event.target) && !profileDropdown.contains(event.target)) {
-                profileDropdown.classList.remove('show');
-            }
-        });
 
         // Subscription Toggle Script
         document.querySelectorAll('.subscription-toggle')?.forEach(button => {
@@ -333,26 +150,7 @@
                 }
             });
         });
-
-        // Search functionality
-        const searchInput = document.querySelector('input[placeholder="Search channels"]');
-        if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                const subscriptionItems = document.querySelectorAll('.subscription-item');
-                
-                subscriptionItems.forEach(item => {
-                    const username = item.querySelector('.text-lg').textContent.toLowerCase();
-                    const fullname = item.querySelector('.text-sm').textContent.toLowerCase();
-                    
-                    if (username.includes(searchTerm) || fullname.includes(searchTerm)) {
-                        item.style.display = 'flex';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-        }
     </script>
+      <%- include('./partials/script') %>
 </body>
 </html>

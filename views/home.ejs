@@ -198,60 +198,11 @@
     </style>
 </head>
 <body>
-   
     <!-- Header -->
-    <div class="header">
-        <div class="header-left">
-            <img src="https://w7.pngwing.com/pngs/936/468/png-transparent-youtube-logo-youtube-logo-computer-icons-subscribe-angle-rectangle-airplane-thumbnail.png" alt="YouTube Logo">
-            <div class="search-bar">
-                <input type="text" placeholder="Search">
-                <button><i class="fas fa-search"></i></button>
-            </div>
-        </div>
-        <div class="header-right">
-            <a href="/api/v1/videos/publish-video">
-                <i class="fas fa-video"></i>
-            </a>
-            <img src="<%= user.avatar %>" alt="Profile" class="profile-image">
-           
-            <!-- Profile Dropdown -->
-            <div class="profile-dropdown">
-                <a href="/api/v1/auth/user/channel/<%= user.username %>" class="dropdown-item">
-                    <i class="fas fa-user"></i> Dashboard
-                </a>
-                <a href="/api/v1/auth/user/edit-profile" class="dropdown-item">
-                    <i class="fas fa-cog"></i> Edit Profile
-                </a>
-                <a href="/api/v1/auth/user/logout" class="dropdown-item">
-                    <i class="fas fa-sign-out-alt"></i> Sign Out
-                </a>
-            </div>
-        </div>
-    </div>
+    <%- include('./partials/nav') %>
 
     <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-item">
-            <a href="/home" class="sidebar-link">
-                <i class="fas fa-home"></i> Home
-            </a>
-        </div>
-        <div class="sidebar-item">
-            <a href="/api/v1/auth/user/subscriptions" class="sidebar-link">
-                <i class="fas fa-play-circle"></i> Subscriptions
-            </a>
-        </div>
-        <div class="sidebar-item">
-            <a href="/library" class="sidebar-link">
-                <i class="fas fa-folder"></i> Library
-            </a>
-        </div>
-        <div class="sidebar-item">
-            <a href="/api/v1/auth/user/watchHistory" class="sidebar-link">
-                <i class="fas fa-history"></i> History
-            </a>
-        </div>
-    </div>
+  <%- include('./partials/sidebar') %>
 
     <!-- Video Grid -->
     <div class="video-grid">
@@ -277,47 +228,6 @@
        </a>
     <% }); %>
     </div>
-
-    <script>
-        // Search functionality
-const searchInput = document.querySelector('.search-bar input');
-const searchButton = document.querySelector('.search-bar button');
-
-// Function to handle the search
-function handleSearch() {
-    const query = searchInput.value.trim();
-    if (query) {
-        // Redirect to search results page with the query
-        window.location.href = `/api/v1/videos/search?q=${encodeURIComponent(query)}`;
-    } else {
-        alert("Please enter a search query.");
-    }
-}
-
-// Trigger search on button click
-searchButton.addEventListener('click', handleSearch);
-
-// Trigger search on Enter key press
-searchInput.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter') {
-        handleSearch();
-    }
-});
-
-        // Profile Dropdown Toggle
-        const profileImage = document.querySelector('.profile-image');
-        const profileDropdown = document.querySelector('.profile-dropdown');
-
-        profileImage.addEventListener('click', function() {
-            profileDropdown.classList.toggle('show');
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!profileImage.contains(event.target) && !profileDropdown.contains(event.target)) {
-                profileDropdown.classList.remove('show');
-            }
-        });
-    </script>
+    <%- include('./partials/script') %>
 </body>
 </html>
