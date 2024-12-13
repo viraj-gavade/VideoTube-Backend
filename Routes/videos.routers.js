@@ -2,7 +2,7 @@ const express = require('express')
 const upload = require('../Middlerwares/multer.middleware')
 const VerifyJwt = require('../Middlerwares/auth')
 const VideoRouter = express.Router()
-const {publishAVideo,getVideoById,updateVideo, deleteVideo,toogglepublishStatus} = require('../Controllers/videos.controllers')
+const {publishAVideo,getVideoById,updateVideo, deleteVideo,toogglepublishStatus,searchVideos} = require('../Controllers/videos.controllers')
 const { verify } = require('jsonwebtoken')
 const Video = require('../Models/video.models') 
 const User = require('../Models/users.models') 
@@ -11,6 +11,7 @@ const {getUserChannelProfile} =require('../Controllers/users.controllers')
 const subscriptionModels = require('../Models/subscription.models')
 const likeModels = require('../Models/like.models')
 const CustomApiError = require('../utils/apiErrors')
+const { versionInfo } = require('graphql')
 
 VideoRouter.route('/publish-video').get(VerifyJwt,(req,res)=>{
     res.render('UploadVideo',{
@@ -120,4 +121,7 @@ VideoRouter.route('/video/edit/:videoId').get(VerifyJwt,async(req,res)=>{
         user:req.user
     })
 }).post(VerifyJwt,upload.single('thumbnail'),updateVideo)
+
+VideoRouter.get('/search',VerifyJwt, searchVideos);
+
 module.exports = VideoRouter

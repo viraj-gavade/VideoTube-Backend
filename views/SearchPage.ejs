@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Clone</title>
+    <title>Search Results - YouTube Clone</title>
     <style>
         * {
             margin: 0;
@@ -105,7 +105,6 @@
             background-color: #f0f0f0;
         }
 
-        /* Rest of the previous styles remain the same */
         .sidebar {
             width: 240px;
             background-color: white;
@@ -136,17 +135,27 @@
             text-decoration: none;
             color: #030303;
         }
-        /* Video Grid Styles */
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            padding: 20px;
+
+        /* Search Results Styles */
+        .search-results {
             margin-left: 240px;
+            padding: 20px;
             margin-top: 60px;
         }
 
-        .video-card {
+        .search-info {
+            margin-bottom: 20px;
+            color: #606060;
+        }
+
+        .search-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .search-result-item {
+            display: flex;
             background-color: white;
             border-radius: 8px;
             overflow: hidden;
@@ -155,50 +164,54 @@
             transition: transform 0.2s;
         }
 
-        .video-card:hover {
+        .search-result-item:hover {
             transform: scale(1.02);
         }
 
-        .video-thumbnail {
-            width: 100%;
-            height: 200px;
+        .search-result-thumbnail {
+            width: 360px;
+            height: 202px;
             object-fit: cover;
         }
 
-        .video-details {
-            padding: 10px;
+        .search-result-details {
+            padding: 15px;
             display: flex;
+            flex-direction: column;
         }
 
-        .channel-icon {
+        .search-result-title {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .search-result-channel {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .channel-avatar {
             width: 36px;
             height: 36px;
             border-radius: 50%;
             margin-right: 10px;
         }
 
-        .video-info {
-            flex-grow: 1;
-        }
-
-        .video-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .video-metadata {
+        .search-result-metadata {
             color: #606060;
             font-size: 0.9em;
         }
-        .card-link{
+
+        .card-link {
             text-decoration: none;
             color: black;
         }
     </style>
 </head>
 <body>
-   
-    <!-- Header -->
+    <!-- Header (Same as Home Page) -->
     <div class="header">
         <div class="header-left">
             <img src="https://w7.pngwing.com/pngs/936/468/png-transparent-youtube-logo-youtube-logo-computer-icons-subscribe-angle-rectangle-airplane-thumbnail.png" alt="YouTube Logo">
@@ -222,14 +235,14 @@
         </div>
     </div>
 
-    <!-- Sidebar -->
+    <!-- Sidebar (Same as Home Page) -->
     <div class="sidebar">
         <% 
         const sidebarItems = [
             { name: 'Home', url: '/home' },
             { name: 'Subscriptions', url: '/api/v1/auth/user/subscriptions' },
             { name: 'Library', url: '/library' },
-            { name: 'History', url: '/api/v1/auth/user/watchHistory' }  // Specific URL for history
+            { name: 'History', url: '/api/v1/auth/user/watchHistory' }
         ];
         sidebarItems.forEach(function(item) { 
         %>
@@ -242,29 +255,35 @@
         <% }); %>
     </div>
 
-    <!-- Video Grid -->
-    <div class="video-grid">
-    <% videos.forEach(function(video) { 
-        const createdAtDate = new Date(video.createdAt);
-        const day = createdAtDate.getUTCDate();
-        const month = createdAtDate.toLocaleString("en-US", { month: "long" });
-        const formattedDate = `${day} ${month}`;
-    %>
-       <a href="/api/v1/videos/video/<%= video.id %>" class="card-link"> 
-            <div class="video-card" data-video-id="<%= video._id %>">
-                <img class="video-thumbnail" src="<%= video.thumbnail %>" alt="Video Thumbnail">
-                <div class="video-details">
-                    <img class="channel-icon" src="<%= video.owner.avatar %>" alt="Channel">
-                    <div class="video-info">
-                        <div class="video-title"><%= video.title %></div>
-                        <div class="video-metadata">
-                            <%= video.owner.username %> • <%= video.views %> views • <%= formattedDate %>
+    <!-- Search Results -->
+    <div class="search-results">
+        <div class="search-info">
+            About <%= searchResults.length %> results for "<%= searchQuery %>"
+        </div>
+        <div class="search-list">
+            <% searchResults.forEach(function(video) { 
+                const createdAtDate = new Date(video.createdAt);
+                const day = createdAtDate.getUTCDate();
+                const month = createdAtDate.toLocaleString("en-US", { month: "long" });
+                const formattedDate = `${day} ${month}`;
+            %>
+            <a href="/api/v1/videos/video/<%= video.id %>" class="card-link">
+                <div class="search-result-item" data-video-id="<%= video._id %>">
+                    <img class="search-result-thumbnail" src="<%= video.thumbnail %>" alt="Video Thumbnail">
+                    <div class="search-result-details">
+                        <div class="search-result-title"><%= video.title %></div>
+                        <div class="search-result-channel">
+                            <img class="channel-avatar" src="<%= video.owner.avatar %>" alt="Channel">
+                            <%= video.owner.username %>
+                        </div>
+                        <div class="search-result-metadata">
+                            <%= video.views %> views • <%= formattedDate %> • <%= video.description.substring(0, 200) %>...
                         </div>
                     </div>
                 </div>
-            </div>
-       </a>
-    <% }); %>
+            </a>
+            <% }); %>
+        </div>
     </div>
 
     <script>
@@ -276,7 +295,7 @@
             window.location.href = `/api/v1/videos/search?q=${encodeURIComponent(searchInput.value)}`;
         });
 
-        // Profile Dropdown Toggle
+        // Profile Dropdown Toggle (Same as Home Page)
         const profileImage = document.querySelector('.profile-image');
         const profileDropdown = document.querySelector('.profile-dropdown');
 

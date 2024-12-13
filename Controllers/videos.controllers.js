@@ -165,12 +165,54 @@ const toogglepublishStatus = asyncHandler(async(req,res)=>{
     
 })
 
+
+
+const searchVideos = asyncHandler(async (req, res) => {
+    try {
+      const { q } = req.query; // Destructure the correct query parameter
+      console.log("Query:", q);
+  
+      if (!q) {
+        throw new CustomApiError(400, 'Search query is required.');
+      }
+  
+      const searchRegex = new RegExp(q, 'i'); // 'i' for case-insensitive search
+  
+      const videos = await Video.find({
+        $or: [
+          { title: { $regex: searchRegex } },
+          { description: { $regex: searchRegex } },
+        ],
+        isPublished: true,
+      }).populate('owner')
+        .select('-__v')
+        .sort({ createdAt: -1 })
+        .limit(20);
+  
+      if (videos.length === 0) {
+        throw new CustomApiError(404, 'No videos found matching the search query.');
+      }
+  
+      return res.status(200).render('SearchPage', {
+        searchQuery:q,
+        searchResults: videos,
+        user:req.user // Pass videos correctly
+      });
+    } catch (error) {
+      console.error('Error searching videos:', error);
+      throw error;
+    }
+  });
+  
+
+
 module.exports =
 {
     publishAVideo,
     getVideoById,
     updateVideo,
     deleteVideo,
-    toogglepublishStatus
+    toogglepublishStatus,
+    searchVideos
     
 }
