@@ -102,7 +102,9 @@ VideoRouter.route('/video/:videoId').get(VerifyJwt, async (req, res, next) => {
         next(error);
     }
 })
-.delete(VerifyJwt,deleteVideo)
+
+VideoRouter.route('/video/delete/:videoId')
+.get(VerifyJwt,deleteVideo)
 
 VideoRouter.route('/video/publishstatus/:videoId').get(toogglepublishStatus)
 

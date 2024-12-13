@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscribers - <%= channel.fullname %></title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #065fd4;
+            --secondary-color: #606060;
+            --background-color: #f9f9f9;
+            --white: #ffffff;
+            --red: #cc0000;
+        }
+        body {
+            font-family: 'Inter', 'Roboto', Arial, sans-serif;
+            background-color: var(--background-color);
+            line-height: 1.6;
+        }
+        .channel-container {
+            padding-left: 15rem;
+        }
+        .subscribers-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .subscriber-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            padding: 1.5rem;
+        }
+        .subscriber-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+        .subscriber-card:hover {
+            transform: scale(1.02);
+        }
+        .subscriber-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 1rem;
+        }
+        .subscriber-info {
+            flex-grow: 1;
+        }
+        .subscriber-actions {
+            display: flex;
+            align-items: center;
+        }
+        .btn {
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border-radius: 9999px;
+            padding: 0.5rem 1rem;
+        }
+        .subscribe-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .subscribe-btn:hover {
+            opacity: 0.9;
+        }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border-radius: 9999px;
+            padding: 0.5rem 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .search-bar input {
+            flex-grow: 1;
+            outline: none;
+            margin-left: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Header -->
+    <%- include('./partials/nav') %>
+
+    <!-- Sidebar -->
+    <%- include('./partials/sidebar') %>
+
+    <div class="channel-container">
+        <!-- Subscribers Header -->
+        <div class="subscribers-header">
+            <div>
+                <h1 class="text-2xl font-bold">Subscribers (<%= subscribers.length %>)</h1>
+                <p class="text-gray-600">Manage and view your channel subscribers</p>
+            </div>
+        </div>
+
+        <!-- Subscribers Grid -->
+        <div class="subscriber-grid" id="subscriberGrid">
+            <% subscribers.forEach(function(subscriber) { %>
+         <a href="/api/v1/auth/user/channel/<%= subscriber.channel.username %>">  <div class="subscriber-card" data-username="<%= subscriber.username %>">
+                <img 
+                    src="<%= subscriber.channel.avatar || '/default-avatar.png' %>" 
+                    alt="<%= subscriber.username %>" 
+                    class="subscriber-avatar"
+                >
+                <div class="subscriber-info">
+                    <h3 class="font-semibold text-sm"><%= subscriber.channel.fullname %></h3>
+                    <p class="text-xs text-gray-500">@<%= subscriber.channel.username %></p>
+                </div>
+
+            </div></a> 
+            <% }); %>
+        </div>
+
+        <!-- No Subscribers Message -->
+        <% if (subscribers.length === 0) { %>
+        <div class="text-center py-10">
+            <i class="fas fa-users text-4xl text-gray-300 mb-4"></i>
+            <h2 class="text-xl font-semibold text-gray-600">No subscribers yet</h2>
+            <p class="text-gray-500">Start creating amazing content to attract subscribers!</p>
+        </div>
+        <% } %>
+    </div>
+
+    <script>
+      
+    </script>
+    <%- include('./partials/script') %>
+</body>
+</html>

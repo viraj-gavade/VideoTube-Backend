@@ -134,12 +134,7 @@ const deleteVideo = asyncHandler (async(req,res)=>{
         )
     }
     
-    return res.status(200).json(
-        new ApiResponse(
-            200,
-            'Video deleted successfully!'
-        )
-    )
+    return res.redirect(`/api/v1/auth/user/channel/${req.user.username}`)
 })
 
 const toogglepublishStatus = asyncHandler(async(req,res)=>{

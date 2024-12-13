@@ -182,7 +182,7 @@ const changeCurrentPassword = asyncHandler(async(req,res)=>{
         }
         user.password = newPassword
        await user.save({validateBeforeSave:true})
-       return res.redirect('/api/v1/auth/user/edit-profile')
+       return res.redirect(`/api/v1/auth/user/channel/${req.user.username}`)
 
     } catch (error) {
         console.log(error)
@@ -211,7 +211,7 @@ const updateUserAvtar = asyncHandler(async(req,res)=>{
             avatar:avatar?.url
         }
     },{new:true}).select('-password')
-    return res.redirect('/api/v1/auth/user/edit-profile')
+    return res.redirect(`/api/v1/auth/user/channel/${req.user.username}`)
 
 }) //Checked and bugs fixed
 
@@ -231,7 +231,7 @@ const updateUsercoverImage = asyncHandler(async(req,res)=>{
             coverImage:coverImage?.url
         }
     },{new:true}).select('-password')
-    return res.redirect('/api/v1/auth/user/edit-profile')
+    return res.redirect(`/api/v1/auth/user/channel/${req.user.username}`)
 
 
 })//Checked and bugs fixed
@@ -365,7 +365,7 @@ const changeUserEmail = asyncHandler(async(req,res)=>{
     }
     user.email=email
     await user.save({validateBeforeSave:false})
-    return res.redirect('/api/v1/auth/user/edit-profile')
+    return res.redirect(`/api/v1/auth/user/channel/${req.user.username}`)
 
 
 })
@@ -409,7 +409,7 @@ const changeUserUsername = asyncHandler(async(req,res)=>{
     }
     user.username=username
     await user.save({validateBeforeSave:false})
-    return res.redirect('/api/v1/auth/user/edit-profile')
+    return res.redirect(`/api/v1/auth/user/channel/${req.user.username}`)
 
 })
 
@@ -453,7 +453,7 @@ const changeUserfullname = asyncHandler(async(req,res)=>{
     }
     user.fullname=fullname
     await user.save({validateBeforeSave:false})
-    return res.redirect('/api/v1/auth/user/edit-profile')
+    return res.redirect(`/api/v1/auth/user/channel/${req.user.username}`)
 
 })
 
@@ -522,7 +522,25 @@ const RemoveVideoFromHistory = asyncHandler(async (req, res) => {
     }
 });
 
+const getUserSubscribers = asyncHandler(async (req, res) => {
+    try {
+        const subscribers = await subscriptionModels.find({
+            channel: req.user._id
+        }).populate('channel', '_id username fullname avatar');
 
+        if (!subscribers || subscribers.length === 0) {
+            console.log("No subscriptions found");
+            return res.render('Subscriptions', { subscriptions: [], message: "No subscriptions found",user:req.user });
+        }
+
+        console.log("User SUBSCRIBERS",subscribers)
+        console.log("Subscriptions:", subscribers);
+        return res.render('MySubs', { subscribers , user:req.user,channel:req.user });
+    } catch (error) {
+        console.error("Error fetching subscriptions:", error);
+        return res.status(500).send("An error occurred while fetching subscriptions");
+    }
+});
 module.exports =
  {
 loginUser,
@@ -540,5 +558,6 @@ changeUserUsername,
 changeUserfullname,
 ClearWatchHistory,
 RemoveVideoFromHistory,
-getUserSubscriptions
+getUserSubscriptions,
+getUserSubscribers
 }

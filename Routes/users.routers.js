@@ -16,7 +16,8 @@ const {
     changeUserfullname,
     ClearWatchHistory,
     RemoveVideoFromHistory,
-    getUserSubscriptions
+    getUserSubscriptions,
+    getUserSubscribers
 } = require('../Controllers/users.controllers')
 
 
@@ -80,6 +81,7 @@ UserRouter.route('/ClearwatchHistory').get(VerifyJwt,ClearWatchHistory)
 UserRouter.route('/remove-video/:videoId').get(VerifyJwt,RemoveVideoFromHistory)
 
 UserRouter.route('/subscriptions').get(VerifyJwt,getUserSubscriptions)
+UserRouter.route('/subscribers').get(VerifyJwt,getUserSubscribers)
 
 
 
