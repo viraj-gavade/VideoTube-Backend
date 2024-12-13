@@ -13,7 +13,9 @@ const likeModels = require('../Models/like.models')
 const CustomApiError = require('../utils/apiErrors')
 
 VideoRouter.route('/publish-video').get(VerifyJwt,(req,res)=>{
-    res.render('UploadVideo')
+    res.render('UploadVideo',{
+        user:req.user
+    })
 }).post(VerifyJwt,
     upload.fields([
         {

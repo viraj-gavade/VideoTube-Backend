@@ -330,12 +330,7 @@
 
                 <!-- Action Buttons -->
                 <div class="flex items-center mt-4 space-x-4">
-                    <button 
-                        class="btn subscribe-btn" 
-                        onclick="toggleSubscribe()"
-                    >
-                        <%= channel.isSubscribed ? 'Subscribed' : 'Subscribe' %>
-                    </button>
+                   
                     
                     <% if (locals.user && locals.user.username === channel.username) { %>
                     <button 
@@ -425,7 +420,7 @@
             const subscribeBtn = document.querySelector('.subscribe-btn');
             const isCurrentlySubscribed = subscribeBtn.textContent.trim() === 'Subscribed';
             
-            fetch('/api/subscribe', {
+            fetch('/api/v1/subscriptions/subscribed/toggle/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
