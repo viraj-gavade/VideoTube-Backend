@@ -4,17 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Results - YouTube Clone</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', Arial, sans-serif;
         }
 
         body {
             background-color: #f9f9f9;
             color: #030303;
+            line-height: 1.6;
         }
 
         /* Header Styles */
@@ -25,9 +27,11 @@
             padding: 10px 20px;
             background-color: white;
             border-bottom: 1px solid #e0e0e0;
-            position: sticky;
+            position: fixed;
+            width: 100%;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .header-left {
@@ -43,21 +47,30 @@
         .search-bar {
             display: flex;
             width: 600px;
+            max-width: 100%;
         }
 
         .search-bar input {
             flex-grow: 1;
-            padding: 8px 12px;
+            padding: 10px 15px;
             border: 1px solid #d3d3d3;
             border-right: none;
+            border-radius: 2px 0 0 2px;
             outline: none;
+            font-size: 16px;
         }
 
         .search-bar button {
-            padding: 8px 20px;
+            padding: 10px 20px;
             background-color: #f8f8f8;
             border: 1px solid #d3d3d3;
+            border-radius: 0 2px 2px 0;
             cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .search-bar button:hover {
+            background-color: #f0f0f0;
         }
 
         .header-right {
@@ -66,12 +79,16 @@
             position: relative;
         }
 
+        .header-right > a, .header-right > img {
+            margin-left: 15px;
+            cursor: pointer;
+        }
+
         .header-right img {
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            margin-left: 15px;
-            cursor: pointer;
+            object-fit: cover;
         }
 
         /* Profile Dropdown Styles */
@@ -84,7 +101,7 @@
             border: 1px solid #d3d3d3;
             border-radius: 4px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            min-width: 180px;
+            min-width: 200px;
             z-index: 1000;
             margin-top: 10px;
         }
@@ -94,10 +111,11 @@
         }
 
         .dropdown-item {
-            padding: 10px 15px;
+            padding: 12px 15px;
             text-decoration: none;
             color: #030303;
-            display: block;
+            display: flex;
+            align-items: center;
             transition: background-color 0.2s;
         }
 
@@ -105,15 +123,23 @@
             background-color: #f0f0f0;
         }
 
+        .dropdown-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Sidebar Styles */
         .sidebar {
             width: 240px;
             background-color: white;
-            height: calc(100vh - 60px);
+            height: 100vh;
             position: fixed;
             left: 0;
             top: 60px;
             border-right: 1px solid #e0e0e0;
             overflow-y: auto;
+            padding-top: 10px;
         }
 
         .sidebar-item {
@@ -121,31 +147,38 @@
             align-items: center;
             padding: 10px 20px;
             cursor: pointer;
+            transition: background-color 0.2s;
         }
 
         .sidebar-item:hover {
             background-color: #f0f0f0;
         }
 
-        .sidebar-item img {
-            width: 116px;
-            margin-right: 15px;
-        }
         .sidebar-link {
             text-decoration: none;
             color: #030303;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .sidebar-link i {
+            margin-right: 15px;
+            width: 24px;
+            text-align: center;
         }
 
         /* Search Results Styles */
         .search-results {
             margin-left: 240px;
             padding: 20px;
-            margin-top: 60px;
+            margin-top: 80px;
         }
 
         .search-info {
             margin-bottom: 20px;
             color: #606060;
+            font-size: 14px;
         }
 
         .search-list {
@@ -161,11 +194,12 @@
             overflow: hidden;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .search-result-item:hover {
-            transform: scale(1.02);
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
         .search-result-thumbnail {
@@ -178,18 +212,21 @@
             padding: 15px;
             display: flex;
             flex-direction: column;
+            justify-content: center;
         }
 
         .search-result-title {
             font-weight: bold;
             font-size: 1.2em;
             margin-bottom: 10px;
+            color: #030303;
         }
 
         .search-result-channel {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
+            color: #606060;
         }
 
         .channel-avatar {
@@ -197,6 +234,7 @@
             height: 36px;
             border-radius: 50%;
             margin-right: 10px;
+            object-fit: cover;
         }
 
         .search-result-metadata {
@@ -206,83 +244,124 @@
 
         .card-link {
             text-decoration: none;
-            color: black;
+            color: inherit;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .search-results {
+                margin-left: 0;
+                padding: 10px;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .search-bar {
+                width: 100%;
+            }
+
+            .search-result-item {
+                flex-direction: column;
+            }
+
+            .search-result-thumbnail {
+                width: 100%;
+                height: auto;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Header (Same as Home Page) -->
+    <!-- Header -->
     <div class="header">
         <div class="header-left">
             <img src="https://w7.pngwing.com/pngs/936/468/png-transparent-youtube-logo-youtube-logo-computer-icons-subscribe-angle-rectangle-airplane-thumbnail.png" alt="YouTube Logo">
             <div class="search-bar">
                 <input type="text" placeholder="Search">
-                <button>🔍</button>
+                <button><i class="fas fa-search"></i></button>
             </div>
         </div>
         <div class="header-right">
-           <a href="/api/v1/videos/publish-video"> 
-                <img src="https://brandeps.com/icon-download/V/Video-call-icon-vector-04.svg" alt="Create"> 
-           </a>
-           <img src="<%= user.avatar %>" alt="Profile" class="profile-image">
+            <a href="/api/v1/videos/publish-video">
+                <i class="fas fa-video"></i>
+            </a>
+            <img src="<%= user.avatar %>" alt="Profile" class="profile-image">
            
-           <!-- Profile Dropdown -->
-           <div class="profile-dropdown">
-               <a href="/api/v1/auth/user/channel/<%= user.username %>" class="dropdown-item">Dashboard</a>
-               <a href="/api/v1/auth/user/edit-profile" class="dropdown-item">Edit Profile</a>
-               <a href="/api/v1/auth/user/logout" class="dropdown-item">Sign Out</a>
-           </div>
+            <!-- Profile Dropdown -->
+            <div class="profile-dropdown">
+                <a href="/api/v1/auth/user/channel/<%= user.username %>" class="dropdown-item">
+                    <i class="fas fa-user"></i> Dashboard
+                </a>
+                <a href="/api/v1/auth/user/edit-profile" class="dropdown-item">
+                    <i class="fas fa-cog"></i> Edit Profile
+                </a>
+                <a href="/api/v1/auth/user/logout" class="dropdown-item">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </a>
+            </div>
         </div>
     </div>
 
-    <!-- Sidebar (Same as Home Page) -->
+    <!-- Sidebar -->
     <div class="sidebar">
-        <% 
-        const sidebarItems = [
-            { name: 'Home', url: '/home' },
-            { name: 'Subscriptions', url: '/api/v1/auth/user/subscriptions' },
-            { name: 'Library', url: '/library' },
-            { name: 'History', url: '/api/v1/auth/user/watchHistory' }
-        ];
-        sidebarItems.forEach(function(item) { 
-        %>
-            <div class="sidebar-item">
-                <a href="<%= item.url %>" class="sidebar-link">
-                    <img src="/api/placeholder/24/24" alt="<%=  %>">
-                    <%= item.name %>
-                </a>
-            </div>
-        <% }); %>
+        <div class="sidebar-item">
+            <a href="/home" class="sidebar-link">
+                <i class="fas fa-home"></i> Home
+            </a>
+        </div>
+        <div class="sidebar-item">
+            <a href="/api/v1/auth/user/subscriptions" class="sidebar-link">
+                <i class="fas fa-play-circle"></i> Subscriptions
+            </a>
+        </div>
+        <div class="sidebar-item">
+            <a href="/library" class="sidebar-link">
+                <i class="fas fa-folder"></i> Library
+            </a>
+        </div>
+        <div class="sidebar-item">
+            <a href="/api/v1/auth/user/watchHistory" class="sidebar-link">
+                <i class="fas fa-history"></i> History
+            </a>
+        </div>
     </div>
 
     <!-- Search Results -->
     <div class="search-results">
         <div class="search-info">
-            About <%= searchResults.length %> results for "<%= searchQuery %>"
+            <% if (typeof searchResults !== 'undefined' && searchResults.length > 0) { %>
+                About <%= searchResults.length %> results for "<%= searchQuery %>"
+            <% } else { %>
+                <h2>No videos Found!</h2>
+            <% } %>
         </div>
         <div class="search-list">
-            <% searchResults.forEach(function(video) { 
-                const createdAtDate = new Date(video.createdAt);
-                const day = createdAtDate.getUTCDate();
-                const month = createdAtDate.toLocaleString("en-US", { month: "long" });
-                const formattedDate = `${day} ${month}`;
-            %>
-            <a href="/api/v1/videos/video/<%= video.id %>" class="card-link">
-                <div class="search-result-item" data-video-id="<%= video._id %>">
-                    <img class="search-result-thumbnail" src="<%= video.thumbnail %>" alt="Video Thumbnail">
-                    <div class="search-result-details">
-                        <div class="search-result-title"><%= video.title %></div>
-                        <div class="search-result-channel">
-                            <img class="channel-avatar" src="<%= video.owner.avatar %>" alt="Channel">
-                            <%= video.owner.username %>
-                        </div>
-                        <div class="search-result-metadata">
-                            <%= video.views %> views • <%= formattedDate %> • <%= video.description.substring(0, 200) %>...
+            <% if (typeof searchResults !== 'undefined') { %>
+                <% searchResults.forEach(function(video) { 
+                    const createdAtDate = new Date(video.createdAt);
+                    const day = createdAtDate.getUTCDate();
+                    const month = createdAtDate.toLocaleString("en-US", { month: "long" });
+                    const formattedDate = `${day} ${month}`;
+                %>
+                <a href="/api/v1/videos/video/<%= video.id %>" class="card-link">
+                    <div class="search-result-item" data-video-id="<%= video._id %>">
+                        <img class="search-result-thumbnail" src="<%= video.thumbnail %>" alt="Video Thumbnail">
+                        <div class="search-result-details">
+                            <div class="search-result-title"><%= video.title %></div>
+                            <div class="search-result-channel">
+                                <img class="channel-avatar" src="<%= video.owner.avatar %>" alt="Channel">
+                                <%= video.owner.username %>
+                            </div>
+                            <div class="search-result-metadata">
+                                <%= video.views %> views • <%= formattedDate %> • <%= video.description.substring(0, 200) %>...
+                            </div>
                         </div>
                     </div>
-                </div>
-            </a>
-            <% }); %>
+                </a>
+                <% }); %>
+            <% } %>
         </div>
     </div>
 
@@ -290,12 +369,25 @@
         // Search functionality
         const searchInput = document.querySelector('.search-bar input');
         const searchButton = document.querySelector('.search-bar button');
-        console.log("Search Input:-",searchInput)
-        searchButton.addEventListener('click', function() {
-            window.location.href = `/api/v1/videos/search?q=${encodeURIComponent(searchInput.value)}`;
+
+        // Add event listener for Enter key
+        searchInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
         });
 
-        // Profile Dropdown Toggle (Same as Home Page)
+        // Add event listener for search button
+        searchButton.addEventListener('click', performSearch);
+
+        function performSearch() {
+            const query = searchInput.value.trim();
+            if (query) {
+                window.location.href = `/api/v1/videos/search?q=${encodeURIComponent(query)}`;
+            }
+        }
+
+        // Profile Dropdown Toggle
         const profileImage = document.querySelector('.profile-image');
         const profileDropdown = document.querySelector('.profile-dropdown');
 

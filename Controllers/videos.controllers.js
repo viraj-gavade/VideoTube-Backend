@@ -190,8 +190,15 @@ const searchVideos = asyncHandler(async (req, res) => {
         .limit(20);
   
       if (videos.length === 0) {
-        throw new CustomApiError(404, 'No videos found matching the search query.');
+        return res.status(200).render('SearchPage', {
+            searchQuery:q,
+            searchResults: [],
+            user:req.user // Pass videos correctly
+          });
       }
+
+
+
   
       return res.status(200).render('SearchPage', {
         searchQuery:q,
