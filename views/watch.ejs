@@ -175,8 +175,8 @@
                         <a href="/api/v1/auth/user/channel/<%= owner.username %>">
                             <img src="<%= owner.avatar %>" alt="Channel Avatar" class="channel-avatar">
                         </a>
-                        <div>
-                            <h2 class="text-lg font-semibold"><%= owner.username %></h2>
+                        <div><a href="/api/v1/auth/user/channel/<%= owner.username %>">
+                            <h2 class="text-lg font-semibold"><%= owner.username %></h2></a>
                             <p class="text-sm text-gray-600"><%= channelSubscribers %> subscribers</p>
                         </div>
                     </div>
@@ -270,14 +270,15 @@
                     <div class="comments-list">
                         <% comments.forEach(function(comment) { %>
                         <div class="single-comment flex mb-4 pb-4 border-b">
-                            <img 
+                            <a href="/api/v1/auth/user/channel/<%=comment.owner.username %>"> <img 
                                 src="<%= comment.owner.avatar %>" 
                                 alt="<%= comment.owner.username %>" 
                                 class="w-10 h-10 rounded-full mr-4"
-                            >
+                            > </a>
                             <div class="comment-content flex-grow">
                                 <div class="comment-header flex items-center mb-2">
-                                    <span class="font-semibold mr-2"><%= comment.owner.username %></span>
+                                    <a href="/api/v1/auth/user/channel/<%= comment.owner.username %>"> 
+                                         <span class="font-semibold mr-2"><%= comment.owner.username %></span></a>
                                     <span class="text-xs text-gray-500">
                                         <%= new Date(comment.createdAt).toLocaleDateString() %>
                                     </span>
