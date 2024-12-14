@@ -6,7 +6,7 @@ const LikeRouter = express.Router()
 
 LikeRouter.route('/likes/video/:videoId').get(VerifyJwt,toggleVideoLike)
 LikeRouter.route('/likes/comment/:commentId').get(VerifyJwt,togglecommentLike)
-LikeRouter.route('/likes/tweet/:tweetId').get(VerifyJwt,toggleTweetLike)
+
 
 LikeRouter.route('/likedvideos').get(VerifyJwt,getAllLikedVideos)
 
