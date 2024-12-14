@@ -1,6 +1,6 @@
 const express = require('express')
 const VerifyJwt = require('../Middlerwares/auth')
-const { addComment, updateCommment, deleteComment,getVideoComments } = require('../Controllers/commnet.controllers')
+const { addComment, deleteComment,getVideoComments, updateComment } = require('../Controllers/commnet.controllers')
 const CommentRouter = express.Router()
 
 
@@ -11,7 +11,7 @@ CommentRouter.route('/comments/:videoId')
 
 
 CommentRouter.route('/comment/:commentId')
-.put(VerifyJwt,updateCommment)
+.put(VerifyJwt,updateComment)
 .delete(VerifyJwt,deleteComment)
 
 CommentRouter.route('/comment/delete/:commentId')
