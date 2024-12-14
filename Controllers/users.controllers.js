@@ -636,7 +636,7 @@ const getUserSubscribers = asyncHandler(async (req, res) => {
     try {
         // Fetch subscriptions where the current user is the channel
         const subscribers = await subscriptionModels.find({
-            channel: req.user._id
+            subscriber: req.user._id
         }).populate('channel', '_id username fullname avatar'); // Populate the 'channel' field with necessary details (ID, username, fullname, avatar)
 
         // Check if the user has any subscribers
@@ -644,6 +644,7 @@ const getUserSubscribers = asyncHandler(async (req, res) => {
             return res.render('Subscriptions', { subscriptions: [], message: "No subscribers found", user: req.user }); // Render 'Subscriptions' page with a message if no subscribers
         }
         // Render the 'MySubs' page with the fetched subscribers and user data
+        console.log(subscribers)
         return res.render('MySubs', { subscribers, user: req.user, channel: req.user });
     } catch (error) {
         console.error("Error fetching subscribers:", error); // Log any errors that occur while fetching subscribers
