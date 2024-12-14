@@ -4,7 +4,7 @@
 VideoTube Backend is a robust, scalable backend service for a video-sharing platform, providing comprehensive API endpoints for video management, user authentication, and content delivery.
 
 ## Live Demo
-🌐 [Backend API Endpoint](https://videotubeapi-uukxbf8d.b4a.run./api/v1/healthcheck)
+🌐 [Backend API Endpoint](https://videotubeapi-uukxbf8d.b4a.run./home)
 
 ## Features
 - User Authentication (Register, Login, Logout)
