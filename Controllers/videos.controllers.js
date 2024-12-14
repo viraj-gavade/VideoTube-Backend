@@ -43,7 +43,7 @@ const publishAVideo = asyncHandler(async (req, res) => {
         })
         return res.redirect('/home') // Redirect to the home page after publishing the video
     } catch (error) {
-        console.log(error)  // Log the error for debugging
+        console.error(error)  // Log the error for debugging
     }
 })
 
