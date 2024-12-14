@@ -1,3 +1,4 @@
+// Importing required modules and functions
 const asyncHandler = require('../utils/asynchandler')
 const Video = require('../Models/video.models')
 const uploadFile = require('../utils/cloudinary')
@@ -6,95 +7,92 @@ const CustomApiError = require('../utils/apiErrors')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 
-const publishAVideo = asyncHandler(async (req,res)=>{
+// Function to publish a new video
+const publishAVideo = asyncHandler(async (req, res) => {
     try {
-    const {title,description,views,isPublished} = req.body
-    if(!(views || isPublished)){
-        throw new CustomApiError(
-            400,
-            'All fields are required!'
-        )
-    }
-   
-    const videoLocalpath = req.files?.videoFile[0].path    
-    const thumbnailLocalpath = req.files?.thumbnail[0].path
+        const { title, description, views, isPublished } = req.body
+        
+        // Check if essential fields (views and isPublished) are provided
+        if (!(views || isPublished)) {
+            throw new CustomApiError(400, 'All fields are required!');
+        }
 
+        // Extracting file paths from the request (video file and thumbnail)
+        const videoLocalpath = req.files?.videoFile[0].path    
+        const thumbnailLocalpath = req.files?.thumbnail[0].path
 
-    if(!videoLocalpath || !thumbnailLocalpath){
-        throw new CustomApiError(
-            401,'VidoeFile and thumbnail both are required'
-        )
-    }
-       const thumbnail = await uploadFile(thumbnailLocalpath)
-       const videoFile = await uploadFile(videoLocalpath)
- 
+        // If video or thumbnail is missing, throw an error
+        if (!videoLocalpath || !thumbnailLocalpath) {
+            throw new CustomApiError(401, 'VideoFile and thumbnail both are required');
+        }
+
+        // Upload files to Cloudinary
+        const thumbnail = await uploadFile(thumbnailLocalpath)
+        const videoFile = await uploadFile(videoLocalpath)
+
+        // Create a new video in the database
         const video = await Video.create({
-            videoFile:videoFile.url|| '',
-            thumbnail:thumbnail.url|| '',
-            title:title,
-            description:description,
-            duration:videoFile.duration,
-            views:views,
-            isPublished:isPublished,
-            owner:req.user
+            videoFile: videoFile.url || '',   // Store the video file URL
+            thumbnail: thumbnail.url || '',   // Store the thumbnail URL
+            title: title,                     // Title of the video
+            description: description,         // Description of the video
+            duration: videoFile.duration,     // Duration of the video
+            views: views,                     // View count
+            isPublished: isPublished,         // Publish status
+            owner: req.user                   // The user who uploaded the video
         })
-        return res.redirect('/home')
-} catch (error) {
-    console.log(error)    
-}
-})
-
-const getVideoById = asyncHandler(async(req,res)=>{
-    const {videoId} = req.params
-    const video = await Video.findById(videoId)
-    if(!video){
-        throw new CustomApiError(
-            400,
-            `There is no such video with Id:${videoId}`
-        )
+        return res.redirect('/home') // Redirect to the home page after publishing the video
+    } catch (error) {
+        console.log(error)  // Log the error for debugging
     }
-    
-   return res.status(200).json(
-        new ApiResponse(
-            200,
-            'Video fetched successfully!',
-            video
-        )
-    )
 })
 
-const updateVideo = asyncHandler(async (req, res) => {
-    const { videoId } = req.params;
-    const { title, thumbnail, description } = req.body;
+// Function to get a video by its ID
+const getVideoById = asyncHandler(async (req, res) => {
+    const { videoId } = req.params
+    
+    // Fetch the video from the database using its ID
+    const video = await Video.findById(videoId)
+    
+    // If video is not found, throw an error
+    if (!video) {
+        throw new CustomApiError(400, `There is no such video with Id:${videoId}`)
+    }
 
-    // Check if video ID is provided
+    // Return the video details in the response
+    return res.status(200).json(new ApiResponse(200, 'Video fetched successfully!', video))
+})
+
+// Function to update an existing video
+const updateVideo = asyncHandler(async (req, res) => {
+    const { videoId } = req.params
+    const { title, thumbnail, description } = req.body
+
+    // Validate the video ID
     if (!videoId) {
         throw new CustomApiError(400, 'Video ID is required.');
     }
 
     try {
-        // Retrieve the existing video details
-        const existingVideo = await Video.findById(videoId);
+        // Retrieve the existing video details from the database
+        const existingVideo = await Video.findById(videoId)
         if (!existingVideo) {
-            return res.status(404).json(
-                new ApiResponse(404, `No video found with ID: ${videoId}.`)
-            );
+            return res.status(404).json(new ApiResponse(404, `No video found with ID: ${videoId}.`))
         }
 
         const thumbnailLocalpath = req.file?.path
-        if(!thumbnailLocalpath){
-            throw new CustomApiError(400,
-                'No local Path to be found using the exsting thumbnail'
-            )
+        if (!thumbnailLocalpath) {
+            throw new CustomApiError(400, 'No local Path to be found using the existing thumbnail')
         }
+
+        // Upload the new thumbnail file to Cloudinary
         const thumbnail = await uploadFile(thumbnailLocalpath)
-        console.log(thumbnail)
-        if(!thumbnail){
-            throw new CustomApiError(
-                400,
-                'Something went wrong while uploading the thumbnail on cloudinary !'
-            )
+
+        // If thumbnail upload fails, throw an error
+        if (!thumbnail) {
+            throw new CustomApiError(400, 'Something went wrong while uploading the thumbnail on cloudinary!')
         }
+
         // Update the video details, keeping existing values if not provided
         const video = await Video.findByIdAndUpdate(
             videoId,
@@ -106,115 +104,103 @@ const updateVideo = asyncHandler(async (req, res) => {
                 },
             },
             { new: true, runValidators: true }
-        );
+        )
         const updatedVideo = await Video.findById(video._id)
-        console.log("Updated Video:- " , updateVideo)
-        // Success response
-        return res.status(200).json(
-            new ApiResponse(200, 'Video details updated successfully!', updatedVideo)
-        );
+        
+        // Return the updated video details in the response
+        return res.status(200).json(new ApiResponse(200, 'Video details updated successfully!', updatedVideo))
     } catch (error) {
-        // Handle unexpected errors
-        console.error('Error updating video:', error);
-        throw new CustomApiError(500, 'An unexpected error occurred while updating the video.');
+        console.error('Error updating video:', error)  // Log error for debugging
+        throw new CustomApiError(500, 'An unexpected error occurred while updating the video.')
     }
-});
+})
 
-
-
-const deleteVideo = asyncHandler (async(req,res)=>{
+// Function to delete a video by its ID
+const deleteVideo = asyncHandler(async (req, res) => {
     const { videoId } = req.params
     
+    // Delete the video from the database
     const video = await Video.findByIdAndDelete(videoId)
     
-    if(!video){
-        throw new CustomApiError(
-            400,
-            `There is no such video with Id:${videoId}`
-        )
+    // If video not found, throw an error
+    if (!video) {
+        throw new CustomApiError(400, `There is no such video with Id:${videoId}`)
     }
-    
+
+    // Redirect to the user's channel page after deletion
     return res.redirect(`/api/v1/auth/user/channel/${req.user.username}`)
 })
 
-const toogglepublishStatus = asyncHandler(async(req,res)=>{
+// Function to toggle the publish status of a video
+const toogglepublishStatus = asyncHandler(async (req, res) => {
     const { videoId } = req.params
     const video = await Video.findById(videoId)
-    if(!video){
-        throw new CustomApiError(
-            400,
-            `There is no such video with Id:${videoId}`
-        )
+    
+    // If video not found, throw an error
+    if (!video) {
+        throw new CustomApiError(400, `There is no such video with Id:${videoId}`)
     }
-    video.isPublished =!video.isPublished
-    await video.save({validateBeforeSave:false})
+
+    // Toggle the publish status of the video
+    video.isPublished = !video.isPublished
+    await video.save({ validateBeforeSave: false })
     
-    return res.status(200).json(
-        new ApiResponse(
-            200,
-            'Video publish Status Updated',
-            video
-        )
-    )
-    
-    
+    // Return the updated video with its new publish status
+    return res.status(200).json(new ApiResponse(200, 'Video publish Status Updated', video))
 })
 
-
-
+// Function to search for videos based on a query string
 const searchVideos = asyncHandler(async (req, res) => {
     try {
-      const { q } = req.query; // Destructure the correct query parameter
-      console.log("Query:", q);
-  
-      if (!q) {
-        throw new CustomApiError(400, 'Search query is required.');
-      }
-  
-      const searchRegex = new RegExp(q, 'i'); // 'i' for case-insensitive search
-  
-      const videos = await Video.find({
-        $or: [
-          { title: { $regex: searchRegex } },
-          { description: { $regex: searchRegex } },
-        ],
-        isPublished: true,
-      }).populate('owner')
-        .select('-__v')
-        .sort({ createdAt: -1 })
-        .limit(20);
-  
-      if (videos.length === 0) {
+        const { q } = req.query  // Get the search query from the request
+        
+        // If search query is not provided, throw an error
+        if (!q) {
+            throw new CustomApiError(400, 'Search query is required.');
+        }
+
+        const searchRegex = new RegExp(q, 'i')  // Create a case-insensitive regex for the search query
+
+        // Search for videos by title or description that match the query and are published
+        const videos = await Video.find({
+            $or: [
+                { title: { $regex: searchRegex } },
+                { description: { $regex: searchRegex } },
+            ],
+            isPublished: true,
+        })
+        .populate('owner')  // Include owner details
+        .select('-__v')  // Exclude the __v field from the result
+        .sort({ createdAt: -1 })  // Sort by creation date in descending order
+        .limit(20)  // Limit results to 20 videos
+
+        // If no videos found, return an empty search page
+        if (videos.length === 0) {
+            return res.status(200).render('SearchPage', {
+                searchQuery: q,
+                searchResults: [],
+                user: req.user
+            });
+        }
+
+        // Return the search results on the search page
         return res.status(200).render('SearchPage', {
-            searchQuery:q,
-            searchResults: [],
-            user:req.user // Pass videos correctly
-          });
-      }
-
-
-
-  
-      return res.status(200).render('SearchPage', {
-        searchQuery:q,
-        searchResults: videos,
-        user:req.user // Pass videos correctly
-      });
+            searchQuery: q,
+            searchResults: videos,
+            user: req.user
+        });
     } catch (error) {
-      console.error('Error searching videos:', error);
-      throw error;
+        console.error('Error searching videos:', error)  // Log the error for debugging
+        throw error
     }
-  });
-  
+})
 
-
-module.exports =
-{
+// Export the functions to be used in routes
+module.exports = {
     publishAVideo,
     getVideoById,
     updateVideo,
     deleteVideo,
     toogglepublishStatus,
     searchVideos
-    
 }
