@@ -21,7 +21,6 @@ const User = require('./Models/users.models'); // User model
 // Routers
 const UserRouter = require('./Routes/users.routers'); // User-related API routes
 const VideoRouter = require('./Routes/videos.routers'); // Video-related API routes
-const TweetRouter = require('./Routes/tweets.routers'); // Tweet-related API routes
 const CommentRouter = require('./Routes/comments.routers'); // Comment-related API routes
 const healthCheck = require('./Controllers/healthcheck.controllers'); // Health check endpoint
 const subscriptionRouter = require('./Routes/subscritption.routers'); // Subscription API routes
@@ -60,7 +59,6 @@ app.use(passport.session()); // Enable session management for Passport
 // API Routes Setup
 app.use('/api/v1/auth/user', UserRouter); // User authentication-related routes
 app.use('/api/v1/videos', VideoRouter); // Video-related routes
-app.use('/api/v1/tweets', TweetRouter); // Tweet-related routes
 app.use('/api/v1/comments', CommentRouter); // Comment-related routes
 app.use('/api/v1/healthcheck', healthCheck); // Health check endpoint
 app.use('/api/v1/subscriptions', subscriptionRouter); // Subscription-related routes
