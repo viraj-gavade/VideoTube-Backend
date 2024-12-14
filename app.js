@@ -181,7 +181,6 @@ const server = new ApolloServer({ typeDefs, resolvers });
           'Content-Type': 'application/json', // Set Content-Type header for JSON response
         },
       });
-      console.log('Data ', data);
       res.render('home', { videos: data.getVideoInfo, user: req.user }); // Render home page with video data
     } catch (error) {
       console.error('Error fetching videos:', error);

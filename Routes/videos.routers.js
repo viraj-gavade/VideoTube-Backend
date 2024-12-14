@@ -46,7 +46,6 @@ VideoRouter.route('/video/:videoId')
                 { $addToSet: { watchHistory: videoId } }, // $addToSet ensures no duplicates
                 { new: true }
             );
-            console.log("History:", history);
 
             // Check if the user is subscribed to the channel
             const subscription = await subscriptionModels.findOne({

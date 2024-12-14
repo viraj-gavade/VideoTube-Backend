@@ -125,7 +125,7 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
     // Destructure request body to get email, password, and username
     const { email, password, username } = req.body
-    console.log('Body:-', req.body)
+    
 
     // Check if email and password are provided
     if (!email || !password) {
@@ -144,7 +144,6 @@ const loginUser = asyncHandler(async (req, res) => {
 
     // Check if the provided password matches the stored password
     const ValidPassword = await user.isPasswordCorrect(password)
-    console.log("Password:-", ValidPassword)
     if (!ValidPassword) {
         throw new CustomApiError(401, 'Invalid user credentials!')
     }
@@ -340,7 +339,6 @@ const updateUsercoverImage = asyncHandler(async (req, res) => {
 // Async handler to fetch the user's channel profile
 const getUserChannelProfile = asyncHandler(async (req, res, next) => {
     const { username } = req.params
-    console.log(req.params)
     
     // Check if the username is provided and valid
     if (!username?.trim()) {
@@ -402,8 +400,7 @@ const getUserChannelProfile = asyncHandler(async (req, res, next) => {
         }
     ])
 
-    // Log the username to check the channel data
-    console.log(channel[0].username)
+  
 
     // Find the user associated with the channel username
     const user = await User.find({ username: channel[0].username })
@@ -437,14 +434,13 @@ const getUserWatchHistory = asyncHandler(async (req, res) => {
             }
         });
 
-    console.log(userHistory.watchHistory); // Log the watchHistory to the console for debugging
+  
     
     // Check if user exists, throw an error if not found
     if (!userHistory) {
         throw new CustomApiError(404, 'User not found!');
     }
 
-    console.log("User Watch History:", userHistory.watchHistory); // Log the user's watch history
 
     // Render the 'History' page with the user's watch history data
     return res.render('History', {
@@ -522,7 +518,7 @@ const changeUserUsername = asyncHandler(async (req, res) => {
     await user.save({ validateBeforeSave: false });
 
     // Redirect to the user's channel page after the username update
-    return res.redirect(`/api/v1/auth/user/channel/${req.user.username}`);
+    return res.redirect(`/api/v1/auth/user/channel/${user.username}`);
 });
 
 
@@ -583,7 +579,6 @@ const ClearWatchHistory = asyncHandler(async (req, res) => {
         throw new CustomApiError(404, 'User not found!');
     }
 
-    console.log("User Watch History:", userHistory.watchHistory); // Log cleared watchHistory for debugging
 
     // Render the history page with cleared watchHistory data (empty array)
     return res.render('History', {
@@ -608,7 +603,6 @@ const RemoveVideoFromHistory = asyncHandler(async (req, res) => {
         throw new CustomApiError(404, 'User not found!');
     }
 
-    console.log("Updated Watch History:", userHistory.watchHistory); // Log updated watchHistory for debugging
 
     // Redirect to the user's watch history page after removing the video
     return res.redirect('/api/v1/auth/user/watchHistory');
@@ -625,12 +619,9 @@ const getUserSubscriptions = asyncHandler(async (req, res) => {
 
         // Check if the user has any subscriptions
         if (!subscriptions || subscriptions.length === 0) {
-            console.log("No subscriptions found"); // Log if no subscriptions are found
             return res.render('Subscriptions', { subscriptions: [], message: "No subscriptions found", user: req.user }); // Render 'Subscriptions' page with a message if no subscriptions
         }
 
-        console.log(req.user); // Log the current user for debugging
-        console.log("Subscriptions:", subscriptions); // Log the fetched subscriptions for debugging
 
         // Render the 'Subscriptions' page with the fetched subscriptions and user data
         return res.render('Subscriptions', { subscriptions, user: req.user });
@@ -650,13 +641,8 @@ const getUserSubscribers = asyncHandler(async (req, res) => {
 
         // Check if the user has any subscribers
         if (!subscribers || subscribers.length === 0) {
-            console.log("No subscribers found"); // Log if no subscribers are found
             return res.render('Subscriptions', { subscriptions: [], message: "No subscribers found", user: req.user }); // Render 'Subscriptions' page with a message if no subscribers
         }
-
-        console.log("User SUBSCRIBERS", subscribers); // Log the fetched subscribers for debugging
-        console.log("Subscriptions:", subscribers); // Log the fetched subscriptions for debugging
-
         // Render the 'MySubs' page with the fetched subscribers and user data
         return res.render('MySubs', { subscribers, user: req.user, channel: req.user });
     } catch (error) {

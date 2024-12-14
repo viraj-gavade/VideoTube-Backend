@@ -9,8 +9,6 @@ const { default: mongoose } = require('mongoose');
 // Function to toggle the subscription for a user on a specific video
 const togglesubscription = asyncHandler(async (req, res) => {
     const { videoId } = req.params; // Extract the videoId from the request parameters
-    console.log("Video Id:-", videoId);
-
     try {
         // Fetch the video and populate the owner's details
         const video = await Video.findById(videoId).populate('owner');
