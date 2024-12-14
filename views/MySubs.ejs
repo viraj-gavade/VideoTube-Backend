@@ -108,15 +108,15 @@
         <!-- Subscribers Grid -->
         <div class="subscriber-grid" id="subscriberGrid">
             <% subscribers.forEach(function(subscriber) { %>
-         <a href="/api/v1/auth/user/channel/<%= subscriber.channel.username %>">  <div class="subscriber-card" data-username="<%= subscriber.username %>">
+         <a href="/api/v1/auth/user/channel/<%= subscriber.subscriber.username %>">  <div class="subscriber-card" data-username="<%= subscriber.subscriber.username %>">
                 <img 
-                    src="<%= subscriber.channel.avatar || '/default-avatar.png' %>" 
-                    alt="<%= subscriber.username %>" 
+                    src="<%= subscriber.subscriber.avatar || '/default-avatar.png' %>" 
+                    alt="<%= subscriber.subscriber.username %>" 
                     class="subscriber-avatar"
                 >
                 <div class="subscriber-info">
-                    <h3 class="font-semibold text-sm"><%= subscriber.channel.fullname %></h3>
-                    <p class="text-xs text-gray-500">@<%= subscriber.channel.username %></p>
+                    <h3 class="font-semibold text-sm"><%= subscriber.subscriber.fullname %></h3>
+                    <p class="text-xs text-gray-500">@<%= subscriber.subscriber.username %></p>
                 </div>
 
             </div></a> 

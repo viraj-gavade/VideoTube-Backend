@@ -632,25 +632,33 @@ const getUserSubscriptions = asyncHandler(async (req, res) => {
 });
 
 // Async handler to get the user's subscribers
+
 const getUserSubscribers = asyncHandler(async (req, res) => {
     try {
+        // Log the user ID to ensure req.user is populated correctly
+        console.log("User ID:", req.user._id);
+
         // Fetch subscriptions where the current user is the channel
         const subscribers = await subscriptionModels.find({
-            subscriber: req.user._id
-        }).populate('channel', '_id username fullname avatar'); // Populate the 'channel' field with necessary details (ID, username, fullname, avatar)
+            channel: req.user._id  // Change to look for the channel field as the current user
+        }).populate('subscriber', '_id username fullname avatar'); // Populate the 'subscriber' field with necessary details
 
         // Check if the user has any subscribers
         if (!subscribers || subscribers.length === 0) {
-            return res.render('Subscriptions', { subscriptions: [], message: "No subscribers found", user: req.user }); // Render 'Subscriptions' page with a message if no subscribers
+            return res.render('Subscriptions', { subscriptions: [], message: "No subscribers found", user: req.user });
         }
-        // Render the 'MySubs' page with the fetched subscribers and user data
+
         console.log(subscribers)
-        return res.render('MySubs', { subscribers, user: req.user, channel: req.user });
+        // Render the 'MySubs' page with the fetched subscribers and user data
+        return res.render('MySubs', { subscribers, user: req.user ,channel:req.user});
     } catch (error) {
-        console.error("Error fetching subscribers:", error); // Log any errors that occur while fetching subscribers
+        console.error("Error fetching subscribers:", error); // Log the error for debugging
         return res.status(500).send("An error occurred while fetching subscribers"); // Send a 500 status code if an error occurs
     }
 });
+
+
+
 
 module.exports = {
     loginUser,                  // Function to log the user in
