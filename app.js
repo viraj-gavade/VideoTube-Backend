@@ -25,7 +25,6 @@ const CommentRouter = require('./Routes/comments.routers'); // Comment-related A
 const healthCheck = require('./Controllers/healthcheck.controllers'); // Health check endpoint
 const subscriptionRouter = require('./Routes/subscritption.routers'); // Subscription API routes
 const LikeRouter = require('./Routes/like.routers'); // Like API routes
-const PlaylistRouter = require('./Routes/playlist.routers'); // Playlist API routes
 const DashboardRouter = require('./Routes/dashboard.router'); // Dashboard-related routes
 const VerifyJwt = require('./Middlerwares/auth'); // Middleware to verify JWT tokens
 
@@ -63,7 +62,6 @@ app.use('/api/v1/comments', CommentRouter); // Comment-related routes
 app.use('/api/v1/healthcheck', healthCheck); // Health check endpoint
 app.use('/api/v1/subscriptions', subscriptionRouter); // Subscription-related routes
 app.use('/api/v1/likes', LikeRouter); // Like-related routes
-app.use('/api/v1/playlists', PlaylistRouter); // Playlist-related routes
 app.use('/api/v1/dashboard', DashboardRouter); // Dashboard-related routes
 
 // OAuth2 Routes
